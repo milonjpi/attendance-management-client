@@ -1,19 +1,15 @@
 // assets
 import {
-  IconBrandToyota,
-  IconMotorbike,
-  IconBrandSpeedtest,
   IconComponents,
   IconStack,
+  IconCurrentLocation,
 } from '@tabler/icons-react';
 
 // constant
 const icons = {
-  IconBrandToyota,
-  IconMotorbike,
-  IconBrandSpeedtest,
   IconComponents,
   IconStack,
+  IconCurrentLocation,
 };
 
 // ==============================|| UTILITIES MENU ITEMS ||============================== //
@@ -40,28 +36,12 @@ const libraries = {
       url: '/libraries/department',
     },
     {
-      id: 'brand',
-      title: 'Brand',
+      id: 'location',
+      title: 'Location',
       type: 'item',
       color: '#344A80',
-      icon: icons.IconBrandToyota,
-      url: '/libraries/brand',
-    },
-    {
-      id: 'model',
-      title: 'Model',
-      type: 'item',
-      color: '#02BAE5',
-      icon: icons.IconMotorbike,
-      url: '/libraries/model',
-    },
-    {
-      id: 'cc',
-      title: 'Engine CC',
-      type: 'item',
-      color: '#B33014',
-      icon: icons.IconBrandSpeedtest,
-      url: '/libraries/cc',
+      icon: icons.IconCurrentLocation,
+      url: '/libraries/location',
     },
   ],
 };

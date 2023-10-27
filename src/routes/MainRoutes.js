@@ -11,38 +11,17 @@ import AuthenticationRoutes from './AuthenticationRoutes';
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard')));
 
 // pages routing
-const StartScan = Loadable(lazy(() => import('views/pages/StartScan')));
-const NewGuestParking = Loadable(
-  lazy(() => import('views/pages/GuestParking/NewGuestParking'))
+const ActiveEmployees = Loadable(
+  lazy(() => import('views/pages/Employees/ActiveEmployees'))
 );
-const GuestInStand = Loadable(
-  lazy(() => import('views/pages/GuestParking/GuestInStand'))
-);
-const GuestList = Loadable(
-  lazy(() => import('views/pages/GuestParking/GuestList'))
-);
-const GuestCard = Loadable(
-  lazy(() => import('views/pages/GuestParking/GuestCard'))
-);
-const Bikers = Loadable(lazy(() => import('views/pages/Bikers/AllBikers')));
-const Guards = Loadable(lazy(() => import('views/pages/Guards')));
-const InStandReport = Loadable(
-  lazy(() => import('views/pages/Report/InStandReport'))
-);
-const AllStandReport = Loadable(
-  lazy(() => import('views/pages/Report/AllStandReport'))
-);
-const InStandBikers = Loadable(
-  lazy(() => import('views/pages/Bikers/InStandBikers'))
+const ResignedEmployees = Loadable(
+  lazy(() => import('views/pages/Employees/ResignedEmployees'))
 );
 
 // libraries
 const Designation = Loadable(lazy(() => import('views/Libraries/Designation')));
 const Department = Loadable(lazy(() => import('views/Libraries/Department')));
-const Brand = Loadable(lazy(() => import('views/Libraries/Brand')));
-const Model = Loadable(lazy(() => import('views/Libraries/Model')));
-const EngineCC = Loadable(lazy(() => import('views/Libraries/EngineCC')));
-
+const LocationPage = Loadable(lazy(() => import('views/Libraries/Location')));
 // utilities routing
 
 // setting routing
@@ -89,125 +68,27 @@ const MainRoutes = {
           path: 'pages',
           children: [
             {
-              path: 'start',
-              element: (
-                <AuthenticationRoutes
-                  allowedRoles={['super_admin']}
-                  allowedCodes={['start']}
-                >
-                  <StartScan />
-                </AuthenticationRoutes>
-              ),
-            },
-            {
-              path: 'guest-parking',
+              path: 'employees',
               children: [
                 {
-                  path: 'guest-parking-operation',
+                  path: 'active-employees',
                   element: (
                     <AuthenticationRoutes
-                      allowedRoles={['super_admin']}
-                      allowedCodes={['guest-parking-operation']}
+                      allowedRoles={['super_admin', 'admin']}
+                      allowedCodes={['active-employees']}
                     >
-                      <NewGuestParking />
+                      <ActiveEmployees />
                     </AuthenticationRoutes>
                   ),
                 },
                 {
-                  path: 'guest-in-stand',
+                  path: 'resigned-employees',
                   element: (
                     <AuthenticationRoutes
-                      allowedRoles={['super_admin']}
-                      allowedCodes={['guest-in-stand']}
+                      allowedRoles={['super_admin', 'admin']}
+                      allowedCodes={['resigned-employees']}
                     >
-                      <GuestInStand />
-                    </AuthenticationRoutes>
-                  ),
-                },
-                {
-                  path: 'guest-list',
-                  element: (
-                    <AuthenticationRoutes
-                      allowedRoles={['super_admin']}
-                      allowedCodes={['guest-list']}
-                    >
-                      <GuestList />
-                    </AuthenticationRoutes>
-                  ),
-                },
-                {
-                  path: 'guest-card',
-                  element: (
-                    <AuthenticationRoutes
-                      allowedRoles={['super_admin']}
-                      allowedCodes={['guest-card']}
-                    >
-                      <GuestCard />
-                    </AuthenticationRoutes>
-                  ),
-                },
-              ],
-            },
-            {
-              path: 'bikers',
-              children: [
-                {
-                  path: 'all-bikers',
-                  element: (
-                    <AuthenticationRoutes
-                      allowedRoles={['super_admin']}
-                      allowedCodes={['all-bikers']}
-                    >
-                      <Bikers />
-                    </AuthenticationRoutes>
-                  ),
-                },
-                {
-                  path: 'in-stand',
-                  element: (
-                    <AuthenticationRoutes
-                      allowedRoles={['super_admin']}
-                      allowedCodes={['in-stand']}
-                    >
-                      <InStandBikers />
-                    </AuthenticationRoutes>
-                  ),
-                },
-              ],
-            },
-            {
-              path: 'guards',
-              element: (
-                <AuthenticationRoutes
-                  allowedRoles={['super_admin']}
-                  allowedCodes={['guards']}
-                >
-                  <Guards />
-                </AuthenticationRoutes>
-              ),
-            },
-            {
-              path: 'report',
-              children: [
-                {
-                  path: 'in-stand-report',
-                  element: (
-                    <AuthenticationRoutes
-                      allowedRoles={['super_admin']}
-                      allowedCodes={['in-stand-report']}
-                    >
-                      <InStandReport />
-                    </AuthenticationRoutes>
-                  ),
-                },
-                {
-                  path: 'all-stand-report',
-                  element: (
-                    <AuthenticationRoutes
-                      allowedRoles={['super_admin']}
-                      allowedCodes={['all-stand-report']}
-                    >
-                      <AllStandReport />
+                      <ResignedEmployees />
                     </AuthenticationRoutes>
                   ),
                 },
@@ -222,7 +103,7 @@ const MainRoutes = {
               path: 'designation',
               element: (
                 <AuthenticationRoutes
-                  allowedRoles={['super_admin']}
+                  allowedRoles={['super_admin', 'admin']}
                   allowedCodes={['designation']}
                 >
                   <Designation />
@@ -233,7 +114,7 @@ const MainRoutes = {
               path: 'department',
               element: (
                 <AuthenticationRoutes
-                  allowedRoles={['super_admin']}
+                  allowedRoles={['super_admin', 'admin']}
                   allowedCodes={['department']}
                 >
                   <Department />
@@ -241,35 +122,13 @@ const MainRoutes = {
               ),
             },
             {
-              path: 'brand',
+              path: 'location',
               element: (
                 <AuthenticationRoutes
-                  allowedRoles={['super_admin']}
-                  allowedCodes={['brand']}
+                  allowedRoles={['super_admin', 'admin']}
+                  allowedCodes={['location']}
                 >
-                  <Brand />
-                </AuthenticationRoutes>
-              ),
-            },
-            {
-              path: 'model',
-              element: (
-                <AuthenticationRoutes
-                  allowedRoles={['super_admin']}
-                  allowedCodes={['model']}
-                >
-                  <Model />
-                </AuthenticationRoutes>
-              ),
-            },
-            {
-              path: 'cc',
-              element: (
-                <AuthenticationRoutes
-                  allowedRoles={['super_admin']}
-                  allowedCodes={['cc']}
-                >
-                  <EngineCC />
+                  <LocationPage />
                 </AuthenticationRoutes>
               ),
             },
@@ -285,7 +144,7 @@ const MainRoutes = {
                   path: 'manage-user',
                   element: (
                     <AuthenticationRoutes
-                      allowedRoles={['super_admin']}
+                      allowedRoles={['super_admin', 'admin']}
                       allowedCodes={['manage-user']}
                     >
                       <ManageUser />
@@ -296,7 +155,7 @@ const MainRoutes = {
                   path: 'manage-user/:id',
                   element: (
                     <AuthenticationRoutes
-                      allowedRoles={['super_admin']}
+                      allowedRoles={['super_admin', 'admin']}
                       allowedCodes={['manage-user']}
                     >
                       <SingleUser />

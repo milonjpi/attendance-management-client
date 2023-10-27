@@ -15,10 +15,9 @@ import SearchIcon from '@mui/icons-material/Search';
 import MainCard from 'ui-component/cards/MainCard';
 import CardAction from 'ui-component/cards/CardAction';
 import { IconPlus } from '@tabler/icons-react';
-import AddDepartment from './AddDepartment';
-import DepartmentRow from './DepartmentRow';
-import { useGetDepartmentsQuery } from 'store/api/department/departmentApi';
-
+import { useGetLocationsQuery } from 'store/api/location/locationApi';
+import AddLocation from './AddLocation';
+import LocationRow from './LocationRow';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -40,7 +39,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-const Department = () => {
+const LocationPage = () => {
   const [searchText, setSearchText] = useState('');
 
   const [open, setOpen] = useState(false);
@@ -59,23 +58,23 @@ const Department = () => {
   };
   // end pagination
 
-  const { data, isLoading } = useGetDepartmentsQuery('', {
+  const { data, isLoading } = useGetLocationsQuery('', {
     refetchOnMountOrArgChange: true,
   });
 
-  const departmentData = data?.data || [];
+  const locationData = data?.data || [];
 
-  const filterData = departmentData?.filter((item) =>
+  const filterData = locationData?.filter((item) =>
     item.label?.toLowerCase().includes(searchText?.toLowerCase())
   );
 
   let sn = 1;
   return (
     <MainCard
-      title="Departments"
+      title="Locations"
       secondary={
         <CardAction
-          title="Add Department"
+          title="Add Location"
           onClick={() => setOpen(true)}
           icon={<IconPlus />}
         />
@@ -101,14 +100,14 @@ const Department = () => {
       </Box>
       {/* popup items */}
 
-      <AddDepartment open={open} handleClose={() => setOpen(false)} />
+      <AddLocation open={open} handleClose={() => setOpen(false)} />
       {/* end popup items */}
       <Box sx={{ overflow: 'auto' }}>
         <Table sx={{ minWidth: 400 }}>
           <TableHead>
             <StyledTableRow>
               <StyledTableCell align="center">SN</StyledTableCell>
-              <StyledTableCell>Department</StyledTableCell>
+              <StyledTableCell>Location</StyledTableCell>
               <StyledTableCell align="center">Action</StyledTableCell>
             </StyledTableRow>
           </TableHead>
@@ -117,7 +116,7 @@ const Department = () => {
               filterData
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((item) => (
-                  <DepartmentRow key={item.id} sn={sn++} data={item} />
+                  <LocationRow key={item.id} sn={sn++} data={item} />
                 ))
             ) : (
               <StyledTableRow>
@@ -146,4 +145,4 @@ const Department = () => {
   );
 };
 
-export default Department;
+export default LocationPage;

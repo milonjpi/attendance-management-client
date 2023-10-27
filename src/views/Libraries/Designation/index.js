@@ -17,7 +17,7 @@ import CardAction from 'ui-component/cards/CardAction';
 import AddDesignation from './AddDesignation';
 import DesignationRow from './DesignationRow';
 import { IconPlus } from '@tabler/icons-react';
-import { useGetDesignationsQuery } from 'store/features/designation/designationApi';
+import { useGetDesignationsQuery } from 'store/api/designation/designationApi';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
