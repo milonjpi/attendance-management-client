@@ -133,7 +133,7 @@ const UpdateEmployee = ({ open, handleClose, preData }) => {
           autoComplete="off"
           onSubmit={handleSubmit(onSubmit)}
         >
-          <Grid container spacing={2}>
+          <Grid container spacing={2.5}>
             <Grid item xs={12} md={6}>
               <TextField
                 fullWidth

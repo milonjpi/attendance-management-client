@@ -16,6 +16,7 @@ const ImageShower = ({ url, width = 50, height = 50, sx = {} }) => {
           height: height,
           overflow: 'hidden',
           cursor: 'pointer',
+          borderRadius: '50%',
           ...sx,
         }}
         onClick={() => setOpen(url ? true : false)}
@@ -29,11 +30,13 @@ const ImageShower = ({ url, width = 50, height = 50, sx = {} }) => {
         )}
         <Fade in={!loading} timeout={500} sx={{ outline: 'none' }}>
           <img
-            src={`${BASE_ADDRESS}/uploads/bikers/${url}`}
+            src={`${BASE_ADDRESS}/uploads/employees/${url}`}
             alt="Biker"
             style={{
               display: loading || !url ? 'none' : 'inline-block',
               width: '100%',
+              height: '100%',
+              objectFit: 'cover',
             }}
             onLoad={() => setLoading(false)}
           />
@@ -44,7 +47,7 @@ const ImageShower = ({ url, width = 50, height = 50, sx = {} }) => {
       <ViewImage
         open={open}
         handleClose={() => setOpen(false)}
-        url={`${BASE_ADDRESS}/uploads/bikers/${url}`}
+        url={`${BASE_ADDRESS}/uploads/employees/${url}`}
       />
     </>
   );

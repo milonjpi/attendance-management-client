@@ -14,6 +14,32 @@ const DashboardDefault = Loadable(lazy(() => import('views/dashboard')));
 const ActiveEmployees = Loadable(
   lazy(() => import('views/pages/Employees/ActiveEmployees'))
 );
+const SingleActiveEmployee = Loadable(
+  lazy(() =>
+    import('views/pages/Employees/ActiveEmployees/SingleActiveEmployee')
+  )
+);
+const ActiveEmployeeInfo = Loadable(
+  lazy(() =>
+    import(
+      'views/pages/Employees/ActiveEmployees/SingleActiveEmployee/ActiveEmployeeInfo'
+    )
+  )
+);
+const AccessControl = Loadable(
+  lazy(() =>
+    import(
+      'views/pages/Employees/ActiveEmployees/SingleActiveEmployee/AccessControl'
+    )
+  )
+);
+const ActiveAccessHistory = Loadable(
+  lazy(() =>
+    import(
+      'views/pages/Employees/ActiveEmployees/SingleActiveEmployee/ActiveAccessHistory'
+    )
+  )
+);
 const ResignedEmployees = Loadable(
   lazy(() => import('views/pages/Employees/ResignedEmployees'))
 );
@@ -80,6 +106,31 @@ const MainRoutes = {
                       <ActiveEmployees />
                     </AuthenticationRoutes>
                   ),
+                },
+                {
+                  path: 'active-employees/:id',
+                  element: (
+                    <AuthenticationRoutes
+                      allowedRoles={['super_admin', 'admin']}
+                      allowedCodes={['active-employees']}
+                    >
+                      <SingleActiveEmployee />
+                    </AuthenticationRoutes>
+                  ),
+                  children: [
+                    {
+                      path: '',
+                      element: <ActiveEmployeeInfo />,
+                    },
+                    {
+                      path: 'access',
+                      element: <AccessControl />,
+                    },
+                    {
+                      path: 'history',
+                      element: <ActiveAccessHistory />,
+                    },
+                  ],
                 },
                 {
                   path: 'resigned-employees',

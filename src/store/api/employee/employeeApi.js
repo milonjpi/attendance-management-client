@@ -27,9 +27,16 @@ export const employeeApi = api.injectEndpoints({
       },
       providesTags: ['employee'],
     }),
-    getSingleEmployee: build.query({
+    getSingleActiveEmployee: build.query({
       query: (id) => ({
-        url: `${EMPLOYEE_URL}/${id}`,
+        url: `${EMPLOYEE_URL}/${id}/active`,
+        method: 'GET',
+      }),
+      providesTags: ['employee'],
+    }),
+    getSingleInactiveEmployee: build.query({
+      query: (id) => ({
+        url: `${EMPLOYEE_URL}/${id}/inactive`,
         method: 'GET',
       }),
       providesTags: ['employee'],
@@ -56,7 +63,8 @@ export const employeeApi = api.injectEndpoints({
 export const {
   useCreateEmployeeMutation,
   useGetEmployeesQuery,
-  useGetSingleEmployeeQuery,
+  useGetSingleActiveEmployeeQuery,
+  useGetSingleInactiveEmployeeQuery,
   useUpdateEmployeeMutation,
   useInactiveEmployeeMutation,
 } = employeeApi;
