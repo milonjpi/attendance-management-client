@@ -7,13 +7,18 @@ import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import LoadingButton from '@mui/lab/LoadingButton';
-import TextField from '@mui/material/TextField';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
 import CloseIcon from '@mui/icons-material/Close';
 import SaveIcon from '@mui/icons-material/Save';
 import { useDispatch } from 'react-redux';
-import { useForm } from 'react-hook-form';
 import { setToast } from 'store/toastSlice';
-import { useCreateUserMutation } from 'store/api/user/userApi';
+import {
+  useAssignTerminalMutation,
+  useGetAllTerminalsQuery,
+} from 'store/api/device/deviceApi';
 
 const style = {
   position: 'absolute',
@@ -27,22 +32,42 @@ const style = {
   p: 3,
 };
 
-const AddUser = ({ open, handleClose }) => {
+const AssignTerminal = ({
+  open,
+  handleClose,
+  cardData,
+  assignedTerminals = [],
+}) => {
   const [loading, setLoading] = useState(false);
-  const { register, handleSubmit, reset } = useForm();
+  const [terminal, setTerminal] = useState('');
+
+  const { data } = useGetAllTerminalsQuery('', {
+    refetchOnMountOrArgChange: true,
+  });
+
+  const allTerminals = data?.data || [];
+  const filterTerminals = allTerminals.filter(
+    (el) => !assignedTerminals.includes(el.ID)
+  );
 
   const dispatch = useDispatch();
 
-  const [createUser] = useCreateUserMutation();
+  const [assignTerminal] = useAssignTerminalMutation();
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (e) => {
+    e.preventDefault();
     setLoading(true);
+    const newData = {
+      UserIDIndex: cardData?.IndexKey,
+      TerminalID: terminal,
+      UserID: cardData?.ID,
+    };
     try {
-      const res = await createUser({ ...data }).unwrap();
+      const res = await assignTerminal({ ...newData }).unwrap();
 
       if (res.success) {
         handleClose();
-        reset();
+        setTerminal('');
         dispatch(
           setToast({
             open: true,
@@ -64,6 +89,7 @@ const AddUser = ({ open, handleClose }) => {
       );
     }
   };
+
   return (
     <Modal open={open} onClose={handleClose}>
       <Paper sx={style}>
@@ -75,7 +101,7 @@ const AddUser = ({ open, handleClose }) => {
           }}
         >
           <Typography sx={{ fontSize: 16, color: '#878781' }}>
-            Add User
+            Assign Terminal
           </Typography>
           <IconButton
             color="error"
@@ -86,49 +112,40 @@ const AddUser = ({ open, handleClose }) => {
           </IconButton>
         </Box>
         <Divider sx={{ mb: 2, mt: 1 }} />
-        <Box
-          component="form"
-          autoComplete="off"
-          onSubmit={handleSubmit(onSubmit)}
-        >
+        <Box component="form" autoComplete="off" onSubmit={onSubmit}>
           <Grid container spacing={3}>
             <Grid item xs={12}>
-              <TextField
-                fullWidth
-                required
-                label="Full Name"
-                {...register('fullName', { required: true })}
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                required
-                label="User Name"
-                {...register('userName', { required: true })}
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                required
-                label="Password"
-                {...register('password', { required: true })}
-              />
+              <FormControl fullWidth required>
+                <InputLabel id="select-terminal-id">Select Terminal</InputLabel>
+                <Select
+                  labelId="select-terminal-id"
+                  value={terminal}
+                  label="Select Terminal"
+                  onChange={(e) => setTerminal(e.target.value)}
+                >
+                  <MenuItem value="">
+                    <em>None</em>
+                  </MenuItem>
+                  {filterTerminals.map((el) => (
+                    <MenuItem key={el.ID} value={el.ID}>
+                      {el.Name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </Grid>
             <Grid item xs={12}>
               <LoadingButton
                 fullWidth
                 size="small"
                 color="primary"
-                sx={{ py: 1 }}
                 loading={loading}
                 loadingPosition="start"
                 startIcon={<SaveIcon />}
                 variant="contained"
                 type="submit"
               >
-                <span style={{ lineHeight: 1 }}>Submit</span>
+                Submit
               </LoadingButton>
             </Grid>
           </Grid>
@@ -138,4 +155,4 @@ const AddUser = ({ open, handleClose }) => {
   );
 };
 
-export default AddUser;
+export default AssignTerminal;

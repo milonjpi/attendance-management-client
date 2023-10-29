@@ -31,12 +31,13 @@ import Transitions from 'ui-component/extended/Transitions';
 
 // assets
 import { IconLogout, IconSettings } from '@tabler/icons';
-import { selectAuth } from 'store/authSlice';
 import { useLogoutMutation } from 'store/api/auth/authApi';
 import { setToast } from 'store/toastSlice';
 import { removeUserInfo } from 'services/auth.service';
 import { authKey } from 'constants/storageKey';
 import { setRefresh } from 'store/refreshSlice';
+import { useGetProfileQuery } from 'store/api/profile/profileApi';
+import { roleValue } from 'assets/data';
 
 // ==============================|| PROFILE MENU ||============================== //
 
@@ -56,7 +57,10 @@ const ProfileSection = () => {
    * */
   const anchorRef = useRef(null);
   const dispatch = useDispatch();
-  const auth = useSelector(selectAuth);
+  const { data } = useGetProfileQuery('', {
+    refetchOnMountOrArgChange: true,
+  });
+  const userData = data?.data;
 
   const [logout] = useLogoutMutation();
 
@@ -199,11 +203,11 @@ const ProfileSection = () => {
                           variant="h4"
                           sx={{ fontWeight: 400 }}
                         >
-                          {auth?.user?.fullName}
+                          {userData?.fullName}
                         </Typography>
                       </Stack>
                       <Typography variant="subtitle2">
-                        {auth?.user?.designation}
+                        {roleValue[userData?.role] || ''}
                       </Typography>
                     </Stack>
                     <Divider />

@@ -11,9 +11,9 @@ import TextField from '@mui/material/TextField';
 import CloseIcon from '@mui/icons-material/Close';
 import SaveIcon from '@mui/icons-material/Save';
 import { useDispatch } from 'react-redux';
-import { useForm } from 'react-hook-form';
 import { setToast } from 'store/toastSlice';
-import { useCreateUserMutation } from 'store/api/user/userApi';
+import { useCreateDeviceUserMutation } from 'store/api/device/deviceApi';
+import bigInt from 'big-integer';
 
 const style = {
   position: 'absolute',
@@ -27,22 +27,34 @@ const style = {
   p: 3,
 };
 
-const AddUser = ({ open, handleClose }) => {
+const AssignCard = ({ open, handleClose, employeeData }) => {
   const [loading, setLoading] = useState(false);
-  const { register, handleSubmit, reset } = useForm();
+  const [codeFirst, setCodeFirst] = useState('');
+  const [codeSecond, setCodeSecond] = useState('');
 
   const dispatch = useDispatch();
 
-  const [createUser] = useCreateUserMutation();
+  const [createDeviceUser] = useCreateDeviceUserMutation();
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (e) => {
+    e.preventDefault();
     setLoading(true);
+    const firstPart = (parseInt(codeFirst).toString(16) + '0').slice(0, 3);
+    const secondPart = ('00' + parseInt(codeSecond).toString(16)).slice(-5);
+    const hex = firstPart + secondPart;
+    const rfId = bigInt('0x' + hex);
+    const newData = {
+      ID: employeeData?.id,
+      Name: employeeData?.name,
+      RFID: rfId?.toString(),
+    };
     try {
-      const res = await createUser({ ...data }).unwrap();
+      const res = await createDeviceUser({ ...newData }).unwrap();
 
       if (res.success) {
         handleClose();
-        reset();
+        setCodeFirst('');
+        setCodeSecond('');
         dispatch(
           setToast({
             open: true,
@@ -75,7 +87,7 @@ const AddUser = ({ open, handleClose }) => {
           }}
         >
           <Typography sx={{ fontSize: 16, color: '#878781' }}>
-            Add User
+            Assign Card
           </Typography>
           <IconButton
             color="error"
@@ -86,34 +98,37 @@ const AddUser = ({ open, handleClose }) => {
           </IconButton>
         </Box>
         <Divider sx={{ mb: 2, mt: 1 }} />
-        <Box
-          component="form"
-          autoComplete="off"
-          onSubmit={handleSubmit(onSubmit)}
-        >
+        <Box component="form" autoComplete="off" onSubmit={onSubmit}>
           <Grid container spacing={3}>
             <Grid item xs={12}>
               <TextField
                 fullWidth
-                required
-                label="Full Name"
-                {...register('fullName', { required: true })}
+                size="small"
+                label="Employee ID"
+                defaultValue={employeeData?.id}
+                inputProps={{ readOnly: true }}
               />
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid item xs={6}>
               <TextField
                 fullWidth
+                size="small"
                 required
-                label="User Name"
-                {...register('userName', { required: true })}
+                type="number"
+                label="Card Code 1st Part"
+                value={codeFirst}
+                onChange={(e) => setCodeFirst(e.target.value)}
               />
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid item xs={6}>
               <TextField
                 fullWidth
+                size="small"
                 required
-                label="Password"
-                {...register('password', { required: true })}
+                type="number"
+                label="Card Code Last Part"
+                value={codeSecond}
+                onChange={(e) => setCodeSecond(e.target.value)}
               />
             </Grid>
             <Grid item xs={12}>
@@ -121,14 +136,13 @@ const AddUser = ({ open, handleClose }) => {
                 fullWidth
                 size="small"
                 color="primary"
-                sx={{ py: 1 }}
                 loading={loading}
                 loadingPosition="start"
                 startIcon={<SaveIcon />}
                 variant="contained"
                 type="submit"
               >
-                <span style={{ lineHeight: 1 }}>Submit</span>
+                Submit
               </LoadingButton>
             </Grid>
           </Grid>
@@ -138,4 +152,4 @@ const AddUser = ({ open, handleClose }) => {
   );
 };
 
-export default AddUser;
+export default AssignCard;

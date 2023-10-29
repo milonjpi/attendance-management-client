@@ -44,6 +44,21 @@ const ResignedEmployees = Loadable(
   lazy(() => import('views/pages/Employees/ResignedEmployees'))
 );
 
+// attendances
+const DailyAttendance = Loadable(
+  lazy(() => import('views/pages/Attendance/DailyAttendance'))
+);
+const AllAttendance = Loadable(
+  lazy(() => import('views/pages/Attendance/AllAttendance'))
+);
+const PresentManagement = Loadable(
+  lazy(() => import('views/pages/PresentManagement'))
+);
+
+
+
+// end pages
+
 // libraries
 const Designation = Loadable(lazy(() => import('views/Libraries/Designation')));
 const Department = Loadable(lazy(() => import('views/Libraries/Department')));
@@ -144,6 +159,44 @@ const MainRoutes = {
                   ),
                 },
               ],
+            },
+            {
+              path: 'attendances',
+              children: [
+                {
+                  path: 'daily-attendance',
+                  element: (
+                    <AuthenticationRoutes
+                      allowedRoles={['super_admin', 'admin']}
+                      allowedCodes={['daily-attendance']}
+                    >
+                      <DailyAttendance />
+                    </AuthenticationRoutes>
+                  ),
+                },
+                {
+                  path: 'all-attendance',
+                  element: (
+                    <AuthenticationRoutes
+                      allowedRoles={['super_admin', 'admin']}
+                      allowedCodes={['all-attendance']}
+                    >
+                      <AllAttendance />
+                    </AuthenticationRoutes>
+                  ),
+                },
+              ],
+            },
+            {
+              path: 'present-management',
+              element: (
+                <AuthenticationRoutes
+                  allowedRoles={['super_admin', 'admin']}
+                  allowedCodes={['present-management']}
+                >
+                  <PresentManagement />
+                </AuthenticationRoutes>
+              ),
             },
           ],
         },
