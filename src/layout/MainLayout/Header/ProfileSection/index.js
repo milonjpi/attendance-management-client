@@ -83,6 +83,8 @@ const ProfileSection = () => {
           errorMessages: err?.data?.errorMessages,
         })
       );
+      removeUserInfo(authKey);
+      dispatch(setRefresh());
       setLoading(false);
     }
   };

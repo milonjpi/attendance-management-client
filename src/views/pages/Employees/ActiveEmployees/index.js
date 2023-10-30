@@ -120,7 +120,7 @@ const ActiveEmployees = () => {
   const employees = data?.employees || [];
   const meta = data?.meta;
 
-  let sn = 1;
+  let sn = page * rowsPerPage + 1;
   return (
     <MainCard
       title="Active Employees"

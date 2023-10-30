@@ -72,7 +72,7 @@ const ManageUser = () => {
       item.userName?.toLowerCase().includes(searchText?.toLowerCase()) ||
       item.fullName?.toLowerCase().includes(searchText?.toLowerCase())
   );
-  let sn = 1;
+  let sn = page * rowsPerPage + 1;
   return (
     <MainCard
       title="Manage Users"

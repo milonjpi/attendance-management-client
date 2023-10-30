@@ -8,42 +8,71 @@ import TableBody from '@mui/material/TableBody';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import LinearProgress from '@mui/material/LinearProgress';
 import MainCard from 'ui-component/cards/MainCard';
-import CardAction from 'ui-component/cards/CardAction';
-import { IconPlus } from '@tabler/icons-react';
 import { useGetDesignationsQuery } from 'store/api/designation/designationApi';
 import { useGetDepartmentsQuery } from 'store/api/department/departmentApi';
 import { useGetLocationsQuery } from 'store/api/location/locationApi';
 import { useGetAllReportQuery } from 'store/api/report/reportApi';
 import AllAttendanceRow from './AllAttendanceRow';
+import { getDaysInMonth } from 'views/utilities/NeedyFunction';
+import moment from 'moment';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: '#ede7f6',
     color: '#5e35b1',
     padding: '7px 6px',
-    fontSize: 12,
+    fontSize: 10,
+    border: '1px solid #999999',
   },
   [`&.${tableCellClasses.body}`]: {
     fontSize: 12,
     padding: '6px',
+    border: '1px solid #999999',
   },
 }));
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   // hide last border
-  '&:last-child td, &:last-child th': {
-    border: 0,
-  },
+  // '&:last-child td, &:last-child th': {
+  //   border: 0,
+  // },
 }));
+
+const currentMonth = new Date().getMonth();
+const currentYear = new Date().getFullYear();
 
 const AllAttendance = () => {
   const [designation, setDesignation] = useState(null);
   const [department, setDepartment] = useState(null);
   const [location, setLocation] = useState(null);
+
+  const [fromDate, setFromDate] = useState(
+    new Date(currentYear, currentMonth, 1)
+  );
+  const [toDate, setToDate] = useState(
+    new Date(
+      currentYear,
+      currentMonth,
+      getDaysInMonth(currentMonth, currentYear)
+    )
+  );
+  const isDisable = (date) => {
+    const month = date.month();
+    return month !== new Date(fromDate).getMonth();
+  };
+
+  const startDate = fromDate ? new Date(moment(fromDate)).getDate() - 1 : 0;
+  const endDate = toDate ? new Date(moment(toDate)).getDate() : 0;
+
+  const getStartMonth = new Date(moment(fromDate)).getMonth();
+  const getEndMonth = new Date(moment(toDate)).getMonth();
 
   // library
 
@@ -83,6 +112,13 @@ const AllAttendance = () => {
   query['page'] = page;
   query['isActive'] = true;
 
+  if (fromDate) {
+    query['startDate'] = moment(fromDate).format('YYYY-MM-DD');
+  }
+  if (toDate) {
+    query['endDate'] = moment(toDate).format('YYYY-MM-DD');
+  }
+
   if (designation) {
     query['designationId'] = designation.id;
   }
@@ -103,12 +139,45 @@ const AllAttendance = () => {
   const employees = data?.employees || [];
   const meta = data?.meta;
 
-  let sn = 1;
+  let sn = page * rowsPerPage + 1;
+
   return (
-    <MainCard title="All Attendances">
+    <MainCard title="All Attendance">
       <Box sx={{ mb: 2 }}>
-        <Grid container spacing={2} sx={{ alignItems: 'end' }}>
-          <Grid item xs={12} sm={6} md={2.8}>
+        <Grid container spacing={1} sx={{ alignItems: 'end' }} columns={15}>
+          <Grid item xs={15} sm={7.5} md={5} lg={3}>
+            <LocalizationProvider dateAdapter={AdapterMoment}>
+              <DatePicker
+                label="Date From"
+                inputFormat="DD/MM/YYYY"
+                value={fromDate}
+                onChange={(newValue) => {
+                  setFromDate(newValue);
+                }}
+                renderInput={(params) => (
+                  <TextField {...params} fullWidth size="small" />
+                )}
+              />
+            </LocalizationProvider>
+          </Grid>
+          <Grid item xs={15} sm={7.5} md={5} lg={3}>
+            <LocalizationProvider dateAdapter={AdapterMoment}>
+              <DatePicker
+                label="Date To"
+                inputFormat="DD/MM/YYYY"
+                value={toDate}
+                minDate={fromDate}
+                shouldDisableDate={isDisable}
+                onChange={(newValue) => {
+                  setToDate(newValue);
+                }}
+                renderInput={(params) => (
+                  <TextField {...params} fullWidth size="small" />
+                )}
+              />
+            </LocalizationProvider>
+          </Grid>
+          <Grid item xs={15} sm={7.5} md={5} lg={3}>
             <Autocomplete
               value={designation}
               fullWidth
@@ -122,7 +191,7 @@ const AllAttendance = () => {
               )}
             />
           </Grid>
-          <Grid item xs={12} sm={6} md={2.8}>
+          <Grid item xs={15} sm={7.5} md={5} lg={3}>
             <Autocomplete
               value={department}
               fullWidth
@@ -136,7 +205,7 @@ const AllAttendance = () => {
               )}
             />
           </Grid>
-          <Grid item xs={12} sm={6} md={2.8}>
+          <Grid item xs={15} sm={7.5} md={5} lg={3}>
             <Autocomplete
               value={location}
               fullWidth
@@ -153,23 +222,36 @@ const AllAttendance = () => {
         </Grid>
       </Box>
       <Box sx={{ overflow: 'auto' }}>
-        <Table sx={{ minWidth: 400 }}>
+        <Table sx={{ minWidth: 700 }}>
           <TableHead>
             <StyledTableRow>
-              <StyledTableCell align="center">SN</StyledTableCell>
-              <StyledTableCell>Employee ID</StyledTableCell>
-              <StyledTableCell>Name</StyledTableCell>
-              <StyledTableCell>Office ID</StyledTableCell>
-              <StyledTableCell>Designation</StyledTableCell>
-              <StyledTableCell>Department</StyledTableCell>
-              <StyledTableCell>Location</StyledTableCell>
-              <StyledTableCell>Contact No</StyledTableCell>
+              <StyledTableCell align="center" sx={{ width: 5 }}>
+                SN
+              </StyledTableCell>
+              <StyledTableCell sx={{ width: 100 }}>Employee</StyledTableCell>
+              <StyledTableCell>Attendance</StyledTableCell>
             </StyledTableRow>
           </TableHead>
           <TableBody>
-            {employees?.length ? (
+            {startDate >= endDate || getStartMonth !== getEndMonth ? (
+              <StyledTableRow>
+                <StyledTableCell
+                  colSpan={3}
+                  align="center"
+                  sx={{ color: 'red' }}
+                >
+                  Invalid Date Range !!!
+                </StyledTableCell>
+              </StyledTableRow>
+            ) : employees?.length ? (
               employees.map((item) => (
-                <AllAttendanceRow key={item.id} sn={sn++} data={item} />
+                <AllAttendanceRow
+                  key={item.id}
+                  sn={sn++}
+                  data={item}
+                  fromDate={fromDate}
+                  toDate={toDate}
+                />
               ))
             ) : (
               <StyledTableRow>

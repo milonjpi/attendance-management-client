@@ -68,7 +68,7 @@ const LocationPage = () => {
     item.label?.toLowerCase().includes(searchText?.toLowerCase())
   );
 
-  let sn = 1;
+  let sn = page * rowsPerPage + 1;
   return (
     <MainCard
       title="Locations"
