@@ -8,8 +8,11 @@
 
 
 ### Technology:
+
 Backend: Express JS, Prisma.
+
 Frontend: HTML, CSS, React JS, Material UI, Redux Toolkit.
+
 Database: MongoDB, SQL.
 
 ### Backend GitHub Link: https://github.com/milonjpi/attendance-management-server
