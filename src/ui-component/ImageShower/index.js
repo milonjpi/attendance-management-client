@@ -16,7 +16,7 @@ const ImageShower = ({ url, width = 50, height = 50, sx = {} }) => {
           height: height,
           overflow: 'hidden',
           cursor: 'pointer',
-          borderRadius: '50%',
+          borderRadius: 5,
           ...sx,
         }}
         onClick={() => setOpen(url ? true : false)}

@@ -55,8 +55,6 @@ const PresentManagement = Loadable(
   lazy(() => import('views/pages/PresentManagement'))
 );
 
-
-
 // end pages
 
 // libraries
@@ -109,21 +107,21 @@ const MainRoutes = {
           path: 'pages',
           children: [
             {
-              path: 'employees',
+              path: 'employee-management',
               children: [
                 {
-                  path: 'active-employees',
+                  path: 'employees',
                   element: (
                     <AuthenticationRoutes
                       allowedRoles={['super_admin', 'admin']}
-                      allowedCodes={['active-employees']}
+                      allowedCodes={['employees']}
                     >
                       <ActiveEmployees />
                     </AuthenticationRoutes>
                   ),
                 },
                 {
-                  path: 'active-employees/:id',
+                  path: 'employees/:id',
                   element: (
                     <AuthenticationRoutes
                       allowedRoles={['super_admin', 'admin']}

@@ -10,6 +10,7 @@ import MainCard from 'ui-component/cards/MainCard';
 import ImageShower from 'ui-component/ImageShower';
 import UpdateEmployee from '../../UpdateEmployee';
 import { useState } from 'react';
+import moment from 'moment';
 
 const ActiveEmployeeInfo = () => {
   const { data } = useOutletContext();
@@ -25,13 +26,15 @@ const ActiveEmployeeInfo = () => {
           color="dark"
           component={Link}
           sx={{ color: '#fff' }}
-          to="/utils/setting/manage-user"
+          to={`/pages/employee-management/${
+            data?.isActive ? 'employees' : 'resigned-employees'
+          }`}
         >
           Back
         </Button>
       </Box>
       {/* popup items */}
-      {data ? (
+      {data?.isActive ? (
         <UpdateEmployee
           open={open}
           handleClose={() => setOpen(false)}
@@ -44,13 +47,15 @@ const ActiveEmployeeInfo = () => {
         <MainCard
           title="Employee Information"
           secondary={
-            <IconButton
-              color="primary"
-              size="small"
-              onClick={() => setOpen(true)}
-            >
-              <EditIcon fontSize="small" />
-            </IconButton>
+            data?.isActive ? (
+              <IconButton
+                color="primary"
+                size="small"
+                onClick={() => setOpen(true)}
+              >
+                <EditIcon fontSize="small" />
+              </IconButton>
+            ) : null
           }
         >
           <Grid container spacing={5} sx={{ alignItems: 'stretch' }}>
@@ -74,7 +79,7 @@ const ActiveEmployeeInfo = () => {
                 <Grid item xs={12} md={6}>
                   <EmployeeItem
                     title="Employee ID"
-                    value={data?.employeeId || 'n/a'}
+                    value={data?.officeId || 'n/a'}
                   />
                 </Grid>
                 <Grid item xs={12} md={6}>
@@ -98,7 +103,11 @@ const ActiveEmployeeInfo = () => {
                 <Grid item xs={12} md={6}>
                   <EmployeeItem
                     title="Joining Date"
-                    value={data?.joiningDate || 'n/a'}
+                    value={
+                      data?.joiningDate
+                        ? moment(data?.joiningDate).format('DD/MM/YYYY')
+                        : 'n/a'
+                    }
                   />
                 </Grid>
                 <Grid item xs={12} md={6}>

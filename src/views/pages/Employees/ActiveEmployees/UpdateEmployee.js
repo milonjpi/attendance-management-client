@@ -4,6 +4,9 @@ import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Divider from '@mui/material/Divider';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import Autocomplete from '@mui/material/Autocomplete';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
@@ -18,6 +21,10 @@ import { useGetDesignationsQuery } from 'store/api/designation/designationApi';
 import { useGetDepartmentsQuery } from 'store/api/department/departmentApi';
 import { useGetLocationsQuery } from 'store/api/location/locationApi';
 import { useUpdateEmployeeMutation } from 'store/api/employee/employeeApi';
+import { Button, Tooltip } from '@mui/material';
+import { IconPlus } from '@tabler/icons-react';
+import AddDesignation from 'views/Libraries/Designation/AddDesignation';
+import AddDepartment from 'views/Libraries/Department/AddDepartment';
 import UploadPhoto from './UploadPhoto';
 
 const style = {
@@ -25,7 +32,7 @@ const style = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: { xs: 300, sm: 500, md: 750 },
+  width: { xs: 400, sm: 500, md: 800 },
   maxHeight: '100vh',
   overflow: 'auto',
   boxShadow: 24,
@@ -34,10 +41,15 @@ const style = {
 
 const UpdateEmployee = ({ open, handleClose, preData }) => {
   const [loading, setLoading] = useState(false);
+  const [joiningDate, setJoiningDate] = useState(preData?.joiningDate || null);
   const [designation, setDesignation] = useState(preData?.designation || null);
   const [department, setDepartment] = useState(preData?.department || null);
   const [location, setLocation] = useState(preData?.location || null);
   const { register, handleSubmit, reset } = useForm({ defaultValues: preData });
+
+  //  library open
+  const [designationOpen, setDesignationOpen] = useState(false);
+  const [departmentOpen, setDepartmentOpen] = useState(false);
 
   // library
 
@@ -67,6 +79,7 @@ const UpdateEmployee = ({ open, handleClose, preData }) => {
     const newData = {
       name: othersData?.name,
       officeId: othersData?.officeId,
+      joiningDate,
       contactNo: othersData?.contactNo,
       address: othersData?.address,
       designationId: designation?.id,
@@ -128,6 +141,16 @@ const UpdateEmployee = ({ open, handleClose, preData }) => {
           </IconButton>
         </Box>
         <Divider sx={{ mb: 2, mt: 1 }} />
+        {/* popup items */}
+        <AddDesignation
+          open={designationOpen}
+          handleClose={() => setDesignationOpen(false)}
+        />
+        <AddDepartment
+          open={departmentOpen}
+          handleClose={() => setDepartmentOpen(false)}
+        />
+        {/* end popup items */}
         <Box
           component="form"
           autoComplete="off"
@@ -152,32 +175,62 @@ const UpdateEmployee = ({ open, handleClose, preData }) => {
               />
             </Grid>
             <Grid item xs={12} md={6}>
-              <Autocomplete
-                value={designation}
-                fullWidth
-                size="small"
-                options={allDesignations}
-                getOptionLabel={(option) => option.label}
-                isOptionEqualToValue={(item, value) => item.id === value.id}
-                onChange={(e, newValue) => setDesignation(newValue)}
-                renderInput={(params) => (
-                  <TextField {...params} label="Select Designation" required />
-                )}
-              />
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <Autocomplete
+                  value={designation}
+                  fullWidth
+                  size="small"
+                  options={allDesignations}
+                  getOptionLabel={(option) => option.label}
+                  isOptionEqualToValue={(item, value) => item.id === value.id}
+                  onChange={(e, newValue) => setDesignation(newValue)}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Select Designation"
+                      required
+                    />
+                  )}
+                />
+                <Tooltip>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    size="small"
+                    sx={{ minWidth: 0, ml: 0.5 }}
+                    onClick={() => setDesignationOpen(true)}
+                  >
+                    <IconPlus />
+                  </Button>
+                </Tooltip>
+              </Box>
             </Grid>
             <Grid item xs={12} md={6}>
-              <Autocomplete
-                value={department}
-                fullWidth
-                size="small"
-                options={allDepartments}
-                getOptionLabel={(option) => option.label}
-                isOptionEqualToValue={(item, value) => item.id === value.id}
-                onChange={(e, newValue) => setDepartment(newValue)}
-                renderInput={(params) => (
-                  <TextField {...params} label="Select Department" required />
-                )}
-              />
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <Autocomplete
+                  value={department}
+                  fullWidth
+                  size="small"
+                  options={allDepartments}
+                  getOptionLabel={(option) => option.label}
+                  isOptionEqualToValue={(item, value) => item.id === value.id}
+                  onChange={(e, newValue) => setDepartment(newValue)}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Select Department" required />
+                  )}
+                />
+                <Tooltip>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    size="small"
+                    sx={{ minWidth: 0, ml: 0.5 }}
+                    onClick={() => setDepartmentOpen(true)}
+                  >
+                    <IconPlus />
+                  </Button>
+                </Tooltip>
+              </Box>
             </Grid>
             <Grid item xs={12} md={6}>
               <Autocomplete
@@ -193,6 +246,26 @@ const UpdateEmployee = ({ open, handleClose, preData }) => {
                   <TextField {...params} label="Select Location" required />
                 )}
               />
+              <LocalizationProvider dateAdapter={AdapterMoment}>
+                <DatePicker
+                  label="Joining Date"
+                  inputFormat="DD/MM/YYYY"
+                  openTo="year"
+                  views={['year', 'month', 'day']}
+                  value={joiningDate}
+                  onChange={(newValue) => {
+                    setJoiningDate(newValue);
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      fullWidth
+                      size="small"
+                      sx={{ mb: 2 }}
+                    />
+                  )}
+                />
+              </LocalizationProvider>
               <TextField
                 fullWidth
                 size="small"

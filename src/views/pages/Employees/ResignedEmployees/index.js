@@ -183,13 +183,15 @@ const ResignedEmployees = () => {
           <TableHead>
             <StyledTableRow>
               <StyledTableCell align="center">SN</StyledTableCell>
-              <StyledTableCell>Employee ID</StyledTableCell>
-              <StyledTableCell>Name</StyledTableCell>
               <StyledTableCell>Office ID</StyledTableCell>
+              <StyledTableCell>Name</StyledTableCell>
               <StyledTableCell>Designation</StyledTableCell>
               <StyledTableCell>Department</StyledTableCell>
               <StyledTableCell>Location</StyledTableCell>
               <StyledTableCell>Contact No</StyledTableCell>
+              <StyledTableCell>Joining Date</StyledTableCell>
+              <StyledTableCell>Resigned Date</StyledTableCell>
+              <StyledTableCell align="center">Action</StyledTableCell>
             </StyledTableRow>
           </TableHead>
           <TableBody>

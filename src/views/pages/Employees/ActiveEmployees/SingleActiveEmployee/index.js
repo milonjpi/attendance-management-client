@@ -7,7 +7,7 @@ import { useLocation, Link, useParams, Outlet } from 'react-router-dom';
 import LockPersonIcon from '@mui/icons-material/LockPerson';
 import InfoIcon from '@mui/icons-material/Info';
 import HistoryIcon from '@mui/icons-material/History';
-import { useGetSingleActiveEmployeeQuery } from 'store/api/employee/employeeApi';
+import { useGetSingleEmployeeQuery } from 'store/api/employee/employeeApi';
 import NotFoundEmployee from '../../NotFoundEmployee';
 
 const NavItem = styled(ButtonBase)`
@@ -22,7 +22,7 @@ const SingleActiveEmployee = () => {
   let location = useLocation();
   const path = location?.pathname?.split('/')[5] || '';
 
-  const { data, isLoading } = useGetSingleActiveEmployeeQuery(id, {
+  const { data, isLoading } = useGetSingleEmployeeQuery(id, {
     refetchOnMountOrArgChange: true,
   });
   const employeeData = data?.data;
@@ -43,7 +43,27 @@ const SingleActiveEmployee = () => {
       >
         <Box>
           <Typography sx={{ fontSize: 18, color: '#fff', lineHeight: 1 }}>
-            {employeeData?.name ? employeeData?.name : 'Loading...'}
+            {employeeData?.name ? (
+              <span>
+                {employeeData?.name}{' '}
+                <span
+                  style={{
+                    color: '#fff',
+                    background: employeeData?.isActive ? 'green' : 'red',
+                    fontWeight: 700,
+                    fontSize: 8,
+                    padding: '3px 5px 3px 5px',
+                    lineHeight: 1,
+                    display: 'inline-block',
+                    borderRadius: 5,
+                  }}
+                >
+                  {employeeData?.isActive ? 'ACTIVE' : 'INACTIVE'}
+                </span>
+              </span>
+            ) : (
+              'Loading...'
+            )}
           </Typography>
         </Box>
         <Box sx={{ mt: 1.5 }}>

@@ -44,7 +44,7 @@ const AssignCard = ({ open, handleClose, employeeData }) => {
     const hex = firstPart + secondPart;
     const rfId = bigInt('0x' + hex);
     const newData = {
-      ID: employeeData?.id,
+      ID: employeeData?.officeId,
       Name: employeeData?.name,
       RFID: rfId?.toString(),
     };
@@ -104,8 +104,8 @@ const AssignCard = ({ open, handleClose, employeeData }) => {
               <TextField
                 fullWidth
                 size="small"
-                label="Employee ID"
-                defaultValue={employeeData?.id}
+                label="Office ID"
+                defaultValue={employeeData?.officeId}
                 inputProps={{ readOnly: true }}
               />
             </Grid>

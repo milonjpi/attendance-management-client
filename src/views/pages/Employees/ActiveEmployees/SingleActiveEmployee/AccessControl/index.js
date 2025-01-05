@@ -108,7 +108,7 @@ const AccessControl = () => {
       );
     }
   };
-  console.log(terminalData);
+
   return (
     <MainCard title="Access Control">
       <Grid
@@ -133,14 +133,17 @@ const AccessControl = () => {
                 </Grid>
                 <Grid item xs={12}>
                   <Box sx={{ textAlign: 'center' }}>
-                    <Button
-                      variant="contained"
-                      size="small"
-                      sx={{ mr: 2 }}
-                      onClick={() => setUpdate(true)}
-                    >
-                      Edit
-                    </Button>
+                    {data?.isActive ? (
+                      <Button
+                        variant="contained"
+                        size="small"
+                        sx={{ mr: 2 }}
+                        onClick={() => setUpdate(true)}
+                      >
+                        Edit
+                      </Button>
+                    ) : null}
+
                     <Button
                       variant="contained"
                       size="small"
@@ -152,13 +155,16 @@ const AccessControl = () => {
                     {/* popup items */}
                     {cardData ? (
                       <>
-                        <UpdateAssignCard
-                          open={update}
-                          handleClose={() => setUpdate(false)}
-                          employeeId={cardData?.ID}
-                          codeStart={codeStart}
-                          codeEnd={codeEnd}
-                        />
+                        {data?.isActive ? (
+                          <UpdateAssignCard
+                            open={update}
+                            handleClose={() => setUpdate(false)}
+                            employeeId={cardData?.ID}
+                            codeStart={codeStart}
+                            codeEnd={codeEnd}
+                          />
+                        ) : null}
+
                         <ConfirmDialog
                           open={dialog}
                           setOpen={setDialog}
@@ -175,7 +181,7 @@ const AccessControl = () => {
                 <Box sx={{ textAlign: 'center' }}>
                   {cardLoading ? (
                     <CircularProgress size={30} />
-                  ) : (
+                  ) : data?.isActive ? (
                     <Button
                       variant="contained"
                       size="small"
@@ -184,10 +190,10 @@ const AccessControl = () => {
                     >
                       Add Card
                     </Button>
-                  )}
+                  ) : null}
                 </Box>
                 {/* popup items */}
-                {data ? (
+                {data?.isActive ? (
                   <AssignCard
                     open={open}
                     handleClose={() => setOpen(false)}

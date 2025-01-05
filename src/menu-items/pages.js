@@ -30,23 +30,23 @@ const pages = {
   type: 'group',
   children: [
     {
-      id: 'employees',
+      id: 'employee-management',
       title: 'Employees',
       type: 'collapse',
       color: '#0C356A',
       icon: icons.IconUsersGroup,
       children: [
         {
-          id: 'active-employees',
+          id: 'employees',
           title: 'Active Employees',
           type: 'item',
-          url: '/pages/employees/active-employees',
+          url: '/pages/employee-management/employees',
         },
         {
           id: 'resigned-employees',
           title: 'Resigned Employees',
           type: 'item',
-          url: '/pages/employees/resigned-employees',
+          url: '/pages/employee-management/resigned-employees',
         },
       ],
     },

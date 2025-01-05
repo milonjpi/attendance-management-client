@@ -53,7 +53,7 @@ const AddAttendance = ({ open, handleClose }) => {
     e.preventDefault();
     setLoading(true);
     const newData = {
-      employeeId: employee?.id,
+      officeId: employee?.officeId,
       inTime: moment(date).add('hours', 6),
     };
     try {
@@ -114,7 +114,9 @@ const AddAttendance = ({ open, handleClose }) => {
                 fullWidth
                 size="small"
                 options={employees}
-                getOptionLabel={(option) => option.id + ', ' + option.name}
+                getOptionLabel={(option) =>
+                  option.officeId + ', ' + option.name
+                }
                 isOptionEqualToValue={(item, value) => item.id === value.id}
                 onChange={(e, newValue) => setEmployee(newValue)}
                 renderInput={(params) => (

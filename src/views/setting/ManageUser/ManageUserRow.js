@@ -65,15 +65,15 @@ const ManageUserRow = ({ sn, data }) => {
       </StyledTableCell>
       <StyledTableCell>{data?.userName}</StyledTableCell>
       <StyledTableCell>{roleValue[data?.role] || ''}</StyledTableCell>
-      <StyledTableCell align="center">
+      <StyledTableCell align="center" sx={{ minWidth: 85 }}>
         <Button
           color="primary"
           variant="contained"
           size="small"
-          sx={{ minWidth: 0, mr: 1 }}
+          sx={{ minWidth: 0, mr: 0.5 }}
           onClick={() => setOpen(true)}
         >
-          <IconEdit size={16} />
+          <IconEdit size={14} />
         </Button>
 
         <Button
@@ -83,7 +83,7 @@ const ManageUserRow = ({ sn, data }) => {
           sx={{ minWidth: 0 }}
           onClick={() => setDialog(true)}
         >
-          <IconTrashXFilled size={16} />
+          <IconTrashXFilled size={14} />
         </Button>
 
         <ConfirmDialog

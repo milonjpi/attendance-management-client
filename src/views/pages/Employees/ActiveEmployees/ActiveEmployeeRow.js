@@ -7,8 +7,10 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { setToast } from 'store/toastSlice';
 import ConfirmDialog from 'ui-component/ConfirmDialog';
-import { useInactiveEmployeeMutation } from 'store/api/employee/employeeApi';
+import { useUpdateEmployeeMutation } from 'store/api/employee/employeeApi';
 import UpdateEmployee from './UpdateEmployee';
+import { Link } from 'react-router-dom';
+import moment from 'moment';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.body}`]: {
@@ -30,17 +32,27 @@ const ActiveEmployeeRow = ({ sn, data }) => {
 
   const dispatch = useDispatch();
 
-  const [inactiveEmployee] = useInactiveEmployeeMutation();
+  const [updateEmployee] = useUpdateEmployeeMutation();
   const handleDelete = async () => {
     setDialog(false);
+    const newData = {
+      isActive: false,
+      resignDate: new Date(),
+    };
+
+    const formData = new FormData();
+    formData.append('data', JSON.stringify(newData));
     try {
-      const res = await inactiveEmployee(data?.id).unwrap();
+      const res = await updateEmployee({
+        id: data?.id,
+        body: formData,
+      }).unwrap();
       if (res.success) {
         dispatch(
           setToast({
             open: true,
             variant: 'success',
-            message: res?.message,
+            message: 'Employee Resigned Successfully',
           })
         );
       }
@@ -55,13 +67,15 @@ const ActiveEmployeeRow = ({ sn, data }) => {
       );
     }
   };
+
   return (
     <StyledTableRow>
       <StyledTableCell align="center">{sn}</StyledTableCell>
-      <StyledTableCell>{data?.id}</StyledTableCell>
-      <StyledTableCell>{data?.name}</StyledTableCell>
+      <StyledTableCell>{data?.officeId}</StyledTableCell>
       <StyledTableCell>
-        {data?.officeId ? data?.officeId : 'n/a'}
+        <Link to={`/pages/employee-management/employees/${data?.id}`}>
+          {data?.name}
+        </Link>
       </StyledTableCell>
       <StyledTableCell>{data?.designation?.label}</StyledTableCell>
       <StyledTableCell>{data?.department?.label}</StyledTableCell>
@@ -69,15 +83,20 @@ const ActiveEmployeeRow = ({ sn, data }) => {
       <StyledTableCell>
         {data?.contactNo ? data?.contactNo : 'n/a'}
       </StyledTableCell>
-      <StyledTableCell align="center">
+      <StyledTableCell>
+        {data?.joiningDate
+          ? moment(data?.joiningDate).format('DD/MM/YYYY')
+          : 'n/a'}
+      </StyledTableCell>
+      <StyledTableCell align="center" sx={{ minWidth: 85 }}>
         <Button
           color="primary"
           variant="contained"
           size="small"
-          sx={{ minWidth: 0, mr: 1 }}
+          sx={{ minWidth: 0, mr: 0.5 }}
           onClick={() => setOpen(true)}
         >
-          <IconEdit size={16} />
+          <IconEdit size={14} />
         </Button>
 
         <Button
@@ -87,12 +106,12 @@ const ActiveEmployeeRow = ({ sn, data }) => {
           sx={{ minWidth: 0 }}
           onClick={() => setDialog(true)}
         >
-          <IconTrashXFilled size={16} />
+          <IconTrashXFilled size={14} />
         </Button>
         <ConfirmDialog
           open={dialog}
           setOpen={setDialog}
-          content="Inactive Employee"
+          content="Resign Employee"
           handleDelete={handleDelete}
         />
         <UpdateEmployee

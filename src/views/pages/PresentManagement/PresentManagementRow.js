@@ -77,7 +77,7 @@ const PresentManagementRow = ({ sn, data }) => {
           sx={{ minWidth: 0 }}
           onClick={() => setDialog(true)}
         >
-          <IconTrashXFilled size={16} />
+          <IconTrashXFilled size={14} />
         </Button>
         <ConfirmDialog
           open={dialog}
