@@ -24,21 +24,6 @@ const DailyAttendanceRow = ({ sn, data, date }) => {
 
   const attendances = data?.attendances[0] || null;
 
-  const inCondition =
-    attendances?.inTime && moment(attendances?.inTime).utc().hour() < 12
-      ? true
-      : false;
-
-  const outCondition =
-    attendances?.outTime && moment(attendances?.outTime).utc().hour() > 11
-      ? true
-      : false;
-
-  console.log(
-    attendances?.inTime && moment(attendances?.inTime).utc().hour() < 12
-      ? true
-      : false
-  );
   return (
     <StyledTableRow>
       <StyledTableCell align="center">{sn}</StyledTableCell>
@@ -51,12 +36,12 @@ const DailyAttendanceRow = ({ sn, data, date }) => {
         attendances.realPunch ? (
           <>
             <StyledTableCell>
-              {inCondition
+              {attendances.inTime
                 ? moment(attendances.inTime).utc().format('hh:mm A')
                 : 'Missing'}
             </StyledTableCell>
             <StyledTableCell>
-              {attendances.outTime && outCondition
+              {attendances.outTime
                 ? moment(attendances.outTime).utc().format('hh:mm A')
                 : parseInt(moment(date).format('YYYYMMDD')) >=
                   parseInt(moment().format('YYYYMMDD'))

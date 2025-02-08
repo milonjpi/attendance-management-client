@@ -33,7 +33,7 @@ const AllAttendanceRow = ({ sn, data, fromDate, toDate }) => {
   const allAttendances = data?.attendances || [];
 
   return (
-    <StyledTableRow>
+    <StyledTableRow className="row">
       <StyledTableCell align="center">{sn}</StyledTableCell>
       <StyledTableCell>
         <Typography sx={{ fontSize: 11, fontWeight: 700 }}>
@@ -53,7 +53,7 @@ const AllAttendanceRow = ({ sn, data, fromDate, toDate }) => {
                   sn={el}
                   startDate={fromDate}
                   data={allAttendances.find(
-                    (d) => new Date(moment(d.inTime).utc()).getDate() === el
+                    (d) => new Date(moment(d.date).utc()).getDate() === el
                   )}
                 />
               ))}
@@ -66,7 +66,7 @@ const AllAttendanceRow = ({ sn, data, fromDate, toDate }) => {
                     sn={el}
                     startDate={fromDate}
                     data={allAttendances.find(
-                      (d) => new Date(moment(d.inTime).utc()).getDate() === el
+                      (d) => new Date(moment(d.date).utc()).getDate() === el
                     )}
                   />
                 ))}

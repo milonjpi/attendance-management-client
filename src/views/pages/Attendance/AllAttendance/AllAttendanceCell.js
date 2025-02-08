@@ -15,8 +15,8 @@ const AllAttendanceCell = ({ sn, data, startDate }) => {
   const getMonth = new Date(moment(startDate)).getMonth();
   const getYear = new Date(moment(startDate)).getFullYear();
   const currentDate = new Date(getYear, getMonth, sn);
-  const holiday = [5, 6].includes(currentDate.getDay());
-  const today = Date.now();
+  const holiday = [5].includes(currentDate.getDay());
+
   return (
     <StyledTableCell align="center">
       <Typography sx={{ fontSize: 9, fontWeight: 700 }}>
@@ -26,12 +26,18 @@ const AllAttendanceCell = ({ sn, data, startDate }) => {
         data?.realPunch ? (
           <>
             <Typography sx={{ fontSize: 9 }}>
-              In: {moment(data?.inTime).utc().format('hh:mma')}
+              In:{' '}
+              {data?.inTime
+                ? moment(data?.inTime).utc().format('hh:mma')
+                : 'Missing'}
             </Typography>
             <Typography sx={{ fontSize: 9 }}>
               out:{' '}
               {data?.outTime
                 ? moment(data?.outTime).utc().format('hh:mma')
+                : parseInt(moment(currentDate).format('YYYYMMDD')) >=
+                  parseInt(moment().format('YYYYMMDD'))
+                ? 'Pending'
                 : 'Missing'}
             </Typography>
           </>
@@ -43,10 +49,11 @@ const AllAttendanceCell = ({ sn, data, startDate }) => {
             <Typography sx={{ fontSize: 9 }}>&#40;Manual&#41;</Typography>
           </>
         )
-      ) : currentDate.getTime() > today ? (
+      ) : parseInt(moment(currentDate).format('YYYYMMDD')) >=
+        parseInt(moment().format('YYYYMMDD')) ? (
         <Typography sx={{ fontSize: 9 }}>Upcoming</Typography>
       ) : holiday ? (
-        <Typography sx={{ fontSize: 9, color: '#4fa353' }}>Holiday</Typography>
+        <Typography sx={{ fontSize: 9, color: '#4fa353' }}>Weekend</Typography>
       ) : (
         <Typography sx={{ fontSize: 9, color: '#b24b4b' }}>Absence</Typography>
       )}

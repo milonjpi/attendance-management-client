@@ -21,6 +21,11 @@ import { useGetLocationsQuery } from 'store/api/location/locationApi';
 import { useGetAllReportQuery } from 'store/api/report/reportApi';
 import moment from 'moment';
 import DailyAttendanceRow from './DailyAttendanceRow';
+import { IconButton, Tooltip } from '@mui/material';
+import { IconPrinter } from '@tabler/icons-react';
+import PrintDailyAttendance from './PrintDailyAttendance';
+import { useRef } from 'react';
+import { useReactToPrint } from 'react-to-print';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -116,8 +121,37 @@ const DailyAttendance = () => {
 
   let sn = page * rowsPerPage + 1;
 
+  // handle print
+  const { data: printData, isLoading: printLoading } = useGetAllReportQuery(
+    { ...query, page: 0, limit: 100 },
+    { refetchOnMountOrArgChange: true }
+  );
+
+  const printEmployees = printData?.employees || [];
+
+  const componentRef = useRef();
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+    pageStyle: `
+         @media print {
+           .row {
+             page-break-inside: avoid;
+           }
+         }
+         `,
+  });
+
   return (
-    <MainCard title="Daily Attendance">
+    <MainCard
+      title="Daily Attendance"
+      secondary={
+        <Tooltip title="Print">
+          <IconButton size="small" color="secondary" onClick={handlePrint}>
+            <IconPrinter size={20} />
+          </IconButton>
+        </Tooltip>
+      }
+    >
       <Box sx={{ mb: 2 }}>
         <Grid container spacing={1} sx={{ alignItems: 'end' }}>
           <Grid item xs={12} sm={6} md={3}>
@@ -179,6 +213,16 @@ const DailyAttendance = () => {
           </Grid>
         </Grid>
       </Box>
+      {/* popup item */}
+      <Box component="div" sx={{ overflow: 'hidden', height: 0 }}>
+        <PrintDailyAttendance
+          ref={componentRef}
+          data={printEmployees}
+          date={date}
+          loading={printLoading}
+        />
+      </Box>
+      {/* end popup item */}
       <Box sx={{ overflow: 'auto' }}>
         <Table sx={{ minWidth: 700 }}>
           <TableHead>

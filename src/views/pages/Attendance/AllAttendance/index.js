@@ -22,6 +22,11 @@ import { useGetAllReportQuery } from 'store/api/report/reportApi';
 import AllAttendanceRow from './AllAttendanceRow';
 import { getDaysInMonth } from 'views/utilities/NeedyFunction';
 import moment from 'moment';
+import { useRef } from 'react';
+import { useReactToPrint } from 'react-to-print';
+import { IconButton, Tooltip } from '@mui/material';
+import { IconPrinter } from '@tabler/icons-react';
+import PrintAllAttendance from './PrintAllAttendance';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -141,8 +146,37 @@ const AllAttendance = () => {
 
   let sn = page * rowsPerPage + 1;
 
+  // handle print
+  const { data: printData, isLoading: printLoading } = useGetAllReportQuery(
+    { ...query, page: 0, limit: 100 },
+    { refetchOnMountOrArgChange: true }
+  );
+
+  const printEmployees = printData?.employees || [];
+
+  const componentRef = useRef();
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+    pageStyle: `
+           @media print {
+             .row {
+               page-break-inside: avoid;
+             }
+           }
+           `,
+  });
+
   return (
-    <MainCard title="All Attendance">
+    <MainCard
+      title="All Attendance"
+      secondary={
+        <Tooltip title="Print">
+          <IconButton size="small" color="secondary" onClick={handlePrint}>
+            <IconPrinter size={20} />
+          </IconButton>
+        </Tooltip>
+      }
+    >
       <Box sx={{ mb: 2 }}>
         <Grid container spacing={1} sx={{ alignItems: 'end' }} columns={15}>
           <Grid item xs={15} sm={7.5} md={5} lg={3}>
@@ -221,6 +255,21 @@ const AllAttendance = () => {
           </Grid>
         </Grid>
       </Box>
+      {/* popup item */}
+      <Box component="div" sx={{ overflow: 'hidden', height: 0 }}>
+        <PrintAllAttendance
+          ref={componentRef}
+          data={printEmployees}
+          startDate={startDate}
+          endDate={endDate}
+          fromDate={fromDate}
+          toDate={toDate}
+          getStartMonth={getStartMonth}
+          getEndMonth={getEndMonth}
+          loading={printLoading}
+        />
+      </Box>
+      {/* end popup item */}
       <Box sx={{ overflow: 'auto' }}>
         <Table sx={{ minWidth: 700 }}>
           <TableHead>

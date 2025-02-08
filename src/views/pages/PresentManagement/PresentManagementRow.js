@@ -60,7 +60,7 @@ const PresentManagementRow = ({ sn, data }) => {
     <StyledTableRow>
       <StyledTableCell align="center">{sn}</StyledTableCell>
       <StyledTableCell>
-        {moment(data?.inTime).format('DD/MM/YYYY')}
+        {moment(data?.date).format('DD/MM/YYYY')}
       </StyledTableCell>
       <StyledTableCell>{employee?.name}</StyledTableCell>
       <StyledTableCell>{employee?.designation?.label}</StyledTableCell>

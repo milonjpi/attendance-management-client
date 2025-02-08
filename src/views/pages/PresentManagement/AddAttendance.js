@@ -54,7 +54,8 @@ const AddAttendance = ({ open, handleClose }) => {
     setLoading(true);
     const newData = {
       officeId: employee?.officeId,
-      inTime: moment(date).add('hours', 6),
+      date: moment(date).add(6, 'hours'),
+      inTime: moment(date).add(6, 'hours'),
     };
     try {
       const res = await createAttendance({ ...newData }).unwrap();
