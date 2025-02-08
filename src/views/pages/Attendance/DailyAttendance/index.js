@@ -115,6 +115,7 @@ const DailyAttendance = () => {
   const meta = data?.meta;
 
   let sn = page * rowsPerPage + 1;
+
   return (
     <MainCard title="Daily Attendance">
       <Box sx={{ mb: 2 }}>

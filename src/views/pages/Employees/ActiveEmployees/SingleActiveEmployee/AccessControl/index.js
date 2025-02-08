@@ -59,7 +59,7 @@ const AccessControl = () => {
 
   // card assign data
   const { data: cards, isLoading: cardLoading } = useGetSingleDeviceUserQuery(
-    data?.id || 1,
+    data?.officeId || 1,
     { refetchOnMountOrArgChange: true }
   );
   const cardData = cards?.data || null;
@@ -76,7 +76,7 @@ const AccessControl = () => {
 
   // all terminals data
   const { data: terminals, isLoading } = useGetTerminalsByUserIdQuery(
-    data?.id || 1,
+    data?.officeId || 1,
     { refetchOnMountOrArgChange: true }
   );
   const terminalData = terminals?.data || [];

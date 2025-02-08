@@ -20,10 +20,25 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 const DailyAttendanceRow = ({ sn, data, date }) => {
   const currentDate = new Date(moment(date));
-  const holiday = [5, 6].includes(currentDate.getDay());
-  const today = Date.now();
+  const holiday = [5].includes(currentDate.getDay());
 
   const attendances = data?.attendances[0] || null;
+
+  const inCondition =
+    attendances?.inTime && moment(attendances?.inTime).utc().hour() < 12
+      ? true
+      : false;
+
+  const outCondition =
+    attendances?.outTime && moment(attendances?.outTime).utc().hour() > 11
+      ? true
+      : false;
+
+  console.log(
+    attendances?.inTime && moment(attendances?.inTime).utc().hour() < 12
+      ? true
+      : false
+  );
   return (
     <StyledTableRow>
       <StyledTableCell align="center">{sn}</StyledTableCell>
@@ -36,11 +51,16 @@ const DailyAttendanceRow = ({ sn, data, date }) => {
         attendances.realPunch ? (
           <>
             <StyledTableCell>
-              {moment(attendances.inTime).utc().format('hh:mm A')}
+              {inCondition
+                ? moment(attendances.inTime).utc().format('hh:mm A')
+                : 'Missing'}
             </StyledTableCell>
             <StyledTableCell>
-              {attendances.outTime
+              {attendances.outTime && outCondition
                 ? moment(attendances.outTime).utc().format('hh:mm A')
+                : parseInt(moment(date).format('YYYYMMDD')) >=
+                  parseInt(moment().format('YYYYMMDD'))
+                ? 'Pending'
                 : 'Missing'}
             </StyledTableCell>
           </>
@@ -49,7 +69,8 @@ const DailyAttendanceRow = ({ sn, data, date }) => {
             {moment(attendances.inTime).utc().format('hh:mm A') + ' (Manual)'}
           </StyledTableCell>
         )
-      ) : currentDate.getTime() > today ? (
+      ) : parseInt(moment(date).format('YYYYMMDD')) >=
+        parseInt(moment().format('YYYYMMDD')) ? (
         <StyledTableCell colSpan={2} align="center" sx={{ fontSize: 9 }}>
           Upcoming
         </StyledTableCell>
@@ -59,7 +80,7 @@ const DailyAttendanceRow = ({ sn, data, date }) => {
           align="center"
           sx={{ fontSize: 9, color: '#4fa353' }}
         >
-          Holiday
+          Weekend
         </StyledTableCell>
       ) : (
         <StyledTableCell colSpan={2} align="center">
