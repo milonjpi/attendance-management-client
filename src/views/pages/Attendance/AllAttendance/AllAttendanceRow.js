@@ -1,16 +1,11 @@
-import Typography from '@mui/material/Typography';
 import { styled } from '@mui/material/styles';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
-import { daysOfMonth } from 'constants/globals';
-import AllAttendanceCell from './AllAttendanceCell';
 import moment from 'moment';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.body}`]: {
-    fontSize: 11,
+    fontSize: 9,
     padding: '6px',
     border: '1px solid #999999',
   },
@@ -23,59 +18,163 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   // },
 }));
 
-const AllAttendanceRow = ({ sn, data, fromDate, toDate }) => {
-  const startDate = fromDate ? new Date(moment(fromDate)).getDate() - 1 : 0;
-  const endDate = toDate ? new Date(moment(toDate)).getDate() : 0;
-  const filterDate = daysOfMonth.slice(startDate, endDate);
-
-  const firstRow = filterDate.slice(0, 16);
-  const secondRow = filterDate.slice(16, 31);
-  const allAttendances = data?.attendances || [];
+const AllAttendanceRow = ({ sn, data, firstSlot, secondSlot }) => {
+  const attendanceDetails = data?.attendances || [];
+  const rowSpan = firstSlot?.length && secondSlot?.length ? 2 : 1;
+  console.log(firstSlot);
 
   return (
-    <StyledTableRow className="row">
-      <StyledTableCell align="center">{sn}</StyledTableCell>
-      <StyledTableCell>
-        <Typography sx={{ fontSize: 11, fontWeight: 700 }}>
-          {data?.name}
-        </Typography>
-        <Typography sx={{ fontSize: 10 }}>
-          {data?.designation?.label + ', ' + data?.department?.label}
-        </Typography>
-      </StyledTableCell>
-      <StyledTableCell>
-        <Table>
-          <TableBody>
-            <StyledTableRow>
-              {firstRow.map((el) => (
-                <AllAttendanceCell
-                  key={el}
-                  sn={el}
-                  startDate={fromDate}
-                  data={allAttendances.find(
-                    (d) => new Date(moment(d.date).utc()).getDate() === el
-                  )}
-                />
-              ))}
-            </StyledTableRow>
-            {secondRow.length ? (
-              <StyledTableRow>
-                {secondRow.map((el) => (
-                  <AllAttendanceCell
-                    key={el}
-                    sn={el}
-                    startDate={fromDate}
-                    data={allAttendances.find(
-                      (d) => new Date(moment(d.date).utc()).getDate() === el
+    <>
+      {/* Main Row */}
+      <StyledTableRow className="row">
+        <StyledTableCell align="center" rowSpan={rowSpan}>
+          {sn}
+        </StyledTableCell>
+        <StyledTableCell rowSpan={rowSpan}>
+          <span style={{ display: 'block', fontWeight: 700 }}>
+            {data?.name}
+          </span>
+          <span style={{ display: 'block' }}>
+            {data?.officeId +
+              (data?.designation?.label ? ', ' + data?.designation?.label : '')}
+          </span>
+        </StyledTableCell>
+
+        {/* First row includes totals and actions */}
+        {firstSlot.length > 0 &&
+          firstSlot?.map((el) => {
+            const findAttn = attendanceDetails?.find(
+              (bl) => el === moment(bl.date).utc(0).format('DD/MM/YYYY')
+            );
+
+            const splitDate = el.split('/');
+            const mainDate = new Date(
+              `${splitDate[2]}-${splitDate[1]}-${splitDate[0]}`
+            );
+            return (
+              <StyledTableCell key={el}>
+                <span
+                  style={{
+                    display: 'block',
+                    fontWeight: 700,
+                  }}
+                >
+                  {el}
+                </span>
+                {findAttn ? (
+                  <>
+                    <span
+                      style={{
+                        display: 'inline-block',
+                        color: '#564dc0',
+                        fontWeight: 700,
+                        fontSize: 7,
+                      }}
+                    >{`IN: ${
+                      findAttn?.inTime
+                        ? moment(findAttn?.inTime).utc(0).format('hh:mm a')
+                        : 'no'
+                    }`}</span>
+                    <br />
+                    <span
+                      style={{
+                        display: 'inline-block',
+                        color: '#564dc0',
+                        fontWeight: 700,
+                        fontSize: 7,
+                      }}
+                    >{`O: ${
+                      findAttn?.outTime
+                        ? moment(findAttn?.outTime).utc(0).format('hh:mm a')
+                        : 'no'
+                    }`}</span>
+                  </>
+                ) : (
+                  <span style={{ display: 'block' }}>
+                    {mainDate?.getDay() === 5 ? (
+                      moment(mainDate).format('dddd')
+                    ) : mainDate?.getTime() > new Date().getTime() ? (
+                      'Upcoming'
+                    ) : (
+                      <span style={{ color: 'red' }}>Absent</span>
                     )}
-                  />
-                ))}
-              </StyledTableRow>
-            ) : null}
-          </TableBody>
-        </Table>
-      </StyledTableCell>
-    </StyledTableRow>
+                  </span>
+                )}
+              </StyledTableCell>
+            );
+          })}
+      </StyledTableRow>
+      {secondSlot?.length ? (
+        <StyledTableRow className="row">
+          {secondSlot?.map((el) => {
+            const findAttn = attendanceDetails?.find(
+              (bl) => el === `${moment(bl.date).utc(0).format('DD/MM/YYYY')}`
+            );
+            const splitDate = el.split('/');
+            const mainDate = new Date(
+              `${splitDate[2]}-${splitDate[1]}-${splitDate[0]}`
+            );
+
+            return (
+              <StyledTableCell key={el}>
+                <span
+                  style={{
+                    display: 'block',
+                    fontWeight: 700,
+                  }}
+                >
+                  {el}
+                </span>
+                {findAttn ? (
+                  <>
+                    <span
+                      style={{
+                        display: 'inline-block',
+                        color: '#564dc0',
+                        fontWeight: 700,
+                        fontSize: 7,
+                      }}
+                    >{`IN: ${
+                      findAttn?.inTime
+                        ? moment(findAttn?.inTime).utc(0).format('hh:mm a')
+                        : 'no'
+                    }`}</span>
+                    <br />
+                    <span
+                      style={{
+                        display: 'inline-block',
+                        color: '#564dc0',
+                        fontWeight: 700,
+                        fontSize: 7,
+                      }}
+                    >{`O: ${
+                      findAttn?.outTime
+                        ? moment(findAttn?.outTime).utc(0).format('hh:mm a')
+                        : mainDate?.getDate() < new Date().getDate()
+                        ? 'Missing'
+                        : 'Pending'
+                    }`}</span>
+                  </>
+                ) : (
+                  <span style={{ display: 'block' }}>
+                    {mainDate?.getDay() === 5 ? (
+                      moment(mainDate).format('dddd')
+                    ) : mainDate?.getTime() > new Date().getTime() ? (
+                      'Upcoming'
+                    ) : (
+                      <span style={{ color: 'red' }}>Absent</span>
+                    )}
+                  </span>
+                )}
+              </StyledTableCell>
+            );
+          })}
+          {firstSlot?.length !== secondSlot?.length ? (
+            <StyledTableCell></StyledTableCell>
+          ) : null}
+        </StyledTableRow>
+      ) : null}
+    </>
   );
 };
 

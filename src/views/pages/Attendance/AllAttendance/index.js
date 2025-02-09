@@ -3,7 +3,6 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
-import TablePagination from '@mui/material/TablePagination';
 import TableBody from '@mui/material/TableBody';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
@@ -20,12 +19,12 @@ import { useGetDepartmentsQuery } from 'store/api/department/departmentApi';
 import { useGetLocationsQuery } from 'store/api/location/locationApi';
 import { useGetAllReportQuery } from 'store/api/report/reportApi';
 import AllAttendanceRow from './AllAttendanceRow';
-import { getDaysInMonth } from 'views/utilities/NeedyFunction';
 import moment from 'moment';
 import { useRef } from 'react';
 import { useReactToPrint } from 'react-to-print';
 import { IconButton, Tooltip } from '@mui/material';
 import { IconPrinter } from '@tabler/icons-react';
+import { allMonths } from 'assets/data';
 import PrintAllAttendance from './PrintAllAttendance';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -57,30 +56,34 @@ const AllAttendance = () => {
   const [designation, setDesignation] = useState(null);
   const [department, setDepartment] = useState(null);
   const [location, setLocation] = useState(null);
-
-  const [fromDate, setFromDate] = useState(
+  const [startDate, setStartDate] = useState(
     new Date(currentYear, currentMonth, 1)
   );
-  const [toDate, setToDate] = useState(
-    new Date(
-      currentYear,
-      currentMonth,
-      getDaysInMonth(currentMonth, currentYear)
-    )
-  );
-  const isDisable = (date) => {
-    const month = date.month();
-    return month !== new Date(fromDate).getMonth();
-  };
+  const [endDate, setEndDate] = useState(moment());
 
-  const startDate = fromDate ? new Date(moment(fromDate)).getDate() - 1 : 0;
-  const endDate = toDate ? new Date(moment(toDate)).getDate() : 0;
+  const getStartMonth = new Date(moment(startDate)).getMonth();
+  const getEndMonth = new Date(moment(endDate)).getMonth();
 
-  const getStartMonth = new Date(moment(fromDate)).getMonth();
-  const getEndMonth = new Date(moment(toDate)).getMonth();
+  const startCount = startDate ? new Date(moment(startDate)).getDate() - 1 : 0;
+  const endCount = endDate ? new Date(moment(endDate)).getDate() : 0;
+  const countDiff = endCount - startCount;
+
+  // selected month year
+  const selectedMonth = new Date(
+    moment(startDate).format('YYYY-MM-DD')
+  ).getMonth();
+  const selectedYear = new Date(
+    moment(endDate).format('YYYY-MM-DD')
+  ).getFullYear();
+  const arrMonths = allMonths
+    .slice(startCount, endCount)
+    .map((el) =>
+      moment(new Date(`${selectedYear}-${selectedMonth + 1}/${el}`)).format(
+        'DD/MM/YYYY'
+      )
+    );
 
   // library
-
   const { data: designationData } = useGetDesignationsQuery('', {
     refetchOnMountOrArgChange: true,
   });
@@ -96,32 +99,18 @@ const AllAttendance = () => {
   const allDepartments = departmentData?.data || [];
   const allLocations = locationData?.data || [];
 
-  // pagination
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
-  // end pagination
-
   // filtering and pagination
   const query = {};
 
-  query['limit'] = rowsPerPage;
-  query['page'] = page;
+  query['limit'] = 100;
+  query['page'] = 0;
   query['isActive'] = true;
 
-  if (fromDate) {
-    query['startDate'] = moment(fromDate).format('YYYY-MM-DD');
+  if (startDate) {
+    query['startDate'] = moment(startDate).format('YYYY-MM-DD');
   }
-  if (toDate) {
-    query['endDate'] = moment(toDate).format('YYYY-MM-DD');
+  if (endDate) {
+    query['endDate'] = moment(endDate).format('YYYY-MM-DD');
   }
 
   if (designation) {
@@ -142,18 +131,8 @@ const AllAttendance = () => {
   );
 
   const employees = data?.employees || [];
-  const meta = data?.meta;
-
-  let sn = page * rowsPerPage + 1;
 
   // handle print
-  const { data: printData, isLoading: printLoading } = useGetAllReportQuery(
-    { ...query, page: 0, limit: 100 },
-    { refetchOnMountOrArgChange: true }
-  );
-
-  const printEmployees = printData?.employees || [];
-
   const componentRef = useRef();
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
@@ -183,13 +162,19 @@ const AllAttendance = () => {
             <LocalizationProvider dateAdapter={AdapterMoment}>
               <DatePicker
                 label="Date From"
+                views={['year', 'month', 'day']}
                 inputFormat="DD/MM/YYYY"
-                value={fromDate}
+                value={startDate}
                 onChange={(newValue) => {
-                  setFromDate(newValue);
+                  setStartDate(newValue);
                 }}
                 renderInput={(params) => (
-                  <TextField {...params} fullWidth size="small" />
+                  <TextField
+                    {...params}
+                    fullWidth
+                    size="small"
+                    autoComplete="off"
+                  />
                 )}
               />
             </LocalizationProvider>
@@ -198,15 +183,19 @@ const AllAttendance = () => {
             <LocalizationProvider dateAdapter={AdapterMoment}>
               <DatePicker
                 label="Date To"
+                views={['year', 'month', 'day']}
                 inputFormat="DD/MM/YYYY"
-                value={toDate}
-                minDate={fromDate}
-                shouldDisableDate={isDisable}
+                value={endDate}
                 onChange={(newValue) => {
-                  setToDate(newValue);
+                  setEndDate(newValue);
                 }}
                 renderInput={(params) => (
-                  <TextField {...params} fullWidth size="small" />
+                  <TextField
+                    {...params}
+                    fullWidth
+                    size="small"
+                    autoComplete="off"
+                  />
                 )}
               />
             </LocalizationProvider>
@@ -259,33 +248,37 @@ const AllAttendance = () => {
       <Box component="div" sx={{ overflow: 'hidden', height: 0 }}>
         <PrintAllAttendance
           ref={componentRef}
-          data={printEmployees}
+          data={employees}
           startDate={startDate}
           endDate={endDate}
-          fromDate={fromDate}
-          toDate={toDate}
+          countDiff={countDiff}
+          arrMonths={arrMonths}
           getStartMonth={getStartMonth}
           getEndMonth={getEndMonth}
-          loading={printLoading}
+          loading={isLoading}
         />
       </Box>
       {/* end popup item */}
       <Box sx={{ overflow: 'auto' }}>
-        <Table sx={{ minWidth: 700 }}>
+        <Table sx={{ minWidth: 950 }}>
           <TableHead>
             <StyledTableRow>
               <StyledTableCell align="center" sx={{ width: 5 }}>
                 SN
               </StyledTableCell>
               <StyledTableCell sx={{ width: 100 }}>Employee</StyledTableCell>
-              <StyledTableCell>Attendance</StyledTableCell>
+              <StyledTableCell colSpan={16}>Attendance</StyledTableCell>
             </StyledTableRow>
           </TableHead>
           <TableBody>
-            {startDate >= endDate || getStartMonth !== getEndMonth ? (
+            {!startDate ||
+            !endDate ||
+            Number(moment(startDate).format('YYYYMMDD')) >
+              Number(moment(endDate).format('YYYYMMDD')) ||
+            getStartMonth !== getEndMonth ? (
               <StyledTableRow>
                 <StyledTableCell
-                  colSpan={3}
+                  colSpan={18}
                   align="center"
                   sx={{ color: 'red' }}
                 >
@@ -293,18 +286,29 @@ const AllAttendance = () => {
                 </StyledTableCell>
               </StyledTableRow>
             ) : employees?.length ? (
-              employees.map((item) => (
+              employees.map((el, index) => (
                 <AllAttendanceRow
-                  key={item.id}
-                  sn={sn++}
-                  data={item}
-                  fromDate={fromDate}
-                  toDate={toDate}
+                  key={index}
+                  sn={index + 1}
+                  data={el}
+                  firstSlot={
+                    countDiff > 15
+                      ? arrMonths?.slice(0, Math.ceil(countDiff / 2))
+                      : arrMonths
+                  }
+                  secondSlot={
+                    countDiff > 15
+                      ? arrMonths?.slice(
+                          Math.ceil(countDiff / 2),
+                          arrMonths?.length
+                        )
+                      : []
+                  }
                 />
               ))
             ) : (
               <StyledTableRow>
-                <StyledTableCell colSpan={10} sx={{ border: 0 }} align="center">
+                <StyledTableCell colSpan={18} sx={{ border: 0 }} align="center">
                   {isLoading ? (
                     <LinearProgress sx={{ opacity: 0.5, py: 0.5 }} />
                   ) : (
@@ -316,15 +320,6 @@ const AllAttendance = () => {
           </TableBody>
         </Table>
       </Box>
-      <TablePagination
-        rowsPerPageOptions={[10, 20, 40]}
-        component="div"
-        count={meta?.total || 0}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
     </MainCard>
   );
 };

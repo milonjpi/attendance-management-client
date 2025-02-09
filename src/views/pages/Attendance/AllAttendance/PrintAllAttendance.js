@@ -8,6 +8,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import LinearProgress from '@mui/material/LinearProgress';
 import AllAttendanceRow from './AllAttendanceRow';
+import moment from 'moment';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -37,32 +38,35 @@ const PrintAllAttendance = forwardRef(
       data,
       startDate,
       endDate,
-      fromDate,
-      toDate,
+      countDiff,
+      arrMonths,
       getStartMonth,
       getEndMonth,
       loading,
     },
     ref
   ) => {
-    let sn = 1;
     return (
       <Box component="div" ref={ref}>
-        <Table>
+        <Table sx={{ minWidth: 950 }}>
           <TableHead>
             <StyledTableRow>
               <StyledTableCell align="center" sx={{ width: 5 }}>
                 SN
               </StyledTableCell>
               <StyledTableCell sx={{ width: 100 }}>Employee</StyledTableCell>
-              <StyledTableCell>Attendance</StyledTableCell>
+              <StyledTableCell colSpan={16}>Attendance</StyledTableCell>
             </StyledTableRow>
           </TableHead>
           <TableBody>
-            {startDate >= endDate || getStartMonth !== getEndMonth ? (
+            {!startDate ||
+            !endDate ||
+            Number(moment(startDate).format('YYYYMMDD')) >
+              Number(moment(endDate).format('YYYYMMDD')) ||
+            getStartMonth !== getEndMonth ? (
               <StyledTableRow>
                 <StyledTableCell
-                  colSpan={3}
+                  colSpan={18}
                   align="center"
                   sx={{ color: 'red' }}
                 >
@@ -70,18 +74,29 @@ const PrintAllAttendance = forwardRef(
                 </StyledTableCell>
               </StyledTableRow>
             ) : data?.length ? (
-              data.map((item) => (
+              data.map((el, index) => (
                 <AllAttendanceRow
-                  key={item.id}
-                  sn={sn++}
-                  data={item}
-                  fromDate={fromDate}
-                  toDate={toDate}
+                  key={index}
+                  sn={index + 1}
+                  data={el}
+                  firstSlot={
+                    countDiff > 15
+                      ? arrMonths?.slice(0, Math.ceil(countDiff / 2))
+                      : arrMonths
+                  }
+                  secondSlot={
+                    countDiff > 15
+                      ? arrMonths?.slice(
+                          Math.ceil(countDiff / 2),
+                          arrMonths?.length
+                        )
+                      : []
+                  }
                 />
               ))
             ) : (
               <StyledTableRow>
-                <StyledTableCell colSpan={10} sx={{ border: 0 }} align="center">
+                <StyledTableCell colSpan={18} sx={{ border: 0 }} align="center">
                   {loading ? (
                     <LinearProgress sx={{ opacity: 0.5, py: 0.5 }} />
                   ) : (
