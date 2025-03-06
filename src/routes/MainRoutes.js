@@ -54,6 +54,9 @@ const AllAttendance = Loadable(
 const PresentManagement = Loadable(
   lazy(() => import('views/pages/PresentManagement'))
 );
+const LeaveManagement = Loadable(
+  lazy(() => import('views/pages/LeaveManagement'))
+);
 
 // end pages
 
@@ -193,6 +196,17 @@ const MainRoutes = {
                   allowedCodes={['present-management']}
                 >
                   <PresentManagement />
+                </AuthenticationRoutes>
+              ),
+            },
+            {
+              path: 'leave-management',
+              element: (
+                <AuthenticationRoutes
+                  allowedRoles={['super_admin', 'admin']}
+                  allowedCodes={['leave-management']}
+                >
+                  <LeaveManagement />
                 </AuthenticationRoutes>
               ),
             },

@@ -8,6 +8,7 @@ import {
   IconUsersGroup,
   IconClock,
   IconCalendarStats,
+  IconCalendarX,
 } from '@tabler/icons-react';
 
 // constant
@@ -20,6 +21,7 @@ const icons = {
   IconUsersGroup,
   IconClock,
   IconCalendarStats,
+  IconCalendarX,
 };
 
 // ==============================|| EXTRA PAGES MENU ITEMS ||============================== //
@@ -78,6 +80,14 @@ const pages = {
       color: '#610C9F',
       icon: icons.IconCalendarStats,
       url: '/pages/present-management',
+    },
+    {
+      id: 'leave-management',
+      title: 'Leave Management',
+      type: 'item',
+      color: '#C70039',
+      icon: icons.IconCalendarX,
+      url: '/pages/leave-management',
     },
   ],
 };
