@@ -24,6 +24,14 @@ const DailyAttendanceRow = ({ sn, data, date }) => {
 
   const attendances = data?.attendances[0] || null;
 
+  const findLeave = data?.leaves?.find(
+    (el) =>
+      Number(moment(currentDate).format('YYYYMMDD')) >=
+        Number(moment(el.fromDate).format('YYYYMMDD')) &&
+      Number(moment(currentDate).format('YYYYMMDD')) <=
+        Number(moment(el.toDate).format('YYYYMMDD'))
+  );
+
   return (
     <StyledTableRow>
       <StyledTableCell align="center">{sn}</StyledTableCell>
@@ -69,7 +77,11 @@ const DailyAttendanceRow = ({ sn, data, date }) => {
         </StyledTableCell>
       ) : (
         <StyledTableCell colSpan={2} align="center">
-          Absence
+          {findLeave ? (
+            <span style={{ color: 'green' }}>Leave</span>
+          ) : (
+            <span style={{ color: 'red' }}>Absent</span>
+          )}
         </StyledTableCell>
       )}
     </StyledTableRow>

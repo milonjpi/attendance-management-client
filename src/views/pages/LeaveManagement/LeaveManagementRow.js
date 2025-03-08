@@ -1,20 +1,21 @@
 import { styled } from '@mui/material/styles';
+import Button from '@mui/material/Button';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
-import Button from '@mui/material/Button';
-import { IconEdit, IconTrashXFilled } from '@tabler/icons-react';
+import { IconTrashXFilled } from '@tabler/icons-react';
+import moment from 'moment';
 import { useState } from 'react';
+import ConfirmDialog from 'ui-component/ConfirmDialog';
 import { useDispatch } from 'react-redux';
 import { setToast } from 'store/toastSlice';
-import ConfirmDialog from 'ui-component/ConfirmDialog';
-import { useUpdateEmployeeMutation } from 'store/api/employee/employeeApi';
-import UpdateEmployee from './UpdateEmployee';
 import { Link } from 'react-router-dom';
-import moment from 'moment';
+import { IconEdit } from '@tabler/icons-react';
+import UpdateLeave from './UpdateLeave';
+import { useDeleteLeaveMutation } from 'store/api/leave/leaveApi';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.body}`]: {
-    fontSize: 11,
+    fontSize: 12,
     padding: '6px',
   },
 }));
@@ -26,33 +27,25 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-const ActiveEmployeeRow = ({ sn, data }) => {
+const LeaveManagementRow = ({ sn, data }) => {
+  const employee = data?.employee || null;
+
   const [open, setOpen] = useState(false);
   const [dialog, setDialog] = useState(false);
 
   const dispatch = useDispatch();
 
-  const [updateEmployee] = useUpdateEmployeeMutation();
+  const [deleteLeave] = useDeleteLeaveMutation();
   const handleDelete = async () => {
     setDialog(false);
-    const newData = {
-      isActive: false,
-      resignDate: new Date(),
-    };
-
-    const formData = new FormData();
-    formData.append('data', JSON.stringify(newData));
     try {
-      const res = await updateEmployee({
-        id: data?.id,
-        body: formData,
-      }).unwrap();
+      const res = await deleteLeave(data?.id).unwrap();
       if (res.success) {
         dispatch(
           setToast({
             open: true,
             variant: 'success',
-            message: 'Employee Resigned Successfully',
+            message: res?.message,
           })
         );
       }
@@ -71,26 +64,28 @@ const ActiveEmployeeRow = ({ sn, data }) => {
   return (
     <StyledTableRow>
       <StyledTableCell align="center">{sn}</StyledTableCell>
-      <StyledTableCell>{data?.officeId}</StyledTableCell>
       <StyledTableCell>
-        <Link
-          to={`/pages/employee-management/employees/${data?.id}`}
-          style={{ textDecoration: 'none' }}
-        >
-          {data?.name}
-        </Link>
+        <span style={{ display: 'block', lineHeight: 1 }}>
+          <Link
+            to={`/pages/employee-management/employees/${data?.id}`}
+            style={{ textDecoration: 'none' }}
+          >
+            {employee?.name}
+          </Link>
+        </span>
+        <span style={{ fontSize: 9, lineHeight: 1 }}>
+          {employee?.designation?.label + ', ' + employee?.department?.label}
+        </span>
       </StyledTableCell>
-      <StyledTableCell>{data?.designation?.label}</StyledTableCell>
-      <StyledTableCell>{data?.department?.label}</StyledTableCell>
-      <StyledTableCell>{data?.location?.label}</StyledTableCell>
+      <StyledTableCell>{employee?.location?.label}</StyledTableCell>
       <StyledTableCell>
-        {data?.contactNo ? data?.contactNo : 'n/a'}
+        {moment(data?.fromDate).format('DD/MM/YYYY')}
       </StyledTableCell>
       <StyledTableCell>
-        {data?.joiningDate
-          ? moment(data?.joiningDate).format('DD/MM/YYYY')
-          : 'n/a'}
+        {moment(data?.toDate).format('DD/MM/YYYY')}
       </StyledTableCell>
+      <StyledTableCell align="center">{data?.days}</StyledTableCell>
+      <StyledTableCell>{data?.remarks || 'n/a'}</StyledTableCell>
       <StyledTableCell align="center" sx={{ minWidth: 85 }}>
         <Button
           color="primary"
@@ -101,7 +96,6 @@ const ActiveEmployeeRow = ({ sn, data }) => {
         >
           <IconEdit size={14} />
         </Button>
-
         <Button
           color="error"
           variant="contained"
@@ -111,20 +105,22 @@ const ActiveEmployeeRow = ({ sn, data }) => {
         >
           <IconTrashXFilled size={14} />
         </Button>
+        {/* popup items */}
+        <UpdateLeave
+          open={open}
+          handleClose={() => setOpen(false)}
+          preData={data}
+        />
         <ConfirmDialog
           open={dialog}
           setOpen={setDialog}
-          content="Resign Employee"
+          content="Delete Attendance"
           handleDelete={handleDelete}
         />
-        <UpdateEmployee
-          open={open}
-          preData={data}
-          handleClose={() => setOpen(false)}
-        />
+        {/* end popup items */}
       </StyledTableCell>
     </StyledTableRow>
   );
 };
 
-export default ActiveEmployeeRow;
+export default LeaveManagementRow;

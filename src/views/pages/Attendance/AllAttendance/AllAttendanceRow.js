@@ -21,7 +21,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 const AllAttendanceRow = ({ sn, data, firstSlot, secondSlot }) => {
   const attendanceDetails = data?.attendances || [];
   const rowSpan = firstSlot?.length && secondSlot?.length ? 2 : 1;
-  console.log(firstSlot);
 
   return (
     <>
@@ -50,6 +49,13 @@ const AllAttendanceRow = ({ sn, data, firstSlot, secondSlot }) => {
             const splitDate = el.split('/');
             const mainDate = new Date(
               `${splitDate[2]}-${splitDate[1]}-${splitDate[0]}`
+            );
+            const findLeave = data?.leaves?.find(
+              (el) =>
+                Number(moment(mainDate).format('YYYYMMDD')) >=
+                  Number(moment(el.fromDate).format('YYYYMMDD')) &&
+                Number(moment(mainDate).format('YYYYMMDD')) <=
+                  Number(moment(el.toDate).format('YYYYMMDD'))
             );
             return (
               <StyledTableCell key={el}>
@@ -95,6 +101,8 @@ const AllAttendanceRow = ({ sn, data, firstSlot, secondSlot }) => {
                       moment(mainDate).format('dddd')
                     ) : mainDate?.getTime() > new Date().getTime() ? (
                       'Upcoming'
+                    ) : findLeave ? (
+                      <span style={{ color: 'green' }}>Leave</span>
                     ) : (
                       <span style={{ color: 'red' }}>Absent</span>
                     )}
@@ -113,6 +121,13 @@ const AllAttendanceRow = ({ sn, data, firstSlot, secondSlot }) => {
             const splitDate = el.split('/');
             const mainDate = new Date(
               `${splitDate[2]}-${splitDate[1]}-${splitDate[0]}`
+            );
+            const findLeave = data?.leaves?.find(
+              (el) =>
+                Number(moment(mainDate).format('YYYYMMDD')) >=
+                  Number(moment(el.fromDate).format('YYYYMMDD')) &&
+                Number(moment(mainDate).format('YYYYMMDD')) <=
+                  Number(moment(el.toDate).format('YYYYMMDD'))
             );
 
             return (
@@ -161,6 +176,8 @@ const AllAttendanceRow = ({ sn, data, firstSlot, secondSlot }) => {
                       moment(mainDate).format('dddd')
                     ) : mainDate?.getTime() > new Date().getTime() ? (
                       'Upcoming'
+                    ) : findLeave ? (
+                      <span style={{ color: 'green' }}>Leave</span>
                     ) : (
                       <span style={{ color: 'red' }}>Absent</span>
                     )}

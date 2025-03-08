@@ -4,15 +4,14 @@ import { Typography } from '@mui/material';
 // project imports
 import NavGroup from './NavGroup';
 import menuItem from 'menu-items';
-import { useGetProfileQuery } from 'store/api/profile/profileApi';
+import { useSelector } from 'react-redux';
+import { selectAuth } from 'store/authSlice';
 
 // ==============================|| SIDEBAR MENU LIST ||============================== //
 
 const MenuList = () => {
-  const { data } = useGetProfileQuery('', {
-    refetchOnMountOrArgChange: true,
-  });
-  const userData = data?.data;
+  const userData = useSelector(selectAuth);
+
   const menus = userData?.menus?.map((el) => el.label);
   const userMenuItems = menuItem.items.filter((el) =>
     ['super_admin', 'admin'].includes(userData?.role)

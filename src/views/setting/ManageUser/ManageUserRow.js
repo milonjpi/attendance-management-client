@@ -61,7 +61,9 @@ const ManageUserRow = ({ sn, data }) => {
     <StyledTableRow>
       <StyledTableCell align="center">{sn}</StyledTableCell>
       <StyledTableCell>
-        <Link to={`${data?.id}`}>{data?.fullName}</Link>
+        <Link to={`${data?.id}`} style={{ textDecoration: 'none' }}>
+          {data?.fullName}
+        </Link>
       </StyledTableCell>
       <StyledTableCell>{data?.userName}</StyledTableCell>
       <StyledTableCell>{roleValue[data?.role] || ''}</StyledTableCell>

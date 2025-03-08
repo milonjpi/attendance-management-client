@@ -36,8 +36,8 @@ import { setToast } from 'store/toastSlice';
 import { removeUserInfo } from 'services/auth.service';
 import { authKey } from 'constants/storageKey';
 import { setRefresh } from 'store/refreshSlice';
-import { useGetProfileQuery } from 'store/api/profile/profileApi';
 import { roleValue } from 'assets/data';
+import { selectAuth } from 'store/authSlice';
 
 // ==============================|| PROFILE MENU ||============================== //
 
@@ -57,10 +57,8 @@ const ProfileSection = () => {
    * */
   const anchorRef = useRef(null);
   const dispatch = useDispatch();
-  const { data } = useGetProfileQuery('', {
-    refetchOnMountOrArgChange: true,
-  });
-  const userData = data?.data;
+
+  const userData = useSelector(selectAuth);
 
   const [logout] = useLogoutMutation();
 

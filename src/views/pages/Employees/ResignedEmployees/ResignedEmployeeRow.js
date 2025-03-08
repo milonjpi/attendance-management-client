@@ -70,7 +70,10 @@ const ResignedEmployeeRow = ({ sn, data }) => {
       <StyledTableCell align="center">{sn}</StyledTableCell>
       <StyledTableCell>{data?.officeId}</StyledTableCell>
       <StyledTableCell>
-        <Link to={`/pages/employee-management/employees/${data?.id}`}>
+        <Link
+          to={`/pages/employee-management/employees/${data?.id}`}
+          style={{ textDecoration: 'none' }}
+        >
           {data?.name}
         </Link>
       </StyledTableCell>

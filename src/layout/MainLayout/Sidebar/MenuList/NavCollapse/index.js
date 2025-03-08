@@ -20,7 +20,7 @@ import NavItem from '../NavItem';
 // assets
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import { IconChevronDown, IconChevronUp } from '@tabler/icons';
-import { useGetProfileQuery } from 'store/api/profile/profileApi';
+import { selectAuth } from 'store/authSlice';
 
 // ==============================|| SIDEBAR MENU LIST COLLAPSE ITEMS ||============================== //
 
@@ -29,10 +29,8 @@ const NavCollapse = ({ menu, level }) => {
   const customization = useSelector((state) => state.customization);
 
   // user section
-  const { data } = useGetProfileQuery('', {
-    refetchOnMountOrArgChange: true,
-  });
-  const userData = data?.data;
+  const userData = useSelector(selectAuth);
+
   const sections = userData?.sections?.map((el) => el.label);
   const userSectionItem = menu?.children?.filter((el) =>
     ['super_admin', 'admin'].includes(userData?.role)

@@ -15,6 +15,7 @@ export const api = createApi({
     'attendance',
     'user',
     'device',
+    'leave',
   ],
   endpoints: () => ({}),
 });

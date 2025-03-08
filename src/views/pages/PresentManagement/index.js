@@ -62,21 +62,12 @@ const PresentManagement = () => {
       getDaysInMonth(currentMonth, currentYear)
     )
   );
-  const isDisable = (date) => {
-    const month = date.month();
-    return month !== new Date(fromDate).getMonth();
-  };
-
-  const startDate = fromDate ? new Date(moment(fromDate)).getDate() - 1 : 0;
-  const endDate = toDate ? new Date(moment(toDate)).getDate() : 0;
-
-  const getStartMonth = new Date(moment(fromDate)).getMonth();
-  const getEndMonth = new Date(moment(toDate)).getMonth();
 
   // library
   const empQuery = {};
   empQuery['limit'] = 100;
   empQuery['page'] = 0;
+  empQuery['isActive'] = true;
   const { data: employeeData } = useGetEmployeesQuery({ ...empQuery });
   const employees = employeeData?.employees || [];
 
@@ -159,7 +150,6 @@ const PresentManagement = () => {
                 inputFormat="DD/MM/YYYY"
                 value={toDate}
                 minDate={fromDate}
-                shouldDisableDate={isDisable}
                 onChange={(newValue) => {
                   setToDate(newValue);
                 }}
@@ -175,7 +165,7 @@ const PresentManagement = () => {
               fullWidth
               size="small"
               options={employees}
-              getOptionLabel={(option) => option.id + ', ' + option.name}
+              getOptionLabel={(option) => option.officeId + ', ' + option.name}
               isOptionEqualToValue={(item, value) => item.id === value.id}
               onChange={(e, newValue) => setEmployee(newValue)}
               renderInput={(params) => (
@@ -200,17 +190,7 @@ const PresentManagement = () => {
             </StyledTableRow>
           </TableHead>
           <TableBody>
-            {startDate >= endDate || getStartMonth !== getEndMonth ? (
-              <StyledTableRow>
-                <StyledTableCell
-                  colSpan={10}
-                  align="center"
-                  sx={{ color: 'red' }}
-                >
-                  Invalid Date Range !!!
-                </StyledTableCell>
-              </StyledTableRow>
-            ) : attendances?.length ? (
+            {attendances?.length ? (
               attendances.map((item) => (
                 <PresentManagementRow key={item.id} sn={sn++} data={item} />
               ))
