@@ -88,7 +88,7 @@ const UpdateEmployee = ({ open, handleClose, preData }) => {
     };
 
     const formData = new FormData();
-    formData.append('photo', photo[0] || null);
+    formData.append('photo', photo ? photo[0] : null);
     formData.append('data', JSON.stringify(newData));
 
     try {
