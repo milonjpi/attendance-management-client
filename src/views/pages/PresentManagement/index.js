@@ -23,6 +23,7 @@ import CardAction from 'ui-component/cards/CardAction';
 import AddIcon from '@mui/icons-material/Add';
 import AddAttendance from './AddAttendance';
 import { useGetEmployeesQuery } from 'store/api/employee/employeeApi';
+import { useGetLocationsQuery } from 'store/api/location/locationApi';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -48,6 +49,7 @@ const currentMonth = new Date().getMonth();
 const currentYear = new Date().getFullYear();
 
 const PresentManagement = () => {
+  const [location, setLocation] = useState(null);
   const [employee, setEmployee] = useState(null);
 
   const [open, setOpen] = useState(false);
@@ -64,10 +66,23 @@ const PresentManagement = () => {
   );
 
   // library
+  const { data: locationData } = useGetLocationsQuery(
+    { limit: 1000, sortBy: 'label', sortOrder: 'asc' },
+    {
+      refetchOnMountOrArgChange: true,
+    }
+  );
+
+  const allLocations = locationData?.locations || [];
+
+  // employee
   const empQuery = {};
   empQuery['limit'] = 100;
   empQuery['page'] = 0;
   empQuery['isActive'] = true;
+  if (location) {
+    empQuery['locationId'] = location?.id;
+  }
   const { data: employeeData } = useGetEmployeesQuery({ ...empQuery });
   const employees = employeeData?.employees || [];
 
@@ -96,6 +111,10 @@ const PresentManagement = () => {
   }
   if (toDate) {
     query['endDate'] = moment(toDate).format('YYYY-MM-DD');
+  }
+
+  if (location) {
+    query['locationId'] = location.id;
   }
 
   if (employee) {
@@ -128,7 +147,7 @@ const PresentManagement = () => {
       {/* end popup items */}
       <Box sx={{ mb: 2 }}>
         <Grid container spacing={1} sx={{ alignItems: 'end' }}>
-          <Grid item xs={12} sm={6} md={4}>
+          <Grid item xs={12} sm={6} md={2.5}>
             <LocalizationProvider dateAdapter={AdapterMoment}>
               <DatePicker
                 label="Date From"
@@ -143,7 +162,7 @@ const PresentManagement = () => {
               />
             </LocalizationProvider>
           </Grid>
-          <Grid item xs={12} sm={6} md={4}>
+          <Grid item xs={12} sm={6} md={2.5}>
             <LocalizationProvider dateAdapter={AdapterMoment}>
               <DatePicker
                 label="Date To"
@@ -159,7 +178,23 @@ const PresentManagement = () => {
               />
             </LocalizationProvider>
           </Grid>
-          <Grid item xs={12} sm={12} md={4}>
+          <Grid item xs={12} md={3.5}>
+            <Autocomplete
+              value={location}
+              fullWidth
+              size="small"
+              options={allLocations}
+              getOptionLabel={(option) =>
+                option.label + ', ' + option.area?.label
+              }
+              isOptionEqualToValue={(item, value) => item.id === value.id}
+              onChange={(e, newValue) => setLocation(newValue)}
+              renderInput={(params) => (
+                <TextField {...params} label="Select Branch" />
+              )}
+            />
+          </Grid>
+          <Grid item xs={12} md={3.5}>
             <Autocomplete
               value={employee}
               fullWidth
@@ -184,7 +219,7 @@ const PresentManagement = () => {
               <StyledTableCell>Name</StyledTableCell>
               <StyledTableCell>Designation</StyledTableCell>
               <StyledTableCell>Department</StyledTableCell>
-              <StyledTableCell>Location</StyledTableCell>
+              <StyledTableCell>Branch</StyledTableCell>
               <StyledTableCell>In Time</StyledTableCell>
               <StyledTableCell align="center">Action</StyledTableCell>
             </StyledTableRow>

@@ -37,8 +37,12 @@ const AddDepartment = ({ open, handleClose }) => {
 
   const onSubmit = async (data) => {
     setLoading(true);
+    const newData = {
+      label: data?.label,
+    };
+
     try {
-      const res = await createDepartment({ ...data }).unwrap();
+      const res = await createDepartment({ ...newData }).unwrap();
       if (res.success) {
         handleClose();
         reset();

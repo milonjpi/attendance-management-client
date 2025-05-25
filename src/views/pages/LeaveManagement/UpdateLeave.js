@@ -20,13 +20,14 @@ import moment from 'moment';
 import { useGetEmployeesQuery } from 'store/api/employee/employeeApi';
 import { useForm } from 'react-hook-form';
 import { useUpdateLeaveMutation } from 'store/api/leave/leaveApi';
+import { useGetLocationsQuery } from 'store/api/location/locationApi';
 
 const style = {
   position: 'absolute',
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: { xs: 350, sm: 450, md: 550 },
+  width: { xs: 350, sm: 500, md: 700 },
   maxHeight: '100vh',
   overflow: 'auto',
   boxShadow: 24,
@@ -35,6 +36,7 @@ const style = {
 
 const UpdateLeave = ({ open, handleClose, preData }) => {
   const [loading, setLoading] = useState(false);
+  const [location, setLocation] = useState(preData?.employee?.location || null);
   const [employee, setEmployee] = useState(preData?.employee || null);
   const [fromDate, setFromDate] = useState(moment(preData?.fromDate) || null);
   const [toDate, setToDate] = useState(moment(preData?.toDate) || null);
@@ -42,11 +44,25 @@ const UpdateLeave = ({ open, handleClose, preData }) => {
   const { register, handleSubmit } = useForm({ defaultValues: preData });
 
   // library
+  const { data: locationData } = useGetLocationsQuery(
+    { limit: 1000, sortBy: 'label', sortOrder: 'asc' },
+    {
+      refetchOnMountOrArgChange: true,
+    }
+  );
+
+  const allLocations = locationData?.locations || [];
+  // employee
   const query = {};
 
   query['limit'] = 100;
   query['page'] = 0;
   query['isActive'] = true;
+
+  if (location) {
+    query['locationId'] = location?.id;
+  }
+
   const { data: employeeData } = useGetEmployeesQuery({ ...query });
   const employees = employeeData?.employees || [];
 
@@ -130,7 +146,26 @@ const UpdateLeave = ({ open, handleClose, preData }) => {
           onSubmit={handleSubmit(onSubmit)}
         >
           <Grid container spacing={2}>
-            <Grid item xs={12}>
+            <Grid item xs={12} md={6}>
+              <Autocomplete
+                value={location}
+                fullWidth
+                size="small"
+                options={allLocations}
+                getOptionLabel={(option) =>
+                  option.label + ', ' + option.area?.label
+                }
+                isOptionEqualToValue={(item, value) => item.id === value.id}
+                onChange={(e, newValue) => {
+                  setLocation(newValue);
+                  setEmployee(null);
+                }}
+                renderInput={(params) => (
+                  <TextField {...params} label="Select Branch" />
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
               <Autocomplete
                 value={employee}
                 fullWidth

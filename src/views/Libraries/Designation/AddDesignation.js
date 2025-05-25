@@ -37,8 +37,11 @@ const AddDesignation = ({ open, handleClose }) => {
 
   const onSubmit = async (data) => {
     setLoading(true);
+    const newData = {
+      label: data?.label,
+    };
     try {
-      const res = await createDesignation({ ...data }).unwrap();
+      const res = await createDesignation({ ...newData }).unwrap();
       if (res.success) {
         handleClose();
         reset();

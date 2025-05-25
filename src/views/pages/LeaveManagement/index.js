@@ -23,6 +23,7 @@ import { useGetEmployeesQuery } from 'store/api/employee/employeeApi';
 import LeaveManagementRow from './LeaveManagementRow';
 import AddLeave from './AddLeave';
 import { useGetLeavesQuery } from 'store/api/leave/leaveApi';
+import { useGetLocationsQuery } from 'store/api/location/locationApi';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -48,6 +49,7 @@ const currentMonth = new Date().getMonth();
 const currentYear = new Date().getFullYear();
 
 const LeaveManagement = () => {
+  const [location, setLocation] = useState(null);
   const [employee, setEmployee] = useState(null);
 
   const [open, setOpen] = useState(false);
@@ -64,10 +66,24 @@ const LeaveManagement = () => {
   );
 
   // library
+  const { data: locationData } = useGetLocationsQuery(
+    { limit: 1000, sortBy: 'label', sortOrder: 'asc' },
+    {
+      refetchOnMountOrArgChange: true,
+    }
+  );
+
+  const allLocations = locationData?.locations || [];
+  // employee
   const empQuery = {};
   empQuery['limit'] = 100;
   empQuery['page'] = 0;
   empQuery['isActive'] = true;
+
+  if (location) {
+    empQuery['locationId'] = location?.id;
+  }
+
   const { data: employeeData } = useGetEmployeesQuery({ ...empQuery });
   const employees = employeeData?.employees || [];
 
@@ -99,6 +115,10 @@ const LeaveManagement = () => {
     query['endDate'] = moment(toDate).format('YYYY-MM-DD');
   }
 
+  if (location) {
+    query['locationId'] = location.id;
+  }
+
   if (employee) {
     query['officeId'] = employee.officeId;
   }
@@ -128,8 +148,13 @@ const LeaveManagement = () => {
       <AddLeave open={open} handleClose={() => setOpen(false)} />
       {/* end popup items */}
       <Box sx={{ mb: 2 }}>
-        <Grid container spacing={1} sx={{ alignItems: 'end' }}>
-          <Grid item xs={12} sm={6} md={4}>
+        <Grid
+          container
+          columnSpacing={1}
+          rowSpacing={2}
+          sx={{ alignItems: 'end' }}
+        >
+          <Grid item xs={12} sm={6} md={2.5}>
             <LocalizationProvider dateAdapter={AdapterMoment}>
               <DatePicker
                 label="Date From"
@@ -144,7 +169,7 @@ const LeaveManagement = () => {
               />
             </LocalizationProvider>
           </Grid>
-          <Grid item xs={12} sm={6} md={4}>
+          <Grid item xs={12} sm={6} md={2.5}>
             <LocalizationProvider dateAdapter={AdapterMoment}>
               <DatePicker
                 label="Date To"
@@ -160,7 +185,23 @@ const LeaveManagement = () => {
               />
             </LocalizationProvider>
           </Grid>
-          <Grid item xs={12} sm={12} md={4}>
+          <Grid item xs={12} md={3.5}>
+            <Autocomplete
+              value={location}
+              fullWidth
+              size="small"
+              options={allLocations}
+              getOptionLabel={(option) =>
+                option.label + ', ' + option.area?.label
+              }
+              isOptionEqualToValue={(item, value) => item.id === value.id}
+              onChange={(e, newValue) => setLocation(newValue)}
+              renderInput={(params) => (
+                <TextField {...params} label="Select Branch" />
+              )}
+            />
+          </Grid>
+          <Grid item xs={12} md={3.5}>
             <Autocomplete
               value={employee}
               fullWidth
@@ -182,7 +223,7 @@ const LeaveManagement = () => {
             <StyledTableRow>
               <StyledTableCell align="center">SN</StyledTableCell>
               <StyledTableCell>Employee</StyledTableCell>
-              <StyledTableCell>Location</StyledTableCell>
+              <StyledTableCell>Branch</StyledTableCell>
               <StyledTableCell>Date &#40;From&#41;</StyledTableCell>
               <StyledTableCell>Date &#40;To&#41;</StyledTableCell>
               <StyledTableCell align="center">Days</StyledTableCell>

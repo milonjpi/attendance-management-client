@@ -37,10 +37,13 @@ const UpdateDepartment = ({ open, handleClose, preData }) => {
 
   const onSubmit = async (data) => {
     setLoading(true);
+    const newData = {
+      label: data?.label,
+    };
     try {
       const res = await updateDepartment({
         id: preData?.id,
-        body: { label: data?.label },
+        body: newData,
       }).unwrap();
       if (res.success) {
         handleClose();

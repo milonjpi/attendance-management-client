@@ -9,6 +9,7 @@ import TableRow from '@mui/material/TableRow';
 import LinearProgress from '@mui/material/LinearProgress';
 import AllAttendanceRow from './AllAttendanceRow';
 import moment from 'moment';
+import { Typography } from '@mui/material';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -43,12 +44,27 @@ const PrintAllAttendance = forwardRef(
       getStartMonth,
       getEndMonth,
       loading,
+      location,
     },
     ref
   ) => {
     return (
       <Box component="div" ref={ref}>
-        <Table sx={{ minWidth: 950 }}>
+        <Box sx={{ mb: 2 }}>
+          <Typography
+            sx={{
+              textTransform: 'uppercase',
+              fontWeight: 500,
+              fontSize: 18,
+              textAlign: 'center',
+            }}
+          >
+            {location
+              ? location?.label + ', ' + location?.area?.label
+              : 'All Branch'}
+          </Typography>
+        </Box>
+        <Table>
           <TableHead>
             <StyledTableRow>
               <StyledTableCell align="center" sx={{ width: 5 }}>

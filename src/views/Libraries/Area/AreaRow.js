@@ -1,18 +1,18 @@
 import { styled } from '@mui/material/styles';
-import Button from '@mui/material/Button';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
-import { IconTrashXFilled } from '@tabler/icons-react';
-import moment from 'moment';
+import Button from '@mui/material/Button';
+import { IconEdit, IconTrashXFilled } from '@tabler/icons-react';
 import { useState } from 'react';
-import ConfirmDialog from 'ui-component/ConfirmDialog';
 import { useDispatch } from 'react-redux';
-import { useDeleteAttendanceMutation } from 'store/api/attendance/attendanceApi';
 import { setToast } from 'store/toastSlice';
+import ConfirmDialog from 'ui-component/ConfirmDialog';
+import { useDeleteAreaMutation } from 'store/api/area/areaApi';
+import UpdateArea from './UpdateArea';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.body}`]: {
-    fontSize: 12,
+    fontSize: 11,
     padding: '6px',
   },
 }));
@@ -24,18 +24,18 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-const PresentManagementRow = ({ sn, data }) => {
-  const employee = data?.employee || null;
-
+const AreaRow = ({ sn, data }) => {
+  const [open, setOpen] = useState(false);
   const [dialog, setDialog] = useState(false);
 
   const dispatch = useDispatch();
 
-  const [deleteAttendance] = useDeleteAttendanceMutation();
+  const [deleteArea] = useDeleteAreaMutation();
+
   const handleDelete = async () => {
     setDialog(false);
     try {
-      const res = await deleteAttendance(data?.id).unwrap();
+      const res = await deleteArea(data?.id).unwrap();
       if (res.success) {
         dispatch(
           setToast({
@@ -59,19 +59,18 @@ const PresentManagementRow = ({ sn, data }) => {
   return (
     <StyledTableRow>
       <StyledTableCell align="center">{sn}</StyledTableCell>
-      <StyledTableCell>
-        {moment(data?.date).format('DD/MM/YYYY')}
-      </StyledTableCell>
-      <StyledTableCell>{employee?.name}</StyledTableCell>
-      <StyledTableCell>{employee?.designation?.label}</StyledTableCell>
-      <StyledTableCell>{employee?.department?.label}</StyledTableCell>
-      <StyledTableCell>
-        {employee?.location?.label + ', ' + employee?.location?.area?.label}
-      </StyledTableCell>
-      <StyledTableCell>
-        {moment(data?.inTime).utc().format('hh:mm A')}
-      </StyledTableCell>
-      <StyledTableCell align="center">
+      <StyledTableCell>{data?.label}</StyledTableCell>
+      <StyledTableCell align="center" sx={{ minWidth: 85 }}>
+        <Button
+          color="primary"
+          variant="contained"
+          size="small"
+          sx={{ minWidth: 0, mr: 0.5 }}
+          onClick={() => setOpen(true)}
+        >
+          <IconEdit size={14} />
+        </Button>
+
         <Button
           color="error"
           variant="contained"
@@ -84,12 +83,17 @@ const PresentManagementRow = ({ sn, data }) => {
         <ConfirmDialog
           open={dialog}
           setOpen={setDialog}
-          content="Delete Attendance"
+          content="Delete Area"
           handleDelete={handleDelete}
+        />
+        <UpdateArea
+          open={open}
+          preData={data}
+          handleClose={() => setOpen(false)}
         />
       </StyledTableCell>
     </StyledTableRow>
   );
 };
 
-export default PresentManagementRow;
+export default AreaRow;

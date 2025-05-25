@@ -13,55 +13,38 @@ import SaveIcon from '@mui/icons-material/Save';
 import { useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { setToast } from 'store/toastSlice';
-import { useCreateLocationMutation } from 'store/api/location/locationApi';
-import { useGetAreasQuery } from 'store/api/area/areaApi';
-import { Autocomplete } from '@mui/material';
+import { useCreateAreaMutation } from 'store/api/area/areaApi';
 
 const style = {
   position: 'absolute',
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: { xs: 300, sm: 500 },
+  width: { xs: 350, sm: 500 },
   maxHeight: '100vh',
   overflow: 'auto',
   boxShadow: 24,
   p: 2,
 };
 
-const AddLocation = ({ open, handleClose }) => {
+const AddArea = ({ open, handleClose }) => {
   const [loading, setLoading] = useState(false);
-  const [area, setArea] = useState(null);
   const { register, handleSubmit, reset } = useForm();
-
-  // library
-  const { data: areaData, isLoading: areaLoading } = useGetAreasQuery(
-    { page: 0, limit: 1000, sortBy: 'label', sortOrder: 'asc' },
-    {
-      refetchOnMountOrArgChange: true,
-    }
-  );
-
-  const allAreas = areaData?.areas || [];
-  // end library
 
   const dispatch = useDispatch();
 
-  const [createLocation] = useCreateLocationMutation();
+  const [createArea] = useCreateAreaMutation();
 
   const onSubmit = async (data) => {
     setLoading(true);
     const newData = {
       label: data?.label,
-      areaId: area?.id,
-      address: data?.address,
     };
     try {
-      const res = await createLocation({ ...newData }).unwrap();
+      const res = await createArea({ ...newData }).unwrap();
       if (res.success) {
         handleClose();
         reset();
-        setArea(null);
         setLoading(false);
         dispatch(
           setToast({
@@ -94,7 +77,7 @@ const AddLocation = ({ open, handleClose }) => {
           }}
         >
           <Typography sx={{ fontSize: 16, color: '#878781' }}>
-            Add Branch
+            Add Area
           </Typography>
           <IconButton
             color="error"
@@ -110,38 +93,14 @@ const AddLocation = ({ open, handleClose }) => {
           autoComplete="off"
           onSubmit={handleSubmit(onSubmit)}
         >
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <Autocomplete
-                loading={areaLoading}
-                value={area}
-                fullWidth
-                size="small"
-                options={allAreas}
-                getOptionLabel={(option) => option.label}
-                isOptionEqualToValue={(item, value) => item.id === value.id}
-                onChange={(e, newValue) => setArea(newValue)}
-                renderInput={(params) => (
-                  <TextField {...params} label="Select Area" required />
-                )}
-              />
-            </Grid>
+          <Grid container spacing={3}>
             <Grid item xs={12}>
               <TextField
                 fullWidth
                 required
-                label="Branch"
+                label="Area"
                 size="small"
                 {...register('label', { required: true })}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                required
-                label="Address"
-                size="small"
-                {...register('address', { required: true })}
               />
             </Grid>
             <Grid item xs={12}>
@@ -166,4 +125,4 @@ const AddLocation = ({ open, handleClose }) => {
   );
 };
 
-export default AddLocation;
+export default AddArea;

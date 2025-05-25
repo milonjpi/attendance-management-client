@@ -10,8 +10,11 @@ export const api = createApi({
   tagTypes: [
     'designation',
     'department',
+    'area',
     'location',
     'employee',
+    'salary',
+    'transfer',
     'attendance',
     'user',
     'device',

@@ -63,6 +63,7 @@ const LeaveManagement = Loadable(
 // libraries
 const Designation = Loadable(lazy(() => import('views/Libraries/Designation')));
 const Department = Loadable(lazy(() => import('views/Libraries/Department')));
+const Area = Loadable(lazy(() => import('views/Libraries/Area')));
 const LocationPage = Loadable(lazy(() => import('views/Libraries/Location')));
 // utilities routing
 
@@ -238,11 +239,22 @@ const MainRoutes = {
               ),
             },
             {
-              path: 'location',
+              path: 'area',
               element: (
                 <AuthenticationRoutes
                   allowedRoles={['super_admin', 'admin']}
-                  allowedCodes={['location']}
+                  allowedCodes={['area']}
+                >
+                  <Area />
+                </AuthenticationRoutes>
+              ),
+            },
+            {
+              path: 'branch',
+              element: (
+                <AuthenticationRoutes
+                  allowedRoles={['super_admin', 'admin']}
+                  allowedCodes={['branch']}
                 >
                   <LocationPage />
                 </AuthenticationRoutes>

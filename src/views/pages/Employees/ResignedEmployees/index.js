@@ -57,13 +57,16 @@ const ResignedEmployees = () => {
     refetchOnMountOrArgChange: true,
   });
 
-  const { data: locationData } = useGetLocationsQuery('', {
-    refetchOnMountOrArgChange: true,
-  });
+  const { data: locationData } = useGetLocationsQuery(
+    { limit: 1000, sortBy: 'label', sortOrder: 'asc' },
+    {
+      refetchOnMountOrArgChange: true,
+    }
+  );
 
   const allDesignations = designationData?.data || [];
   const allDepartments = departmentData?.data || [];
-  const allLocations = locationData?.data || [];
+  const allLocations = locationData?.locations || [];
 
   // pagination
   const [page, setPage] = useState(0);
@@ -119,8 +122,13 @@ const ResignedEmployees = () => {
   return (
     <MainCard title="Resigned Employees">
       <Box sx={{ mb: 2 }}>
-        <Grid container spacing={2} sx={{ alignItems: 'end' }}>
-          <Grid item xs={12} sm={6} md={3.6}>
+        <Grid
+          container
+          columnSpacing={1}
+          rowSpacing={2}
+          sx={{ alignItems: 'end' }}
+        >
+          <Grid item xs={12} md={3}>
             <InputBase
               fullWidth
               placeholder="Search..."
@@ -134,7 +142,7 @@ const ResignedEmployees = () => {
               }
             />
           </Grid>
-          <Grid item xs={12} sm={6} md={2.8}>
+          <Grid item xs={12} sm={6} md={2.7}>
             <Autocomplete
               value={designation}
               fullWidth
@@ -162,24 +170,26 @@ const ResignedEmployees = () => {
               )}
             />
           </Grid>
-          <Grid item xs={12} sm={6} md={2.8}>
+          <Grid item xs={12} md={3.5}>
             <Autocomplete
               value={location}
               fullWidth
               size="small"
               options={allLocations}
-              getOptionLabel={(option) => option.label}
+              getOptionLabel={(option) =>
+                option.label + ', ' + option?.area?.label
+              }
               isOptionEqualToValue={(item, value) => item.id === value.id}
               onChange={(e, newValue) => setLocation(newValue)}
               renderInput={(params) => (
-                <TextField {...params} label="Select Location" />
+                <TextField {...params} label="Select Branch" />
               )}
             />
           </Grid>
         </Grid>
       </Box>
       <Box sx={{ overflow: 'auto' }}>
-        <Table sx={{ minWidth: 400 }}>
+        <Table sx={{ minWidth: 750 }}>
           <TableHead>
             <StyledTableRow>
               <StyledTableCell align="center">SN</StyledTableCell>
@@ -187,7 +197,7 @@ const ResignedEmployees = () => {
               <StyledTableCell>Name</StyledTableCell>
               <StyledTableCell>Designation</StyledTableCell>
               <StyledTableCell>Department</StyledTableCell>
-              <StyledTableCell>Location</StyledTableCell>
+              <StyledTableCell>Branch</StyledTableCell>
               <StyledTableCell>Contact No</StyledTableCell>
               <StyledTableCell>Joining Date</StyledTableCell>
               <StyledTableCell>Resigned Date</StyledTableCell>

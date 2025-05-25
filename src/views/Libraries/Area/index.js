@@ -15,12 +15,10 @@ import SearchIcon from '@mui/icons-material/Search';
 import MainCard from 'ui-component/cards/MainCard';
 import CardAction from 'ui-component/cards/CardAction';
 import { IconPlus } from '@tabler/icons-react';
-import { useGetLocationsQuery } from 'store/api/location/locationApi';
-import AddLocation from './AddLocation';
-import LocationRow from './LocationRow';
-import { useDebounced } from 'hooks';
-import { Autocomplete, TextField } from '@mui/material';
 import { useGetAreasQuery } from 'store/api/area/areaApi';
+import { useDebounced } from 'hooks';
+import AddArea from './AddArea';
+import AreaRow from './AreaRow';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -42,22 +40,10 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-const LocationPage = () => {
+const Area = () => {
   const [searchText, setSearchText] = useState('');
-  const [area, setArea] = useState(null);
 
   const [open, setOpen] = useState(false);
-
-  // library
-  const { data: areaData, isLoading: areaLoading } = useGetAreasQuery(
-    { page: 0, limit: 1000, sortBy: 'label', sortOrder: 'asc' },
-    {
-      refetchOnMountOrArgChange: true,
-    }
-  );
-
-  const allAreas = areaData?.areas || [];
-  // end library
 
   // pagination
   const [page, setPage] = useState(0);
@@ -72,6 +58,7 @@ const LocationPage = () => {
     setPage(0);
   };
   // end pagination
+
   // filtering and pagination
   const query = {};
 
@@ -79,10 +66,6 @@ const LocationPage = () => {
   query['page'] = page;
   query['sortBy'] = 'label';
   query['sortOrder'] = 'asc';
-
-  if (area) {
-    query['areaId'] = area?.id;
-  }
 
   // search term
   const debouncedSearchTerm = useDebounced({
@@ -94,33 +77,30 @@ const LocationPage = () => {
     query['searchTerm'] = debouncedSearchTerm;
   }
 
-  const { data, isLoading } = useGetLocationsQuery(
+  const { data, isLoading } = useGetAreasQuery(
     { ...query },
     {
       refetchOnMountOrArgChange: true,
     }
   );
-  const allLocations = data?.locations || [];
+
+  const allAreas = data?.areas || [];
   const meta = data?.meta;
+
   return (
     <MainCard
-      title="Branch List"
+      title="Area List"
       secondary={
         <CardAction
-          title="Add Branch"
+          title="Add Area"
           onClick={() => setOpen(true)}
           icon={<IconPlus />}
         />
       }
     >
       <Box sx={{ mb: 2 }}>
-        <Grid
-          container
-          columnSpacing={1}
-          rowSpacing={2}
-          sx={{ alignItems: 'end' }}
-        >
-          <Grid item xs={12} md={3.5}>
+        <Grid container spacing={2} sx={{ alignItems: 'end' }}>
+          <Grid item xs={12} md={6}>
             <InputBase
               fullWidth
               placeholder="Search..."
@@ -134,26 +114,11 @@ const LocationPage = () => {
               }
             />
           </Grid>
-          <Grid item xs={12} md={3}>
-            <Autocomplete
-              loading={areaLoading}
-              value={area}
-              fullWidth
-              size="small"
-              options={allAreas}
-              getOptionLabel={(option) => option.label}
-              isOptionEqualToValue={(item, value) => item.id === value.id}
-              onChange={(e, newValue) => setArea(newValue)}
-              renderInput={(params) => (
-                <TextField {...params} label="Select Area" />
-              )}
-            />
-          </Grid>
         </Grid>
       </Box>
       {/* popup items */}
 
-      <AddLocation open={open} handleClose={() => setOpen(false)} />
+      <AddArea open={open} handleClose={() => setOpen(false)} />
       {/* end popup items */}
       <Box sx={{ overflow: 'auto' }}>
         <Table sx={{ minWidth: 400 }}>
@@ -161,15 +126,13 @@ const LocationPage = () => {
             <StyledTableRow>
               <StyledTableCell align="center">SN</StyledTableCell>
               <StyledTableCell>Area</StyledTableCell>
-              <StyledTableCell>Branch</StyledTableCell>
-              <StyledTableCell>Address</StyledTableCell>
               <StyledTableCell align="center">Action</StyledTableCell>
             </StyledTableRow>
           </TableHead>
           <TableBody>
-            {allLocations?.length ? (
-              allLocations.map((item, index) => (
-                <LocationRow
+            {allAreas?.length ? (
+              allAreas.map((item, index) => (
+                <AreaRow
                   key={item.id}
                   sn={page * rowsPerPage + index + 1}
                   data={item}
@@ -202,4 +165,4 @@ const LocationPage = () => {
   );
 };
 
-export default LocationPage;
+export default Area;

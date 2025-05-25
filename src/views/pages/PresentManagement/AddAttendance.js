@@ -19,13 +19,14 @@ import { setToast } from 'store/toastSlice';
 import moment from 'moment';
 import { useCreateAttendanceMutation } from 'store/api/attendance/attendanceApi';
 import { useGetEmployeesQuery } from 'store/api/employee/employeeApi';
+import { useGetLocationsQuery } from 'store/api/location/locationApi';
 
 const style = {
   position: 'absolute',
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: { xs: 350, sm: 450, md: 550 },
+  width: { xs: 350, sm: 500, md: 650 },
   maxHeight: '100vh',
   overflow: 'auto',
   boxShadow: 24,
@@ -34,15 +35,30 @@ const style = {
 
 const AddAttendance = ({ open, handleClose }) => {
   const [loading, setLoading] = useState(false);
+  const [location, setLocation] = useState(null);
   const [employee, setEmployee] = useState(null);
   const [date, setDate] = useState(moment());
 
   // library
+  const { data: locationData } = useGetLocationsQuery(
+    { limit: 1000, sortBy: 'label', sortOrder: 'asc' },
+    {
+      refetchOnMountOrArgChange: true,
+    }
+  );
+
+  const allLocations = locationData?.locations || [];
+  // employee
   const query = {};
 
   query['limit'] = 100;
   query['page'] = 0;
   query['isActive'] = true;
+
+  if (location) {
+    query['locationId'] = location?.id;
+  }
+
   const { data: employeeData } = useGetEmployeesQuery({ ...query });
   const employees = employeeData?.employees || [];
 
@@ -63,6 +79,7 @@ const AddAttendance = ({ open, handleClose }) => {
 
       if (res.success) {
         handleClose();
+        setLocation(null);
         setEmployee(null);
         setDate(moment());
         dispatch(
@@ -109,8 +126,27 @@ const AddAttendance = ({ open, handleClose }) => {
         </Box>
         <Divider sx={{ mb: 2, mt: 1 }} />
         <Box component="form" autoComplete="off" onSubmit={onSubmit}>
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
+          <Grid container spacing={2}>
+            <Grid item xs={12} md={6}>
+              <Autocomplete
+                value={location}
+                fullWidth
+                size="small"
+                options={allLocations}
+                getOptionLabel={(option) =>
+                  option.label + ', ' + option.area?.label
+                }
+                isOptionEqualToValue={(item, value) => item.id === value.id}
+                onChange={(e, newValue) => {
+                  setLocation(newValue);
+                  setEmployee(null);
+                }}
+                renderInput={(params) => (
+                  <TextField {...params} label="Select Branch" />
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
               <Autocomplete
                 value={employee}
                 fullWidth

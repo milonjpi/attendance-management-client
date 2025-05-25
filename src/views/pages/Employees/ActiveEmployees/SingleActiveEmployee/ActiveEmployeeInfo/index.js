@@ -11,10 +11,35 @@ import ImageShower from 'ui-component/ImageShower';
 import UpdateEmployee from '../../UpdateEmployee';
 import { useState } from 'react';
 import moment from 'moment';
+import { FormControlLabel, Switch } from '@mui/material';
+import { useUpdateEmployeeMutation } from 'store/api/employee/employeeApi';
+import { useEffect } from 'react';
 
 const ActiveEmployeeInfo = () => {
   const { data } = useOutletContext();
   const [open, setOpen] = useState(false);
+  const [isOwn, setIsWon] = useState(data?.isOwn || false);
+
+  const [updateEmployee] = useUpdateEmployeeMutation();
+  const onManagementChange = async (e) => {
+    const newData = {
+      isOwn: e.target.checked,
+    };
+
+    const formData = new FormData();
+    formData.append('data', JSON.stringify(newData));
+    try {
+      setIsWon(e.target.checked);
+      await updateEmployee({
+        id: data?.id,
+        body: formData,
+      }).unwrap();
+    } catch (err) {}
+  };
+
+  useEffect(() => {
+    setIsWon(data?.isOwn);
+  }, [data]);
 
   return (
     <Box>
@@ -96,8 +121,10 @@ const ActiveEmployeeInfo = () => {
                 </Grid>
                 <Grid item xs={12}>
                   <EmployeeItem
-                    title="Location"
-                    value={data?.location?.label}
+                    title="Branch"
+                    value={
+                      data?.location?.label + ', ' + data?.location?.area?.label
+                    }
                   />
                 </Grid>
                 <Grid item xs={12} md={6}>
@@ -120,6 +147,17 @@ const ActiveEmployeeInfo = () => {
                   <EmployeeItem
                     title="Address"
                     value={data?.address || 'n/a'}
+                  />
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={isOwn || false}
+                        onChange={onManagementChange}
+                      />
+                    }
+                    label="Management"
                   />
                 </Grid>
               </Grid>

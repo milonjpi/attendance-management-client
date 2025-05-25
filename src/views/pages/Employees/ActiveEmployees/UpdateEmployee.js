@@ -60,13 +60,16 @@ const UpdateEmployee = ({ open, handleClose, preData }) => {
     refetchOnMountOrArgChange: true,
   });
 
-  const { data: locationData } = useGetLocationsQuery('', {
-    refetchOnMountOrArgChange: true,
-  });
+  const { data: locationData } = useGetLocationsQuery(
+    { limit: 0, sortBy: 'label', sortOrder: 'asc' },
+    {
+      refetchOnMountOrArgChange: true,
+    }
+  );
 
   const allDesignations = designationData?.data || [];
   const allDepartments = departmentData?.data || [];
-  const allLocations = locationData?.data || [];
+  const allLocations = locationData?.locations || [];
 
   const dispatch = useDispatch();
 
@@ -239,7 +242,9 @@ const UpdateEmployee = ({ open, handleClose, preData }) => {
                 sx={{ mb: 2 }}
                 size="small"
                 options={allLocations}
-                getOptionLabel={(option) => option.label}
+                getOptionLabel={(option) =>
+                  option.label + ', ' + option?.area?.label
+                }
                 isOptionEqualToValue={(item, value) => item.id === value.id}
                 onChange={(e, newValue) => setLocation(newValue)}
                 renderInput={(params) => (

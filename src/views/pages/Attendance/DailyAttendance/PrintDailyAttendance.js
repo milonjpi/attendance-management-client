@@ -43,7 +43,7 @@ const PrintDailyAttendance = forwardRef(({ data, date, loading }, ref) => {
             <StyledTableCell>Name</StyledTableCell>
             <StyledTableCell>Designation</StyledTableCell>
             <StyledTableCell>Department</StyledTableCell>
-            <StyledTableCell>Location</StyledTableCell>
+            <StyledTableCell>Branch</StyledTableCell>
             <StyledTableCell>In Time</StyledTableCell>
             <StyledTableCell>Out Time</StyledTableCell>
           </StyledTableRow>

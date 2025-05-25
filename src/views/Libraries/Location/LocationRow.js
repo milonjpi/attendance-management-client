@@ -59,7 +59,9 @@ const LocationRow = ({ sn, data }) => {
   return (
     <StyledTableRow>
       <StyledTableCell align="center">{sn}</StyledTableCell>
+      <StyledTableCell>{data?.area?.label}</StyledTableCell>
       <StyledTableCell>{data?.label}</StyledTableCell>
+      <StyledTableCell>{data?.address}</StyledTableCell>
       <StyledTableCell align="center" sx={{ minWidth: 85 }}>
         <Button
           color="primary"
@@ -83,7 +85,7 @@ const LocationRow = ({ sn, data }) => {
         <ConfirmDialog
           open={dialog}
           setOpen={setDialog}
-          content="Delete Location"
+          content="Delete Branch"
           handleDelete={handleDelete}
         />
         <UpdateLocation

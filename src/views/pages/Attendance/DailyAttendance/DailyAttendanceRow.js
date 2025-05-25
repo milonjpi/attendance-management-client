@@ -39,7 +39,9 @@ const DailyAttendanceRow = ({ sn, data, date }) => {
       <StyledTableCell>{data?.name}</StyledTableCell>
       <StyledTableCell>{data?.designation?.label}</StyledTableCell>
       <StyledTableCell>{data?.department?.label}</StyledTableCell>
-      <StyledTableCell>{data?.location?.label}</StyledTableCell>
+      <StyledTableCell>
+        {data?.location?.label + ', ' + data?.location?.area?.label}
+      </StyledTableCell>
       {attendances ? (
         attendances.realPunch ? (
           <>

@@ -3,6 +3,7 @@ import {
   IconComponents,
   IconStack,
   IconCurrentLocation,
+  IconHierarchy,
 } from '@tabler/icons-react';
 
 // constant
@@ -10,6 +11,7 @@ const icons = {
   IconComponents,
   IconStack,
   IconCurrentLocation,
+  IconHierarchy,
 };
 
 // ==============================|| UTILITIES MENU ITEMS ||============================== //
@@ -36,12 +38,20 @@ const libraries = {
       url: '/libraries/department',
     },
     {
-      id: 'location',
-      title: 'Location',
+      id: 'area',
+      title: 'Area',
       type: 'item',
       color: '#344A80',
       icon: icons.IconCurrentLocation,
-      url: '/libraries/location',
+      url: '/libraries/area',
+    },
+    {
+      id: 'branch',
+      title: 'Branch',
+      type: 'item',
+      color: '#344A80',
+      icon: icons.IconHierarchy,
+      url: '/libraries/branch',
     },
   ],
 };

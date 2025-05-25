@@ -77,7 +77,9 @@ const LeaveManagementRow = ({ sn, data }) => {
           {employee?.designation?.label + ', ' + employee?.department?.label}
         </span>
       </StyledTableCell>
-      <StyledTableCell>{employee?.location?.label}</StyledTableCell>
+      <StyledTableCell>
+        {employee?.location?.label + ', ' + employee?.location?.area?.label}
+      </StyledTableCell>
       <StyledTableCell>
         {moment(data?.fromDate).format('DD/MM/YYYY')}
       </StyledTableCell>
@@ -114,7 +116,7 @@ const LeaveManagementRow = ({ sn, data }) => {
         <ConfirmDialog
           open={dialog}
           setOpen={setDialog}
-          content="Delete Attendance"
+          content="Delete Leave"
           handleDelete={handleDelete}
         />
         {/* end popup items */}

@@ -82,7 +82,9 @@ const ActiveEmployeeRow = ({ sn, data }) => {
       </StyledTableCell>
       <StyledTableCell>{data?.designation?.label}</StyledTableCell>
       <StyledTableCell>{data?.department?.label}</StyledTableCell>
-      <StyledTableCell>{data?.location?.label}</StyledTableCell>
+      <StyledTableCell>
+        {data?.location?.label + ', ' + data?.location?.area?.label}
+      </StyledTableCell>
       <StyledTableCell>
         {data?.contactNo ? data?.contactNo : 'n/a'}
       </StyledTableCell>

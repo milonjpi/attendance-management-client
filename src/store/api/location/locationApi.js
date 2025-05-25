@@ -13,8 +13,22 @@ export const locationApi = api.injectEndpoints({
       invalidatesTags: ['location'],
     }),
     getLocations: build.query({
-      query: () => ({
+      query: (arg) => ({
         url: `${LOCATION_URL}`,
+        method: 'GET',
+        params: arg,
+      }),
+      transformResponse: (response) => {
+        return {
+          locations: response?.data,
+          meta: response?.meta,
+        };
+      },
+      providesTags: ['location'],
+    }),
+    getSingleLocation: build.query({
+      query: (id) => ({
+        url: `${LOCATION_URL}/${id}`,
         method: 'GET',
       }),
       providesTags: ['location'],
@@ -40,6 +54,7 @@ export const locationApi = api.injectEndpoints({
 export const {
   useCreateLocationMutation,
   useGetLocationsQuery,
+  useGetSingleLocationQuery,
   useUpdateLocationMutation,
   useDeleteLocationMutation,
 } = locationApi;

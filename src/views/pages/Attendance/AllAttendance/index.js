@@ -91,20 +91,26 @@ const AllAttendance = () => {
     refetchOnMountOrArgChange: true,
   });
 
-  const { data: locationData } = useGetLocationsQuery('', {
-    refetchOnMountOrArgChange: true,
-  });
+  const { data: locationData } = useGetLocationsQuery(
+    { limit: 1000, sortBy: 'label', sortOrder: 'asc' },
+    {
+      refetchOnMountOrArgChange: true,
+    }
+  );
 
   const allDesignations = designationData?.data || [];
   const allDepartments = departmentData?.data || [];
-  const allLocations = locationData?.data || [];
+  const allLocations = locationData?.locations || [];
 
   // filtering and pagination
   const query = {};
 
   query['limit'] = 100;
   query['page'] = 0;
+  query['sortBy'] = 'officeId';
+  query['sortOrder'] = 'asc';
   query['isActive'] = true;
+  query['isOwn'] = false;
 
   if (startDate) {
     query['startDate'] = moment(startDate).format('YYYY-MM-DD');
@@ -158,7 +164,7 @@ const AllAttendance = () => {
     >
       <Box sx={{ mb: 2 }}>
         <Grid container spacing={1} sx={{ alignItems: 'end' }} columns={15}>
-          <Grid item xs={15} sm={7.5} md={5} lg={3}>
+          <Grid item xs={15} sm={7.5} md={5} lg={2.5}>
             <LocalizationProvider dateAdapter={AdapterMoment}>
               <DatePicker
                 label="Date From"
@@ -179,7 +185,7 @@ const AllAttendance = () => {
               />
             </LocalizationProvider>
           </Grid>
-          <Grid item xs={15} sm={7.5} md={5} lg={3}>
+          <Grid item xs={15} sm={7.5} md={5} lg={2.5}>
             <LocalizationProvider dateAdapter={AdapterMoment}>
               <DatePicker
                 label="Date To"
@@ -228,17 +234,19 @@ const AllAttendance = () => {
               )}
             />
           </Grid>
-          <Grid item xs={15} sm={7.5} md={5} lg={3}>
+          <Grid item xs={15} sm={7.5} md={5} lg={4}>
             <Autocomplete
               value={location}
               fullWidth
               size="small"
               options={allLocations}
-              getOptionLabel={(option) => option.label}
+              getOptionLabel={(option) =>
+                option.label + ', ' + option.area?.label
+              }
               isOptionEqualToValue={(item, value) => item.id === value.id}
               onChange={(e, newValue) => setLocation(newValue)}
               renderInput={(params) => (
-                <TextField {...params} label="Select Location" />
+                <TextField {...params} label="Select Branch" />
               )}
             />
           </Grid>
@@ -256,6 +264,7 @@ const AllAttendance = () => {
           getStartMonth={getStartMonth}
           getEndMonth={getEndMonth}
           loading={isLoading}
+          location={location}
         />
       </Box>
       {/* end popup item */}
