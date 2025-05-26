@@ -33,15 +33,25 @@ const AccessControl = Loadable(
     )
   )
 );
-const ActiveAccessHistory = Loadable(
+const EmployeeAttendance = Loadable(
   lazy(() =>
     import(
-      'views/pages/Employees/ActiveEmployees/SingleActiveEmployee/ActiveAccessHistory'
+      'views/pages/Employees/ActiveEmployees/SingleActiveEmployee/EmployeeAttendance'
+    )
+  )
+);
+const SalaryRecord = Loadable(
+  lazy(() =>
+    import(
+      'views/pages/Employees/ActiveEmployees/SingleActiveEmployee/SalaryRecord'
     )
   )
 );
 const ResignedEmployees = Loadable(
   lazy(() => import('views/pages/Employees/ResignedEmployees'))
+);
+const TransferEmployee = Loadable(
+  lazy(() => import('views/pages/Employees/TransferEmployee'))
 );
 
 // attendances
@@ -56,6 +66,14 @@ const PresentManagement = Loadable(
 );
 const LeaveManagement = Loadable(
   lazy(() => import('views/pages/LeaveManagement'))
+);
+
+// salary management
+const MonthlySalaries = Loadable(
+  lazy(() => import('views/pages/SalaryManagement/MonthlySalaries'))
+);
+const PresentSalary = Loadable(
+  lazy(() => import('views/pages/SalaryManagement/PresentSalary'))
 );
 
 // end pages
@@ -144,8 +162,12 @@ const MainRoutes = {
                       element: <AccessControl />,
                     },
                     {
-                      path: 'history',
-                      element: <ActiveAccessHistory />,
+                      path: 'attendance',
+                      element: <EmployeeAttendance />,
+                    },
+                    {
+                      path: 'salary',
+                      element: <SalaryRecord />,
                     },
                   ],
                 },
@@ -157,6 +179,17 @@ const MainRoutes = {
                       allowedCodes={['resigned-employees']}
                     >
                       <ResignedEmployees />
+                    </AuthenticationRoutes>
+                  ),
+                },
+                {
+                  path: 'transfer-employees',
+                  element: (
+                    <AuthenticationRoutes
+                      allowedRoles={['super_admin', 'admin']}
+                      allowedCodes={['transfer-employees']}
+                    >
+                      <TransferEmployee />
                     </AuthenticationRoutes>
                   ),
                 },
@@ -184,6 +217,33 @@ const MainRoutes = {
                       allowedCodes={['all-attendance']}
                     >
                       <AllAttendance />
+                    </AuthenticationRoutes>
+                  ),
+                },
+              ],
+            },
+            {
+              path: 'salary-management',
+              children: [
+                {
+                  path: 'monthly-salaries',
+                  element: (
+                    <AuthenticationRoutes
+                      allowedRoles={['super_admin', 'admin']}
+                      allowedCodes={['monthly-salaries']}
+                    >
+                      <MonthlySalaries />
+                    </AuthenticationRoutes>
+                  ),
+                },
+                {
+                  path: 'present-salary',
+                  element: (
+                    <AuthenticationRoutes
+                      allowedRoles={['super_admin', 'admin']}
+                      allowedCodes={['present-salary']}
+                    >
+                      <PresentSalary />
                     </AuthenticationRoutes>
                   ),
                 },

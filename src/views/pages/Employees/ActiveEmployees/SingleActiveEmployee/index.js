@@ -6,7 +6,8 @@ import { styled } from '@mui/material/styles';
 import { useLocation, Link, useParams, Outlet } from 'react-router-dom';
 import LockPersonIcon from '@mui/icons-material/LockPerson';
 import InfoIcon from '@mui/icons-material/Info';
-import HistoryIcon from '@mui/icons-material/History';
+import DateRangeIcon from '@mui/icons-material/DateRange';
+import CurrencyLiraIcon from '@mui/icons-material/CurrencyLira';
 import { useGetSingleEmployeeQuery } from 'store/api/employee/employeeApi';
 import NotFoundEmployee from '../../NotFoundEmployee';
 
@@ -95,16 +96,29 @@ const SingleActiveEmployee = () => {
           </NavItem>
           <NavItem
             component={Link}
-            to="history"
+            to="attendance"
             sx={{
               py: 0.6,
               px: 1.5,
-              color: path === 'history' ? '#614cab' : '#fff',
-              background: path === 'history' ? '#fff' : 'transparent',
+              color: path === 'attendance' ? '#614cab' : '#fff',
+              background: path === 'attendance' ? '#fff' : 'transparent',
             }}
           >
-            <HistoryIcon sx={{ fontSize: '1.2rem' }} />
-            <span style={{ paddingLeft: '5px' }}>Access History</span>
+            <DateRangeIcon sx={{ fontSize: '1.2rem' }} />
+            <span style={{ paddingLeft: '5px' }}>Attendances</span>
+          </NavItem>
+          <NavItem
+            component={Link}
+            to="Salary"
+            sx={{
+              py: 0.6,
+              px: 1.5,
+              color: path === 'Salary' ? '#614cab' : '#fff',
+              background: path === 'Salary' ? '#fff' : 'transparent',
+            }}
+          >
+            <CurrencyLiraIcon sx={{ fontSize: '1.2rem' }} />
+            <span style={{ paddingLeft: '5px' }}>Salary Record</span>
           </NavItem>
         </Box>
       </Box>

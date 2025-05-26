@@ -151,6 +151,7 @@ const ActiveEmployeeInfo = () => {
                 </Grid>
                 <Grid item xs={12} md={6}>
                   <FormControlLabel
+                    disabled={!data?.isActive}
                     control={
                       <Switch
                         checked={isOwn || false}

@@ -9,6 +9,7 @@ import {
   IconClock,
   IconCalendarStats,
   IconCalendarX,
+  IconCoin,
 } from '@tabler/icons-react';
 
 // constant
@@ -22,6 +23,7 @@ const icons = {
   IconClock,
   IconCalendarStats,
   IconCalendarX,
+  IconCoin,
 };
 
 // ==============================|| EXTRA PAGES MENU ITEMS ||============================== //
@@ -50,13 +52,19 @@ const pages = {
           type: 'item',
           url: '/pages/employee-management/resigned-employees',
         },
+        {
+          id: 'transfer-employees',
+          title: 'Transfer Employees',
+          type: 'item',
+          url: '/pages/employee-management/transfer-employees',
+        },
       ],
     },
     {
       id: 'attendances',
       title: 'Attendances',
       type: 'collapse',
-      color: '#C70039',
+      color: '#0C356A',
       icon: icons.IconClock,
       children: [
         {
@@ -74,10 +82,25 @@ const pages = {
       ],
     },
     {
+      id: 'salary-management',
+      title: 'Salary Management',
+      type: 'collapse',
+      color: '#0C356A',
+      icon: icons.IconCoin,
+      children: [
+        {
+          id: 'monthly-salaries',
+          title: 'Monthly Salaries',
+          type: 'item',
+          url: '/pages/salary-management/monthly-salaries',
+        },
+      ],
+    },
+    {
       id: 'present-management',
       title: 'Present Management',
       type: 'item',
-      color: '#610C9F',
+      color: '#0C356A',
       icon: icons.IconCalendarStats,
       url: '/pages/present-management',
     },
