@@ -239,16 +239,17 @@ const UpdateEmployee = ({ open, handleClose, preData }) => {
               <Autocomplete
                 value={location}
                 fullWidth
-                sx={{ mb: 2 }}
+                disabled
                 size="small"
+                sx={{ mb: 2 }}
                 options={allLocations}
                 getOptionLabel={(option) =>
-                  option.label + ', ' + option?.area?.label
+                  option.label + ', ' + option.area?.label
                 }
                 isOptionEqualToValue={(item, value) => item.id === value.id}
                 onChange={(e, newValue) => setLocation(newValue)}
                 renderInput={(params) => (
-                  <TextField {...params} label="Select Location" required />
+                  <TextField {...params} label="Select Branch" />
                 )}
               />
               <LocalizationProvider dateAdapter={AdapterMoment}>

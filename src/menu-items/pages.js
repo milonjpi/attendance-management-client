@@ -107,10 +107,29 @@ const pages = {
     {
       id: 'leave-management',
       title: 'Leave Management',
-      type: 'item',
+      type: 'collapse',
       color: '#C70039',
       icon: icons.IconCalendarX,
-      url: '/pages/leave-management',
+      children: [
+        {
+          id: 'my-leaves',
+          title: 'My Leaves',
+          type: 'item',
+          url: '/pages/leave-management/my-leaves',
+        },
+        {
+          id: 'pending-leaves',
+          title: 'Pending Leaves',
+          type: 'item',
+          url: '/pages/leave-management/pending-leaves',
+        },
+        {
+          id: 'approved-leaves',
+          title: 'Approved Leaves',
+          type: 'item',
+          url: '/pages/leave-management/approved-leaves',
+        },
+      ],
     },
   ],
 };

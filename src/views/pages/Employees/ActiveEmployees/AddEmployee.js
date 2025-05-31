@@ -61,7 +61,7 @@ const AddEmployee = ({ open, handleClose }) => {
   });
 
   const { data: locationData } = useGetLocationsQuery(
-    { limit: 0, sortBy: 'label', sortOrder: 'asc' },
+    { limit: 1000, sortBy: 'label', sortOrder: 'asc' },
     {
       refetchOnMountOrArgChange: true,
     }
@@ -238,16 +238,16 @@ const AddEmployee = ({ open, handleClose }) => {
               <Autocomplete
                 value={location}
                 fullWidth
-                sx={{ mb: 2 }}
                 size="small"
+                sx={{ mb: 2 }}
                 options={allLocations}
                 getOptionLabel={(option) =>
-                  option.label + ', ' + option?.area?.label
+                  option.label + ', ' + option.area?.label
                 }
                 isOptionEqualToValue={(item, value) => item.id === value.id}
                 onChange={(e, newValue) => setLocation(newValue)}
                 renderInput={(params) => (
-                  <TextField {...params} label="Select Location" required />
+                  <TextField {...params} label="Select Branch" />
                 )}
               />
               <LocalizationProvider dateAdapter={AdapterMoment}>

@@ -1,7 +1,8 @@
 import Typography from '@mui/material/Typography';
 
 const colors = {
-  Pending: '#E53935',
+  Pending: '#0747A6',
+  Rejected: '#E53935',
   'In Progress': '#0747A6',
   Solved: '#006644',
   Approved: '#006644',
@@ -9,7 +10,8 @@ const colors = {
 };
 
 const backgrounds = {
-  Pending: '#ffcdd2',
+  Pending: '#DEEBFF',
+  Rejected: '#ffcdd2',
   'In Progress': '#DEEBFF',
   Solved: '#E3FCEF',
   Approved: '#E3FCEF',
