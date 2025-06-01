@@ -17,10 +17,8 @@ const NavGroup = ({ item }) => {
   const userData = useSelector(selectAuth);
 
   const subMenus = userData?.subMenus?.map((el) => el.label);
-  const userSubItems = item?.children?.filter((el) =>
-    ['super_admin', 'admin'].includes(userData?.role)
-      ? true
-      : subMenus?.includes(el.id)
+  const userSubItems = item?.children?.filter(
+    (el) => el.access?.includes(userData?.role) || subMenus?.includes(el.id)
   );
 
   // menu list collapse & items

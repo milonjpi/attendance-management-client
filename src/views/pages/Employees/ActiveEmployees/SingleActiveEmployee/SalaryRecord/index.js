@@ -95,11 +95,13 @@ const SalaryRecord = () => {
     <MainCard
       title="Salary Record"
       secondary={
-        <CardAction
-          title="Add Record"
-          onClick={() => setOpen(true)}
-          icon={<IconPlus />}
-        />
+        employeeData?.isActive ? (
+          <CardAction
+            title="Add Record"
+            onClick={() => setOpen(true)}
+            icon={<IconPlus />}
+          />
+        ) : null
       }
     >
       <Box sx={{ mb: 2 }}>
@@ -147,6 +149,7 @@ const SalaryRecord = () => {
                   key={item.id}
                   sn={page * rowsPerPage + index + 1}
                   data={item}
+                  employeeData={employeeData}
                 />
               ))
             ) : (

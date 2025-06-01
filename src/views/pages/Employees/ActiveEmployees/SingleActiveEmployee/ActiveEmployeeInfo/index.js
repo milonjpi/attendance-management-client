@@ -14,10 +14,12 @@ import moment from 'moment';
 import { FormControlLabel, Switch } from '@mui/material';
 import { useUpdateEmployeeMutation } from 'store/api/employee/employeeApi';
 import { useEffect } from 'react';
+import CreateUser from './CreateUser';
 
 const ActiveEmployeeInfo = () => {
   const { data } = useOutletContext();
   const [open, setOpen] = useState(false);
+  const [userOpen, setUserOpen] = useState(false);
   const [isOwn, setIsWon] = useState(data?.isOwn || false);
 
   const [updateEmployee] = useUpdateEmployeeMutation();
@@ -44,27 +46,51 @@ const ActiveEmployeeInfo = () => {
   return (
     <Box>
       <Box sx={{ py: 2 }}>
-        <Button
-          variant="contained"
-          startIcon={<ArrowBackIcon />}
-          size="small"
-          color="dark"
-          component={Link}
-          sx={{ color: '#fff' }}
-          to={`/pages/employee-management/${
-            data?.isActive ? 'employees' : 'resigned-employees'
-          }`}
-        >
-          Back
-        </Button>
+        <Grid container spacing={2}>
+          <Grid item xs={6}>
+            <Button
+              variant="contained"
+              startIcon={<ArrowBackIcon />}
+              size="small"
+              color="dark"
+              component={Link}
+              sx={{ color: '#fff' }}
+              to={`/pages/employee-management/${
+                data?.isActive ? 'employees' : 'resigned-employees'
+              }`}
+            >
+              Back
+            </Button>
+          </Grid>
+          <Grid item xs={6} sx={{ textAlign: 'right' }}>
+            {data?.isActive && !data.userCreated ? (
+              <Button
+                variant="outlined"
+                size="small"
+                color="primary"
+                sx={{ fontSize: 11 }}
+                onClick={() => setUserOpen(true)}
+              >
+                Create User
+              </Button>
+            ) : null}
+          </Grid>
+        </Grid>
       </Box>
       {/* popup items */}
       {data?.isActive ? (
-        <UpdateEmployee
-          open={open}
-          handleClose={() => setOpen(false)}
-          preData={data}
-        />
+        <>
+          <UpdateEmployee
+            open={open}
+            handleClose={() => setOpen(false)}
+            preData={data}
+          />
+          <CreateUser
+            open={userOpen}
+            handleClose={() => setUserOpen(false)}
+            userData={data}
+          />
+        </>
       ) : null}
 
       {/* end popup items */}

@@ -13,9 +13,10 @@ export const salaryApi = api.injectEndpoints({
       invalidatesTags: ['salary'],
     }),
     getSalaries: build.query({
-      query: () => ({
+      query: (arg) => ({
         url: `${SALARY_URL}`,
         method: 'GET',
+        params: arg,
       }),
       transformResponse: (response) => {
         return {

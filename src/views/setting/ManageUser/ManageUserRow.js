@@ -69,6 +69,7 @@ const ManageUserRow = ({ sn, data }) => {
       <StyledTableCell>{roleValue[data?.role] || ''}</StyledTableCell>
       <StyledTableCell align="center" sx={{ minWidth: 85 }}>
         <Button
+          disabled={data?.isEmployee}
           color="primary"
           variant="contained"
           size="small"

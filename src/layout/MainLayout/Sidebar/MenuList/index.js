@@ -13,10 +13,8 @@ const MenuList = () => {
   const userData = useSelector(selectAuth);
 
   const menus = userData?.menus?.map((el) => el.label);
-  const userMenuItems = menuItem.items.filter((el) =>
-    ['super_admin', 'admin'].includes(userData?.role)
-      ? true
-      : menus?.includes(el.id)
+  const userMenuItems = menuItem.items.filter(
+    (el) => el.access?.includes(userData?.role) || menus?.includes(el.id)
   );
   const navItems = userMenuItems.map((item) => {
     switch (item.type) {

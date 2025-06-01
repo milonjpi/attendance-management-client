@@ -12,6 +12,7 @@ import { Link } from 'react-router-dom';
 import { IconEdit } from '@tabler/icons-react';
 import UpdateLeave from './UpdateLeave';
 import { useDeleteLeaveMutation } from 'store/api/leave/leaveApi';
+import ShowStatus from 'ui-component/ShowStatus';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.body}`]: {
@@ -88,6 +89,9 @@ const LeaveManagementRow = ({ sn, data }) => {
       </StyledTableCell>
       <StyledTableCell align="center">{data?.days}</StyledTableCell>
       <StyledTableCell>{data?.remarks || 'n/a'}</StyledTableCell>
+      <StyledTableCell align="center">
+        <ShowStatus status={data?.status} />
+      </StyledTableCell>
       <StyledTableCell align="center" sx={{ minWidth: 85 }}>
         <Button
           color="primary"

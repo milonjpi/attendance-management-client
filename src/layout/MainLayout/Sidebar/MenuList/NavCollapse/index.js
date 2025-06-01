@@ -32,10 +32,8 @@ const NavCollapse = ({ menu, level }) => {
   const userData = useSelector(selectAuth);
 
   const sections = userData?.sections?.map((el) => el.label);
-  const userSectionItem = menu?.children?.filter((el) =>
-    ['super_admin', 'admin'].includes(userData?.role)
-      ? true
-      : sections?.includes(el.id)
+  const userSectionItem = menu?.children?.filter(
+    (el) => el.access?.includes(userData?.role) || sections?.includes(el.id)
   );
   // user section
 

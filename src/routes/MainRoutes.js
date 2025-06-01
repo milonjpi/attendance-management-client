@@ -11,6 +11,14 @@ import AuthenticationRoutes from './AuthenticationRoutes';
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard')));
 
 // pages routing
+
+// profile
+const MyInfo = Loadable(lazy(() => import('views/pages/Profile/MyInfo')));
+const MyAttendances = Loadable(
+  lazy(() => import('views/pages/Profile/MyAttendances'))
+);
+
+// employee management
 const ActiveEmployees = Loadable(
   lazy(() => import('views/pages/Employees/ActiveEmployees'))
 );
@@ -64,8 +72,14 @@ const AllAttendance = Loadable(
 const PresentManagement = Loadable(
   lazy(() => import('views/pages/PresentManagement'))
 );
-const LeaveManagement = Loadable(
-  lazy(() => import('views/pages/LeaveManagement'))
+const MyLeaves = Loadable(
+  lazy(() => import('views/pages/LeaveManagement/MyLeaves'))
+);
+const PendingLeaves = Loadable(
+  lazy(() => import('views/pages/LeaveManagement/PendingLeaves'))
+);
+const ApprovedLeaves = Loadable(
+  lazy(() => import('views/pages/LeaveManagement/ApprovedLeaves'))
 );
 
 // salary management
@@ -128,6 +142,33 @@ const MainRoutes = {
         {
           path: 'pages',
           children: [
+            {
+              path: 'profile',
+              children: [
+                {
+                  path: 'my-info',
+                  element: (
+                    <AuthenticationRoutes
+                      allowedRoles={['super_admin', 'admin', 'user']}
+                      allowedCodes={['my-info']}
+                    >
+                      <MyInfo />
+                    </AuthenticationRoutes>
+                  ),
+                },
+                {
+                  path: 'my-attendances',
+                  element: (
+                    <AuthenticationRoutes
+                      allowedRoles={['super_admin', 'admin', 'user']}
+                      allowedCodes={['my-attendances']}
+                    >
+                      <MyAttendances />
+                    </AuthenticationRoutes>
+                  ),
+                },
+              ],
+            },
             {
               path: 'employee-management',
               children: [
@@ -262,14 +303,41 @@ const MainRoutes = {
             },
             {
               path: 'leave-management',
-              element: (
-                <AuthenticationRoutes
-                  allowedRoles={['super_admin', 'admin']}
-                  allowedCodes={['leave-management']}
-                >
-                  <LeaveManagement />
-                </AuthenticationRoutes>
-              ),
+              children: [
+                {
+                  path: 'my-leaves',
+                  element: (
+                    <AuthenticationRoutes
+                      allowedRoles={['super_admin', 'user']}
+                      allowedCodes={['my-leaves']}
+                    >
+                      <MyLeaves />
+                    </AuthenticationRoutes>
+                  ),
+                },
+                {
+                  path: 'pending-leaves',
+                  element: (
+                    <AuthenticationRoutes
+                      allowedRoles={['super_admin', 'admin']}
+                      allowedCodes={['pending-leaves']}
+                    >
+                      <PendingLeaves />
+                    </AuthenticationRoutes>
+                  ),
+                },
+                {
+                  path: 'approved-leaves',
+                  element: (
+                    <AuthenticationRoutes
+                      allowedRoles={['super_admin', 'admin']}
+                      allowedCodes={['approved-leaves']}
+                    >
+                      <ApprovedLeaves />
+                    </AuthenticationRoutes>
+                  ),
+                },
+              ],
             },
           ],
         },

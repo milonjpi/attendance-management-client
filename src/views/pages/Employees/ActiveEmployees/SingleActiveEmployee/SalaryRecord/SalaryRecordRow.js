@@ -25,7 +25,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-const SalaryRecordRow = ({ sn, data }) => {
+const SalaryRecordRow = ({ sn, data, employeeData }) => {
   const [open, setOpen] = useState(false);
   const [dialog, setDialog] = useState(false);
 
@@ -70,6 +70,7 @@ const SalaryRecordRow = ({ sn, data }) => {
       <StyledTableCell align="right">{data?.salary}</StyledTableCell>
       <StyledTableCell align="center" sx={{ minWidth: 85 }}>
         <Button
+          disabled={!employeeData?.isActive}
           color="primary"
           variant="contained"
           size="small"
@@ -80,6 +81,7 @@ const SalaryRecordRow = ({ sn, data }) => {
         </Button>
 
         <Button
+          disabled={!employeeData?.isActive}
           color="error"
           variant="contained"
           size="small"

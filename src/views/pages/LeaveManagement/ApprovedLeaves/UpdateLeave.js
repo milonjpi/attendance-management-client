@@ -19,7 +19,7 @@ import { setToast } from 'store/toastSlice';
 import moment from 'moment';
 import { useGetEmployeesQuery } from 'store/api/employee/employeeApi';
 import { useForm } from 'react-hook-form';
-import { useCreateLeaveMutation } from 'store/api/leave/leaveApi';
+import { useUpdateLeaveMutation } from 'store/api/leave/leaveApi';
 import { useGetLocationsQuery } from 'store/api/location/locationApi';
 
 const style = {
@@ -34,14 +34,14 @@ const style = {
   p: 3,
 };
 
-const AddLeave = ({ open, handleClose }) => {
+const UpdateLeave = ({ open, handleClose, preData }) => {
   const [loading, setLoading] = useState(false);
-  const [location, setLocation] = useState(null);
-  const [employee, setEmployee] = useState(null);
-  const [fromDate, setFromDate] = useState(null);
-  const [toDate, setToDate] = useState(null);
+  const [location, setLocation] = useState(preData?.employee?.location || null);
+  const [employee, setEmployee] = useState(preData?.employee || null);
+  const [fromDate, setFromDate] = useState(moment(preData?.fromDate) || null);
+  const [toDate, setToDate] = useState(moment(preData?.toDate) || null);
 
-  const { register, handleSubmit, reset } = useForm();
+  const { register, handleSubmit } = useForm({ defaultValues: preData });
 
   // library
   const { data: locationData } = useGetLocationsQuery(
@@ -58,6 +58,7 @@ const AddLeave = ({ open, handleClose }) => {
   query['limit'] = 100;
   query['page'] = 0;
   query['isActive'] = true;
+  query['isOwn'] = false;
 
   if (location) {
     query['locationId'] = location?.id;
@@ -77,7 +78,7 @@ const AddLeave = ({ open, handleClose }) => {
 
   const dispatch = useDispatch();
 
-  const [createLeave] = useCreateLeaveMutation();
+  const [updateLeave] = useUpdateLeaveMutation();
 
   const onSubmit = async (data) => {
     setLoading(true);
@@ -90,15 +91,13 @@ const AddLeave = ({ open, handleClose }) => {
     };
 
     try {
-      const res = await createLeave({ ...newData }).unwrap();
+      const res = await updateLeave({
+        id: preData?.id,
+        body: newData,
+      }).unwrap();
 
       if (res.success) {
         handleClose();
-        setLocation(null);
-        setEmployee(null);
-        setFromDate(null);
-        setToDate(null);
-        reset();
         dispatch(
           setToast({
             open: true,
@@ -131,7 +130,7 @@ const AddLeave = ({ open, handleClose }) => {
           }}
         >
           <Typography sx={{ fontSize: 16, color: '#878781' }}>
-            Add Leave Record
+            Edit Leave Record
           </Typography>
           <IconButton
             color="error"
@@ -246,7 +245,7 @@ const AddLeave = ({ open, handleClose }) => {
                 variant="contained"
                 type="submit"
               >
-                <span style={{ lineHeight: 1 }}>Submit</span>
+                <span style={{ lineHeight: 1 }}>Update</span>
               </LoadingButton>
             </Grid>
           </Grid>
@@ -256,4 +255,4 @@ const AddLeave = ({ open, handleClose }) => {
   );
 };
 
-export default AddLeave;
+export default UpdateLeave;

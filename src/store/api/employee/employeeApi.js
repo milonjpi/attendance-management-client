@@ -13,6 +13,14 @@ export const employeeApi = api.injectEndpoints({
       }),
       invalidatesTags: ['employee'],
     }),
+    createEmployeeUser: build.mutation({
+      query: (data) => ({
+        url: `${EMPLOYEE_URL}/user`,
+        method: 'POST',
+        data: data,
+      }),
+      invalidatesTags: ['employee'],
+    }),
     getEmployees: build.query({
       query: (arg) => ({
         url: `${EMPLOYEE_URL}`,
@@ -36,6 +44,14 @@ export const employeeApi = api.injectEndpoints({
       providesTags: ['employee'],
     }),
 
+    getSingleUserEmployee: build.query({
+      query: (id) => ({
+        url: `${EMPLOYEE_URL}/${id}/user`,
+        method: 'GET',
+      }),
+      providesTags: ['employee'],
+    }),
+
     updateEmployee: build.mutation({
       query: (data) => ({
         url: `${EMPLOYEE_URL}/${data?.id}`,
@@ -50,7 +66,9 @@ export const employeeApi = api.injectEndpoints({
 
 export const {
   useCreateEmployeeMutation,
+  useCreateEmployeeUserMutation,
   useGetEmployeesQuery,
   useGetSingleEmployeeQuery,
+  useGetSingleUserEmployeeQuery,
   useUpdateEmployeeMutation,
 } = employeeApi;

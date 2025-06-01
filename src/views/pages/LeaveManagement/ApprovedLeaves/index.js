@@ -48,7 +48,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 const currentMonth = new Date().getMonth();
 const currentYear = new Date().getFullYear();
 
-const LeaveManagement = () => {
+const ApprovedLeaves = () => {
   const [location, setLocation] = useState(null);
   const [employee, setEmployee] = useState(null);
 
@@ -79,6 +79,7 @@ const LeaveManagement = () => {
   empQuery['limit'] = 100;
   empQuery['page'] = 0;
   empQuery['isActive'] = true;
+  empQuery['isOwn'] = false;
 
   if (location) {
     empQuery['locationId'] = location?.id;
@@ -135,7 +136,7 @@ const LeaveManagement = () => {
 
   return (
     <MainCard
-      title="Leave Management"
+      title="Approved Leaves"
       secondary={
         <CardAction
           icon={<AddIcon />}
@@ -228,6 +229,7 @@ const LeaveManagement = () => {
               <StyledTableCell>Date &#40;To&#41;</StyledTableCell>
               <StyledTableCell align="center">Days</StyledTableCell>
               <StyledTableCell>Remarks</StyledTableCell>
+              <StyledTableCell align="center">Status</StyledTableCell>
               <StyledTableCell align="center">Action</StyledTableCell>
             </StyledTableRow>
           </TableHead>
@@ -263,4 +265,4 @@ const LeaveManagement = () => {
   );
 };
 
-export default LeaveManagement;
+export default ApprovedLeaves;

@@ -19,7 +19,7 @@ import { setToast } from 'store/toastSlice';
 import moment from 'moment';
 import { useGetEmployeesQuery } from 'store/api/employee/employeeApi';
 import { useForm } from 'react-hook-form';
-import { useUpdateLeaveMutation } from 'store/api/leave/leaveApi';
+import { useCreateLeaveMutation } from 'store/api/leave/leaveApi';
 import { useGetLocationsQuery } from 'store/api/location/locationApi';
 
 const style = {
@@ -34,14 +34,14 @@ const style = {
   p: 3,
 };
 
-const UpdateLeave = ({ open, handleClose, preData }) => {
+const AddLeave = ({ open, handleClose }) => {
   const [loading, setLoading] = useState(false);
-  const [location, setLocation] = useState(preData?.employee?.location || null);
-  const [employee, setEmployee] = useState(preData?.employee || null);
-  const [fromDate, setFromDate] = useState(moment(preData?.fromDate) || null);
-  const [toDate, setToDate] = useState(moment(preData?.toDate) || null);
+  const [location, setLocation] = useState(null);
+  const [employee, setEmployee] = useState(null);
+  const [fromDate, setFromDate] = useState(null);
+  const [toDate, setToDate] = useState(null);
 
-  const { register, handleSubmit } = useForm({ defaultValues: preData });
+  const { register, handleSubmit, reset } = useForm();
 
   // library
   const { data: locationData } = useGetLocationsQuery(
@@ -58,6 +58,7 @@ const UpdateLeave = ({ open, handleClose, preData }) => {
   query['limit'] = 100;
   query['page'] = 0;
   query['isActive'] = true;
+  query['isOwn'] = false;
 
   if (location) {
     query['locationId'] = location?.id;
@@ -77,7 +78,7 @@ const UpdateLeave = ({ open, handleClose, preData }) => {
 
   const dispatch = useDispatch();
 
-  const [updateLeave] = useUpdateLeaveMutation();
+  const [createLeave] = useCreateLeaveMutation();
 
   const onSubmit = async (data) => {
     setLoading(true);
@@ -87,16 +88,19 @@ const UpdateLeave = ({ open, handleClose, preData }) => {
       toDate: toDate,
       days: daysDifference,
       remarks: data?.remarks || '',
+      status: 'Approved',
     };
 
     try {
-      const res = await updateLeave({
-        id: preData?.id,
-        body: newData,
-      }).unwrap();
+      const res = await createLeave({ ...newData }).unwrap();
 
       if (res.success) {
         handleClose();
+        setLocation(null);
+        setEmployee(null);
+        setFromDate(null);
+        setToDate(null);
+        reset();
         dispatch(
           setToast({
             open: true,
@@ -129,7 +133,7 @@ const UpdateLeave = ({ open, handleClose, preData }) => {
           }}
         >
           <Typography sx={{ fontSize: 16, color: '#878781' }}>
-            Edit Leave Record
+            Add Leave Record
           </Typography>
           <IconButton
             color="error"
@@ -244,7 +248,7 @@ const UpdateLeave = ({ open, handleClose, preData }) => {
                 variant="contained"
                 type="submit"
               >
-                <span style={{ lineHeight: 1 }}>Update</span>
+                <span style={{ lineHeight: 1 }}>Submit</span>
               </LoadingButton>
             </Grid>
           </Grid>
@@ -254,4 +258,4 @@ const UpdateLeave = ({ open, handleClose, preData }) => {
   );
 };
 
-export default UpdateLeave;
+export default AddLeave;
