@@ -43,21 +43,21 @@ const pages = {
       color: '#0C356A',
       icon: icons.IconUser,
       url: '/pages/profile',
-      access: ['super_admin', 'admin', 'user'],
+      access: ['user'],
       children: [
         {
           id: 'my-info',
           title: 'My Info',
           type: 'item',
           url: '/pages/profile/my-info',
-          access: ['super_admin', 'admin', 'user'],
+          access: ['user'],
         },
         {
           id: 'my-attendances',
           title: 'My Attendances',
           type: 'item',
           url: '/pages/profile/my-attendances',
-          access: ['super_admin', 'admin', 'user'],
+          access: ['user'],
         },
       ],
     },
@@ -155,7 +155,7 @@ const pages = {
           title: 'My Leaves',
           type: 'item',
           url: '/pages/leave-management/my-leaves',
-          access: ['super_admin', 'user'],
+          access: ['user'],
         },
         {
           id: 'pending-leaves',

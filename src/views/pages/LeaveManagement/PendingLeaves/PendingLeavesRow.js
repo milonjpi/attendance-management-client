@@ -42,7 +42,7 @@ const PendingLeavesRow = ({ sn, data }) => {
     try {
       const res = await updateLeave({
         id: data?.id,
-        data: { status: 'Approved' },
+        body: { status: 'Approved' },
       }).unwrap();
       if (res.success) {
         dispatch(
@@ -70,7 +70,7 @@ const PendingLeavesRow = ({ sn, data }) => {
     try {
       const res = await updateLeave({
         id: data?.id,
-        data: { status: 'Rejected' },
+        body: { status: 'Rejected' },
       }).unwrap();
       if (res.success) {
         dispatch(

@@ -18,7 +18,15 @@ export const reportApi = api.injectEndpoints({
       },
       providesTags: ['employee', 'attendance'],
     }),
+    getSalaryReport: build.query({
+      query: (arg) => ({
+        url: `${REPORT_URL}/salary`,
+        method: 'GET',
+        params: arg,
+      }),
+      providesTags: ['employee', 'attendance', 'leave'],
+    }),
   }),
 });
 
-export const { useGetAllReportQuery } = reportApi;
+export const { useGetAllReportQuery, useGetSalaryReportQuery } = reportApi;

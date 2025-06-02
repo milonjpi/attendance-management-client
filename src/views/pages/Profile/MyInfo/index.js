@@ -3,31 +3,60 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import MainCard from 'ui-component/cards/MainCard';
 import ImageShower from 'ui-component/ImageShower';
+import KeyIcon from '@mui/icons-material/Key';
 import { useState } from 'react';
 import moment from 'moment';
 import { useGetSingleUserEmployeeQuery } from 'store/api/employee/employeeApi';
 import { useSelector } from 'react-redux';
 import { selectAuth } from 'store/authSlice';
 import NotFoundEmployee from 'views/pages/Employees/NotFoundEmployee';
+import LoadingPage from 'ui-component/LoadingPage';
+import { Button } from '@mui/material';
+import ChangePassword from 'views/setting/ManageUser/SingleUser/ChangePassword';
 
 const MyInfo = () => {
   const userData = useSelector(selectAuth);
   const [open, setOpen] = useState(false);
 
-  const { data: ggg, isLoading } = useGetSingleUserEmployeeQuery(
+  const { data: userEmpData, isLoading } = useGetSingleUserEmployeeQuery(
     userData.userName || '123',
     {
       refetchOnMountOrArgChange: true,
     }
   );
-  const employeeData = ggg?.data;
+  const employeeData = userEmpData?.data;
+
+  if (isLoading && !employeeData) {
+    return <LoadingPage />;
+  }
 
   if (!employeeData && !isLoading) {
     return <NotFoundEmployee />;
   }
 
   return (
-    <MainCard title="My Info">
+    <MainCard
+      title="My Info"
+      secondary={
+        <Button
+          startIcon={<KeyIcon />}
+          variant="outlined"
+          size="small"
+          color="primary"
+          sx={{ fontSize: 11 }}
+          onClick={() => setOpen(true)}
+        >
+          Change Password
+        </Button>
+      }
+    >
+      {/* popup Items */}
+      <ChangePassword
+        open={open}
+        handleClose={() => setOpen(false)}
+        uId={userData?.id}
+      />
+      {/* end popup Items */}
       <Grid container spacing={5} sx={{ alignItems: 'stretch' }}>
         <Grid item xs={12} md={6} lg={4}>
           <Box

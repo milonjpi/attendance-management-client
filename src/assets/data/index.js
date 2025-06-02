@@ -23,3 +23,5 @@ export const monthList = [
   'November',
   'December',
 ];
+
+export const salaryYear = ['2024', '2025', '2026', '2027', '2028'];

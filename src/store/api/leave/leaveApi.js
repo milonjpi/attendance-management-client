@@ -43,6 +43,7 @@ export const leaveApi = api.injectEndpoints({
       }),
       invalidatesTags: ['leave'],
     }),
+
     deleteLeave: build.mutation({
       query: (id) => ({
         url: `${LEAVE_URL}/${id}`,
