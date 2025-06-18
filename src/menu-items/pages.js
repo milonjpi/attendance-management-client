@@ -31,8 +31,8 @@ const icons = {
 // ==============================|| EXTRA PAGES MENU ITEMS ||============================== //
 
 const pages = {
-  id: 'pages',
-  title: 'Pages',
+  id: 'payroll',
+  title: 'Payroll',
   type: 'group',
   access: ['super_admin', 'admin', 'user'],
   children: [
@@ -116,23 +116,7 @@ const pages = {
         },
       ],
     },
-    {
-      id: 'salary-management',
-      title: 'Salary Management',
-      type: 'collapse',
-      color: '#0C356A',
-      icon: icons.IconCoin,
-      access: ['super_admin', 'admin'],
-      children: [
-        {
-          id: 'monthly-salaries',
-          title: 'Monthly Salaries',
-          type: 'item',
-          url: '/pages/salary-management/monthly-salaries',
-          access: ['super_admin', 'admin'],
-        },
-      ],
-    },
+
     {
       id: 'present-management',
       title: 'Present Management',
@@ -169,6 +153,23 @@ const pages = {
           title: 'Approved Leaves',
           type: 'item',
           url: '/pages/leave-management/approved-leaves',
+          access: ['super_admin', 'admin'],
+        },
+      ],
+    },
+    {
+      id: 'salary-management',
+      title: 'Salary Management',
+      type: 'collapse',
+      color: '#0C356A',
+      icon: icons.IconCoin,
+      access: ['super_admin', 'admin'],
+      children: [
+        {
+          id: 'monthly-salaries',
+          title: 'Monthly Salaries',
+          type: 'item',
+          url: '/pages/salary-management/monthly-salaries',
           access: ['super_admin', 'admin'],
         },
       ],

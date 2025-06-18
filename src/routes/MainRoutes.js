@@ -92,6 +92,49 @@ const PresentSalary = Loadable(
 
 // end pages
 
+// offices
+// conveyances
+const MyConveyances = Loadable(
+  lazy(() => import('views/offices/Conveyances/MyConveyances'))
+);
+const PendingConveyances = Loadable(
+  lazy(() => import('views/offices/Conveyances/PendingConveyances'))
+);
+const AllConveyances = Loadable(
+  lazy(() => import('views/offices/Conveyances/AllConveyances'))
+);
+const ConveyanceLibrary = Loadable(
+  lazy(() => import('views/offices/Conveyances/ConveyanceLibrary'))
+);
+const ConveyanceCategory = Loadable(
+  lazy(() =>
+    import('views/offices/Conveyances/ConveyanceLibrary/ConveyanceCategory')
+  )
+);
+const VehicleType = Loadable(
+  lazy(() => import('views/offices/Conveyances/ConveyanceLibrary/VehicleType'))
+);
+
+// bills
+const MyBills = Loadable(lazy(() => import('views/offices/Bills/MyBills')));
+const PendingBills = Loadable(
+  lazy(() => import('views/offices/Bills/PendingBills'))
+);
+const AllBills = Loadable(lazy(() => import('views/offices/Bills/AllBills')));
+const BillLibrary = Loadable(
+  lazy(() => import('views/offices/Bills/BillLibrary'))
+);
+const BillCategory = Loadable(
+  lazy(() => import('views/offices/Bills/BillLibrary/BillCategory'))
+);
+const Shops = Loadable(
+  lazy(() => import('views/offices/Bills/BillLibrary/Shops'))
+);
+const BillUom = Loadable(
+  lazy(() => import('views/offices/Bills/BillLibrary/BillUom'))
+);
+// end offices
+
 // libraries
 const Designation = Loadable(lazy(() => import('views/Libraries/Designation')));
 const Department = Loadable(lazy(() => import('views/Libraries/Department')));
@@ -387,6 +430,133 @@ const MainRoutes = {
                   <LocationPage />
                 </AuthenticationRoutes>
               ),
+            },
+          ],
+        },
+        {
+          path: 'offices',
+          children: [
+            {
+              path: 'conveyances',
+              children: [
+                {
+                  path: 'my-conveyances',
+                  element: (
+                    <AuthenticationRoutes
+                      allowedRoles={['super_admin', 'admin']}
+                      allowedCodes={['my-conveyances']}
+                    >
+                      <MyConveyances />
+                    </AuthenticationRoutes>
+                  ),
+                },
+                {
+                  path: 'pending-conveyances',
+                  element: (
+                    <AuthenticationRoutes
+                      allowedRoles={['super_admin', 'admin']}
+                      allowedCodes={['pending-conveyances']}
+                    >
+                      <PendingConveyances />
+                    </AuthenticationRoutes>
+                  ),
+                },
+                {
+                  path: 'all-conveyances',
+                  element: (
+                    <AuthenticationRoutes
+                      allowedRoles={['super_admin', 'admin']}
+                      allowedCodes={['all-conveyances']}
+                    >
+                      <AllConveyances />
+                    </AuthenticationRoutes>
+                  ),
+                },
+                {
+                  path: 'conveyance-library',
+                  element: (
+                    <AuthenticationRoutes
+                      allowedRoles={['super_admin', 'admin']}
+                      allowedCodes={['conveyance-library']}
+                    >
+                      <ConveyanceLibrary />
+                    </AuthenticationRoutes>
+                  ),
+                  children: [
+                    {
+                      path: '',
+                      element: <ConveyanceCategory />,
+                    },
+                    {
+                      path: 'vehicle-type',
+                      element: <VehicleType />,
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              path: 'bills',
+              children: [
+                {
+                  path: 'my-bills',
+                  element: (
+                    <AuthenticationRoutes
+                      allowedRoles={['super_admin', 'admin']}
+                      allowedCodes={['my-bills']}
+                    >
+                      <MyBills />
+                    </AuthenticationRoutes>
+                  ),
+                },
+                {
+                  path: 'pending-bills',
+                  element: (
+                    <AuthenticationRoutes
+                      allowedRoles={['super_admin', 'admin']}
+                      allowedCodes={['pending-bills']}
+                    >
+                      <PendingBills />
+                    </AuthenticationRoutes>
+                  ),
+                },
+                {
+                  path: 'all-bills',
+                  element: (
+                    <AuthenticationRoutes
+                      allowedRoles={['super_admin', 'admin']}
+                      allowedCodes={['all-bills']}
+                    >
+                      <AllBills />
+                    </AuthenticationRoutes>
+                  ),
+                },
+                {
+                  path: 'bill-library',
+                  element: (
+                    <AuthenticationRoutes
+                      allowedRoles={['super_admin', 'admin']}
+                      allowedCodes={['bill-library']}
+                    >
+                      <BillLibrary />
+                    </AuthenticationRoutes>
+                  ),
+                  children: [
+                    {
+                      path: '',
+                      element: <BillCategory />,
+                    },
+                    {
+                      path: 'shop',
+                      element: <Shops />,
+                    },
+                    {
+                      path: 'uom',
+                      element: <BillUom />,
+                    },
+                  ],
+                },
+              ],
             },
           ],
         },

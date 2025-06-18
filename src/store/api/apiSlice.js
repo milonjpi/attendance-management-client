@@ -19,6 +19,13 @@ export const api = createApi({
     'user',
     'device',
     'leave',
+    'itemType',
+    'vehicleType',
+    'conveyance',
+    'item',
+    'shop',
+    'uom',
+    'bill',
   ],
   endpoints: () => ({}),
 });
