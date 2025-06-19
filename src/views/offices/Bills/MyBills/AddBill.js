@@ -1,0 +1,277 @@
+import React, { useState } from 'react';
+import Modal from '@mui/material/Modal';
+import Paper from '@mui/material/Paper';
+import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableHead from '@mui/material/TableHead';
+import Divider from '@mui/material/Divider';
+import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
+import LoadingButton from '@mui/lab/LoadingButton';
+import Autocomplete from '@mui/material/Autocomplete';
+import TextField from '@mui/material/TextField';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import CloseIcon from '@mui/icons-material/Close';
+import { useDispatch } from 'react-redux';
+import { setToast } from 'store/toastSlice';
+import moment from 'moment';
+import { useFieldArray, useForm, useWatch } from 'react-hook-form';
+import {
+  IconDeviceFloppy,
+  IconSquareRoundedPlusFilled,
+} from '@tabler/icons-react';
+import { totalSum } from 'views/utilities/NeedyFunction';
+import { StyledTableCell, StyledTableRow } from 'ui-component/table-component';
+import { useGetItemsQuery } from 'store/api/item/itemApi';
+import { useGetShopsQuery } from 'store/api/shop/shopApi';
+import { useGetUomQuery } from 'store/api/uom/uomApi';
+import { useCreateBillMutation } from 'store/api/bill/billApi';
+
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: { xs: 350, sm: 550, md: 850 },
+  maxHeight: '100vh',
+  overflow: 'auto',
+  boxShadow: 24,
+  p: 2,
+};
+
+const defaultValue = {
+  item: null,
+  shop: null,
+  details: '',
+  uom: null,
+  quantity: 1,
+  amount: '',
+};
+
+const AddBill = ({ open, handleClose, employeeData }) => {
+  const [loading, setLoading] = useState(false);
+
+  const [date, setDate] = useState(moment());
+
+  // library
+  const { data: itemData, isLoading: itemLoading } = useGetItemsQuery(
+    { limit: 500, sortBy: 'label', sortOrder: 'asc' },
+    { refetchOnMountOrArgChange: true }
+  );
+  const allItems = itemData?.items || [];
+
+  const { data: shopData, isLoading: shopLoading } = useGetShopsQuery(
+    { limit: 500, sortBy: 'label', sortOrder: 'asc' },
+    { refetchOnMountOrArgChange: true }
+  );
+  const allShops = shopData?.shops || [];
+
+  const { data: uomData, isLoading: uomLoading } = useGetUomQuery(
+    {
+      limit: 500,
+      sortBy: 'label',
+      sortOrder: 'asc',
+    },
+    { refetchOnMountOrArgChange: true }
+  );
+
+  const allUom = uomData?.uom || [];
+  // end library
+
+  // hook form
+  const { register, handleSubmit, control, setValue, reset } = useForm({
+    defaultValues: {
+      expenseDetails: [defaultValue],
+    },
+  });
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'billDetails',
+  });
+
+  const handleAppend = () => {
+    append(defaultValue);
+  };
+  const handleRemove = (index) => remove(index);
+  // end hook form
+
+  // calculation
+  const watchValue = useWatch({ control, name: 'billDetails' });
+  const totalAmount = totalSum(watchValue || [], 'amount');
+  // end calculation
+
+  const dispatch = useDispatch();
+  const [createBill] = useCreateBillMutation();
+
+  const onSubmit = async (data) => {
+    const newData = {
+      officeId: employeeData?.officeId,
+      date: date,
+      amount: totalAmount,
+      remarks: data?.remarks || '',
+      billDetails: data?.billDetails?.map((el) => ({
+        itemId: el.item?.id,
+        shopId: el.shop?.id,
+        details: el.details || '',
+        uomId: el.uom?.id,
+        quantity: el.quantity,
+        amount: el.amount,
+        remarks: el.remarks || '',
+      })),
+    };
+    try {
+      setLoading(true);
+      const res = await createBill({ ...newData }).unwrap();
+      if (res.success) {
+        handleClose();
+        setLoading(false);
+        setDate(moment());
+        reset({ billDetails: [defaultValue] });
+        dispatch(
+          setToast({
+            open: true,
+            variant: 'success',
+            message: res?.message,
+          })
+        );
+      }
+    } catch (err) {
+      setLoading(false);
+      dispatch(
+        setToast({
+          open: true,
+          variant: 'error',
+          message: err?.data?.message || 'Something Went Wrong',
+        })
+      );
+    }
+  };
+
+  return (
+    <Modal open={open} onClose={handleClose}>
+      <Paper sx={style}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
+          <Typography sx={{ fontSize: 16, color: '#878781' }}>
+            Create Bill
+          </Typography>
+          <IconButton color="error" size="small" onClick={handleClose}>
+            <CloseIcon fontSize="small" />
+          </IconButton>
+        </Box>
+        <Divider sx={{ mb: 2, mt: 1 }} />
+        {/* popup items */}
+
+        {/* end popup items */}
+        <Box
+          component="form"
+          autoComplete="off"
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <Grid container spacing={2}>
+            <Grid item xs={12} md={4}>
+              <LocalizationProvider dateAdapter={AdapterMoment}>
+                <DatePicker
+                  label="Date"
+                  views={['year', 'month', 'day']}
+                  inputFormat="DD/MM/YYYY"
+                  value={date}
+                  onChange={(newValue) => {
+                    setDate(newValue);
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      fullWidth
+                      required
+                      size="small"
+                      autoComplete="off"
+                    />
+                  )}
+                />
+              </LocalizationProvider>
+            </Grid>
+            <Grid item xs={12} md={8}>
+              <TextField
+                fullWidth
+                size="small"
+                label="Remarks"
+                {...register('remarks')}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Box sx={{ overflow: 'auto' }}>
+                <Table sx={{ minWidth: 500 }}>
+                  <TableHead>
+                    <StyledTableRow>
+                      <StyledTableCell align="center" colSpan={6}>
+                        Bill Details
+                      </StyledTableCell>
+                    </StyledTableRow>
+                  </TableHead>
+                  <TableBody>
+                    {fields.map((el, index) => (
+                      <PurchaseFields
+                        key={el.id}
+                        field={el}
+                        index={index}
+                        control={control}
+                        handleRemove={handleRemove}
+                        register={register}
+                      />
+                    ))}
+                    <StyledTableRow>
+                      <StyledTableCell sx={{ verticalAlign: 'top' }}>
+                        <Tooltip title="Add Row">
+                          <IconButton color="primary" onClick={handleAppend}>
+                            <IconSquareRoundedPlusFilled size={20} />
+                          </IconButton>
+                        </Tooltip>
+                      </StyledTableCell>
+
+                      {watchValue?.length ? (
+                        <StyledTableCell
+                          sx={{ fontSize: 12, fontWeight: 700 }}
+                          align="right"
+                          colSpan={4}
+                        >
+                          Total Amount: {totalAmount}
+                        </StyledTableCell>
+                      ) : null}
+                    </StyledTableRow>
+                  </TableBody>
+                </Table>
+              </Box>
+            </Grid>
+            <Grid item xs={12}>
+              <LoadingButton
+                fullWidth
+                size="small"
+                color="primary"
+                loading={loading}
+                loadingPosition="start"
+                startIcon={<IconDeviceFloppy />}
+                variant="contained"
+                type="submit"
+              >
+                Submit
+              </LoadingButton>
+            </Grid>
+          </Grid>
+        </Box>
+      </Paper>
+    </Modal>
+  );
+};
+
+export default AddBill;

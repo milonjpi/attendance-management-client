@@ -19,8 +19,9 @@ export const conveyanceApi = api.injectEndpoints({
       }),
       transformResponse: (response) => {
         return {
-          conveyances: response?.data,
+          conveyances: response?.data?.data,
           meta: response?.meta,
+          sum: response?.data?.sum,
         };
       },
       providesTags: ['conveyance'],

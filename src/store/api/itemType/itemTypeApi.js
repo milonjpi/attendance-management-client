@@ -1,6 +1,6 @@
 import { api } from '../apiSlice';
 
-const ITEM_TYPE_URL = '/itemType';
+const ITEM_TYPE_URL = '/item-type';
 
 export const itemTypeApi = api.injectEndpoints({
   endpoints: (build) => ({
