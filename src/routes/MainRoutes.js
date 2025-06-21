@@ -443,7 +443,7 @@ const MainRoutes = {
                   path: 'my-conveyances',
                   element: (
                     <AuthenticationRoutes
-                      allowedRoles={['super_admin', 'admin']}
+                      allowedRoles={['user']}
                       allowedCodes={['my-conveyances']}
                     >
                       <MyConveyances />
@@ -476,7 +476,7 @@ const MainRoutes = {
                   path: 'conveyance-library',
                   element: (
                     <AuthenticationRoutes
-                      allowedRoles={['super_admin', 'admin']}
+                      allowedRoles={['super_admin', 'admin', 'user']}
                       allowedCodes={['conveyance-library']}
                     >
                       <ConveyanceLibrary />
@@ -502,7 +502,7 @@ const MainRoutes = {
                   path: 'my-bills',
                   element: (
                     <AuthenticationRoutes
-                      allowedRoles={['super_admin', 'admin']}
+                      allowedRoles={['user']}
                       allowedCodes={['my-bills']}
                     >
                       <MyBills />
@@ -535,7 +535,7 @@ const MainRoutes = {
                   path: 'bill-library',
                   element: (
                     <AuthenticationRoutes
-                      allowedRoles={['super_admin', 'admin']}
+                      allowedRoles={['super_admin', 'admin', 'user']}
                       allowedCodes={['bill-library']}
                     >
                       <BillLibrary />

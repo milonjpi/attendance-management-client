@@ -13,9 +13,10 @@ export const shopApi = api.injectEndpoints({
       invalidatesTags: ['shop'],
     }),
     getShops: build.query({
-      query: () => ({
+      query: (params) => ({
         url: `${SHOP_URL}`,
         method: 'GET',
+        params,
       }),
       transformResponse: (response) => {
         return {

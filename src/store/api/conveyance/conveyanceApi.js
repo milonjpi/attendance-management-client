@@ -13,15 +13,28 @@ export const conveyanceApi = api.injectEndpoints({
       invalidatesTags: ['conveyance'],
     }),
     getConveyances: build.query({
-      query: () => ({
+      query: (params) => ({
         url: `${CONVEYANCE_URL}`,
         method: 'GET',
+        params,
       }),
       transformResponse: (response) => {
         return {
           conveyances: response?.data?.data,
           meta: response?.meta,
           sum: response?.data?.sum,
+        };
+      },
+      providesTags: ['conveyance'],
+    }),
+    getConveyanceLocations: build.query({
+      query: () => ({
+        url: `${CONVEYANCE_URL}`,
+        method: 'GET',
+      }),
+      transformResponse: (response) => {
+        return {
+          locations: response?.locations,
         };
       },
       providesTags: ['conveyance'],
@@ -71,6 +84,7 @@ export const conveyanceApi = api.injectEndpoints({
 export const {
   useCreateConveyanceMutation,
   useGetConveyancesQuery,
+  useGetConveyanceLocationsQuery,
   useGetSingleConveyanceQuery,
   useUpdateConveyanceMutation,
   useApproveConveyanceMutation,

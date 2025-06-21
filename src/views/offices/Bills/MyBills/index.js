@@ -33,6 +33,8 @@ import { useGetSingleUserEmployeeQuery } from 'store/api/employee/employeeApi';
 import { selectAuth } from 'store/authSlice';
 import LoadingPage from 'ui-component/LoadingPage';
 import NotFoundEmployee from 'views/pages/Employees/NotFoundEmployee';
+import AddBill from './AddBill';
+import BillRow from './BillRow';
 
 const MyBills = () => {
   const userData = useSelector(selectAuth);
@@ -116,9 +118,9 @@ const MyBills = () => {
     return <LoadingPage />;
   }
 
-  if (!employeeData && !userEmpLoading) {
-    return <NotFoundEmployee />;
-  }
+  // if (!employeeData && !userEmpLoading) {
+  //   return <NotFoundEmployee />;
+  // }
   return (
     <MainCard
       title="My Bills"
@@ -131,7 +133,7 @@ const MyBills = () => {
       }
     >
       {/* pop up items */}
-      <AddPurchase
+      <AddBill
         open={open}
         handleClose={() => setOpen(false)}
         employeeData={employeeData}
@@ -249,13 +251,8 @@ const MyBills = () => {
             </StyledTableCellWithBorder>
           </TableRow>
           <TableRow>
-            <StyledTableCellWithBorder>Product</StyledTableCellWithBorder>
-            <StyledTableCellWithBorder align="center">
-              Item
-            </StyledTableCellWithBorder>
-            <StyledTableCellWithBorder align="center">
-              Details
-            </StyledTableCellWithBorder>
+            <StyledTableCellWithBorder>Item</StyledTableCellWithBorder>
+            <StyledTableCellWithBorder>Details</StyledTableCellWithBorder>
             <StyledTableCellWithBorder align="center">
               UOM
             </StyledTableCellWithBorder>
@@ -270,12 +267,7 @@ const MyBills = () => {
         <TableBody>
           {allBills?.length ? (
             allBills?.map((el, index) => (
-              <ProductPurchaseRow
-                key={index}
-                sn={sn++}
-                data={el}
-                employeeData={employeeData}
-              />
+              <BillRow key={index} sn={sn++} data={el} />
             ))
           ) : (
             <TableRow>
@@ -294,7 +286,7 @@ const MyBills = () => {
           {allBills?.length ? (
             <TableRow>
               <StyledTableCellWithBorder
-                colSpan={6}
+                colSpan={7}
                 sx={{ fontSize: '12px !important', fontWeight: 700 }}
               >
                 TOTAL
@@ -303,30 +295,7 @@ const MyBills = () => {
                 align="right"
                 sx={{ fontSize: '12px !important', fontWeight: 700 }}
               >
-                {quantity}
-              </StyledTableCellWithBorder>
-              <StyledTableCellWithBorder
-                align="right"
-                sx={{ fontSize: '12px !important', fontWeight: 700 }}
-              ></StyledTableCellWithBorder>
-              <StyledTableCellWithBorder
-                align="right"
-                sx={{ fontSize: '12px !important', fontWeight: 700 }}
-              >
                 {totalAmount}
-              </StyledTableCellWithBorder>
-
-              <StyledTableCellWithBorder
-                align="right"
-                sx={{ fontSize: '12px !important', fontWeight: 700 }}
-              >
-                {totalAmount}
-              </StyledTableCellWithBorder>
-              <StyledTableCellWithBorder
-                align="right"
-                sx={{ fontSize: '12px !important', fontWeight: 700 }}
-              >
-                {totalPaidAmount}
               </StyledTableCellWithBorder>
               <StyledTableCellWithBorder
                 align="right"

@@ -13,9 +13,10 @@ export const billApi = api.injectEndpoints({
       invalidatesTags: ['bill'],
     }),
     getBills: build.query({
-      query: () => ({
+      query: (params) => ({
         url: `${BILL_URL}`,
         method: 'GET',
+        params,
       }),
       transformResponse: (response) => {
         return {

@@ -13,9 +13,10 @@ export const itemTypeApi = api.injectEndpoints({
       invalidatesTags: ['itemType'],
     }),
     getItemTypes: build.query({
-      query: () => ({
+      query: (params) => ({
         url: `${ITEM_TYPE_URL}`,
         method: 'GET',
+        params,
       }),
       transformResponse: (response) => {
         return {

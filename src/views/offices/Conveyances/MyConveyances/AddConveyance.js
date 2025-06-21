@@ -30,7 +30,13 @@ import { useGetItemsQuery } from 'store/api/item/itemApi';
 import { useGetShopsQuery } from 'store/api/shop/shopApi';
 import { useGetUomQuery } from 'store/api/uom/uomApi';
 import { useCreateBillMutation } from 'store/api/bill/billApi';
-import BillFields from './BillFields';
+import { useGetItemTypesQuery } from 'store/api/itemType/itemTypeApi';
+import { useGetVehicleTypesQuery } from 'store/api/vehicleType/vehicleTypeApi';
+import {
+  useCreateConveyanceMutation,
+  useGetConveyanceLocationsQuery,
+} from 'store/api/conveyance/conveyanceApi';
+import ConveyanceFields from './ConveyanceFields';
 
 const style = {
   position: 'absolute',
@@ -45,53 +51,45 @@ const style = {
 };
 
 const defaultValue = {
-  item: null,
-  shop: null,
+  itemType: null,
+  from: null,
+  to: null,
+  distance: '',
+  vehicleType: null,
   details: '',
-  uom: null,
-  quantity: 1,
   amount: '',
+  remarks: '',
 };
 
-const AddBill = ({ open, handleClose, employeeData }) => {
+const AddConveyance = ({ open, handleClose, employeeData }) => {
   const [loading, setLoading] = useState(false);
 
   const [date, setDate] = useState(moment());
 
   // library
-  const { data: itemData } = useGetItemsQuery(
+  const { data: itemTypeData } = useGetItemTypesQuery(
     { limit: 500, sortBy: 'label', sortOrder: 'asc' },
     { refetchOnMountOrArgChange: true }
   );
-  const allItems = itemData?.items || [];
+  const allItemTypes = itemTypeData?.itemTypes || [];
 
-  const { data: shopData } = useGetShopsQuery(
+  const { data: vehicleTypeData } = useGetVehicleTypesQuery(
     { limit: 500, sortBy: 'label', sortOrder: 'asc' },
     { refetchOnMountOrArgChange: true }
   );
-  const allShops = shopData?.shops || [];
+  const allVehicleTypes = vehicleTypeData?.vehicleTypes || [];
 
-  const { data: uomData } = useGetUomQuery(
-    {
-      limit: 500,
-      sortBy: 'label',
-      sortOrder: 'asc',
-    },
-    { refetchOnMountOrArgChange: true }
-  );
-
-  const allUom = uomData?.uom || [];
   // end library
 
   // hook form
   const { register, handleSubmit, control, reset } = useForm({
     defaultValues: {
-      billDetails: [defaultValue],
+      conveyanceDetails: [defaultValue],
     },
   });
   const { fields, append, remove } = useFieldArray({
     control,
-    name: 'billDetails',
+    name: 'conveyanceDetails',
   });
 
   const handleAppend = () => {
@@ -101,12 +99,12 @@ const AddBill = ({ open, handleClose, employeeData }) => {
   // end hook form
 
   // calculation
-  const watchValue = useWatch({ control, name: 'billDetails' });
+  const watchValue = useWatch({ control, name: 'conveyanceDetails' });
   const totalAmount = totalSum(watchValue || [], 'amount');
   // end calculation
 
   const dispatch = useDispatch();
-  const [createBill] = useCreateBillMutation();
+  const [createConveyance] = useCreateConveyanceMutation();
 
   const onSubmit = async (data) => {
     const newData = {
@@ -114,24 +112,25 @@ const AddBill = ({ open, handleClose, employeeData }) => {
       date: date,
       amount: totalAmount,
       remarks: data?.remarks || '',
-      billDetails: data?.billDetails?.map((el) => ({
-        itemId: el.item?.id,
-        shopId: el.shop?.id,
+      conveyanceDetails: data?.conveyanceDetails?.map((el) => ({
+        itemTypeId: el.itemType?.id,
+        from: el.from,
+        to: el.to,
+        distance: el.distance || 0,
+        vehicleTypeId: el.vehicleType?.id,
         details: el.details || '',
-        uomId: el.uom?.id,
-        quantity: el.quantity,
         amount: el.amount,
         remarks: el.remarks || '',
       })),
     };
     try {
       setLoading(true);
-      const res = await createBill({ ...newData }).unwrap();
+      const res = await createConveyance({ ...newData }).unwrap();
       if (res.success) {
         handleClose();
         setLoading(false);
         setDate(moment());
-        reset({ billDetails: [defaultValue] });
+        reset({ conveyanceDetails: [defaultValue] });
         dispatch(
           setToast({
             open: true,
@@ -163,7 +162,7 @@ const AddBill = ({ open, handleClose, employeeData }) => {
           }}
         >
           <Typography sx={{ fontSize: 16, color: '#878781' }}>
-            Create Bill
+            Create Conveyance
           </Typography>
           <IconButton color="error" size="small" onClick={handleClose}>
             <CloseIcon fontSize="small" />
@@ -215,22 +214,21 @@ const AddBill = ({ open, handleClose, employeeData }) => {
                   <TableHead>
                     <StyledTableRow>
                       <StyledTableCell align="center" colSpan={8}>
-                        Bill Details
+                        Conveyance Details
                       </StyledTableCell>
                     </StyledTableRow>
                   </TableHead>
                   <TableBody>
                     {fields.map((el, index) => (
-                      <BillFields
+                      <ConveyanceFields
                         key={el.id}
                         field={el}
                         index={index}
                         control={control}
                         handleRemove={handleRemove}
                         register={register}
-                        allItems={allItems}
-                        allShops={allShops}
-                        allUom={allUom}
+                        allItemTypes={allItemTypes}
+                        allVehicleTypes={allVehicleTypes}
                       />
                     ))}
                     <StyledTableRow>
@@ -277,4 +275,4 @@ const AddBill = ({ open, handleClose, employeeData }) => {
   );
 };
 
-export default AddBill;
+export default AddConveyance;

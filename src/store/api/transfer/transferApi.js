@@ -13,9 +13,10 @@ export const transferApi = api.injectEndpoints({
       invalidatesTags: ['transfer'],
     }),
     getTransfers: build.query({
-      query: () => ({
+      query: (params) => ({
         url: `${TRANSFER_URL}`,
         method: 'GET',
+        params,
       }),
       transformResponse: (response) => {
         return {

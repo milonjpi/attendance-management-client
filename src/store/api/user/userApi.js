@@ -13,9 +13,10 @@ export const userApi = api.injectEndpoints({
       invalidatesTags: ['user'],
     }),
     getUsers: build.query({
-      query: () => ({
+      query: (params) => ({
         url: `${USER_URL}`,
         method: 'GET',
+        params,
       }),
       providesTags: ['user'],
     }),

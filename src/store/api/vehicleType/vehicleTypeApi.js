@@ -13,9 +13,10 @@ export const vehicleTypeApi = api.injectEndpoints({
       invalidatesTags: ['vehicleType'],
     }),
     getVehicleTypes: build.query({
-      query: () => ({
+      query: (params) => ({
         url: `${VEHICLE_TYPE_URL}`,
         method: 'GET',
+        params,
       }),
       transformResponse: (response) => {
         return {

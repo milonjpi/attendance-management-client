@@ -18,7 +18,6 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import CloseIcon from '@mui/icons-material/Close';
 import { useDispatch } from 'react-redux';
 import { setToast } from 'store/toastSlice';
-import moment from 'moment';
 import { useFieldArray, useForm, useWatch } from 'react-hook-form';
 import {
   IconDeviceFloppy,
@@ -29,7 +28,7 @@ import { StyledTableCell, StyledTableRow } from 'ui-component/table-component';
 import { useGetItemsQuery } from 'store/api/item/itemApi';
 import { useGetShopsQuery } from 'store/api/shop/shopApi';
 import { useGetUomQuery } from 'store/api/uom/uomApi';
-import { useCreateBillMutation } from 'store/api/bill/billApi';
+import { useUpdateBillMutation } from 'store/api/bill/billApi';
 import BillFields from './BillFields';
 
 const style = {
@@ -53,10 +52,10 @@ const defaultValue = {
   amount: '',
 };
 
-const AddBill = ({ open, handleClose, employeeData }) => {
+const UpdateBill = ({ open, handleClose, preData }) => {
   const [loading, setLoading] = useState(false);
 
-  const [date, setDate] = useState(moment());
+  const [date, setDate] = useState(preData?.date);
 
   // library
   const { data: itemData } = useGetItemsQuery(
@@ -84,10 +83,8 @@ const AddBill = ({ open, handleClose, employeeData }) => {
   // end library
 
   // hook form
-  const { register, handleSubmit, control, reset } = useForm({
-    defaultValues: {
-      billDetails: [defaultValue],
-    },
+  const { register, handleSubmit, control } = useForm({
+    defaultValues: preData,
   });
   const { fields, append, remove } = useFieldArray({
     control,
@@ -106,11 +103,10 @@ const AddBill = ({ open, handleClose, employeeData }) => {
   // end calculation
 
   const dispatch = useDispatch();
-  const [createBill] = useCreateBillMutation();
+  const [updateBill] = useUpdateBillMutation();
 
   const onSubmit = async (data) => {
     const newData = {
-      officeId: employeeData?.officeId,
       date: date,
       amount: totalAmount,
       remarks: data?.remarks || '',
@@ -126,12 +122,10 @@ const AddBill = ({ open, handleClose, employeeData }) => {
     };
     try {
       setLoading(true);
-      const res = await createBill({ ...newData }).unwrap();
+      const res = await updateBill({ id: preData?.id, body: newData }).unwrap();
       if (res.success) {
         handleClose();
         setLoading(false);
-        setDate(moment());
-        reset({ billDetails: [defaultValue] });
         dispatch(
           setToast({
             open: true,
@@ -163,7 +157,7 @@ const AddBill = ({ open, handleClose, employeeData }) => {
           }}
         >
           <Typography sx={{ fontSize: 16, color: '#878781' }}>
-            Create Bill
+            Edit Bill
           </Typography>
           <IconButton color="error" size="small" onClick={handleClose}>
             <CloseIcon fontSize="small" />
@@ -267,7 +261,7 @@ const AddBill = ({ open, handleClose, employeeData }) => {
                 variant="contained"
                 type="submit"
               >
-                Submit
+                Update
               </LoadingButton>
             </Grid>
           </Grid>
@@ -277,4 +271,4 @@ const AddBill = ({ open, handleClose, employeeData }) => {
   );
 };
 
-export default AddBill;
+export default UpdateBill;

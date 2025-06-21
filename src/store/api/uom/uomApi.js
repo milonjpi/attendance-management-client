@@ -13,9 +13,10 @@ export const uomApi = api.injectEndpoints({
       invalidatesTags: ['uom'],
     }),
     getUom: build.query({
-      query: () => ({
+      query: (params) => ({
         url: `${UOM_URL}`,
         method: 'GET',
+        params,
       }),
       transformResponse: (response) => {
         return {
