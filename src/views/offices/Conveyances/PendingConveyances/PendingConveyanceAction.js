@@ -19,15 +19,17 @@ import {
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
 import Transitions from 'ui-component/extended/Transitions';
-import { IconEdit, IconTrashX, IconMenu2 } from '@tabler/icons-react';
+import { IconMenu2, IconCheckbox, IconBan } from '@tabler/icons-react';
 import { setToast } from 'store/toastSlice';
 import { IconEye } from '@tabler/icons-react';
 import ConfirmDialog from 'ui-component/ConfirmDialog';
-import { useDeleteBillMutation } from 'store/api/bill/billApi';
-import UpdateBill from './UpdateBill';
-import ViewBill from '../ViewBill';
+import {
+  useApproveConveyanceMutation,
+  useRejectConveyanceMutation,
+} from 'store/api/conveyance/conveyanceApi';
+import ViewConveyance from '../ViewConveyance';
 
-const MyBillAction = ({ data }) => {
+const PendingConveyanceAction = ({ data }) => {
   const theme = useTheme();
   const customization = useSelector((state) => state.customization);
 
@@ -59,22 +61,48 @@ const MyBillAction = ({ data }) => {
 
   // operation
   const [view, setView] = useState(false);
-  const [edit, setEdit] = useState(false);
-  const [dialog, setDialog] = useState(false);
+  const [approve, setApprove] = useState(false);
+  const [reject, setReject] = useState(false);
 
   const dispatch = useDispatch();
-  const [deleteBill] = useDeleteBillMutation();
+  const [approveConveyance] = useApproveConveyanceMutation();
+  const [rejectConveyance] = useRejectConveyanceMutation();
 
-  const handleDelete = async () => {
-    setDialog(false);
+  const handleApprove = async () => {
+    setApprove(false);
     try {
-      const res = await deleteBill(data?.id).unwrap();
+      const res = await approveConveyance(data?.id).unwrap();
       if (res.success) {
         dispatch(
           setToast({
             open: true,
             variant: 'success',
-            message: 'Bill Deleted Successfully',
+            message: 'Conveyance Approved Successfully',
+          })
+        );
+      }
+    } catch (err) {
+      dispatch(
+        setToast({
+          open: true,
+          variant: 'error',
+          message: err?.data?.message || 'Something Went Wrong',
+          errorMessages: err?.data?.errorMessages,
+        })
+      );
+    }
+  };
+
+  const handleReject = async () => {
+    setReject(false);
+    try {
+      const res = await rejectConveyance(data?.id).unwrap();
+      if (res.success) {
+        dispatch(
+          setToast({
+            open: true,
+            variant: 'success',
+            message: 'Conveyance Rejected Successfully',
           })
         );
       }
@@ -105,18 +133,24 @@ const MyBillAction = ({ data }) => {
         <IconMenu2 size={14} />
       </Button>
       {/* popup items */}
-      <ViewBill open={view} handleClose={() => setView(false)} data={data} />
+      <ViewConveyance
+        open={view}
+        handleClose={() => setView(false)}
+        data={data}
+      />
 
       <ConfirmDialog
-        open={dialog}
-        setOpen={setDialog}
-        content="Delete Bill"
-        handleDelete={handleDelete}
+        open={approve}
+        setOpen={setApprove}
+        content="Approve Conveyance"
+        handleDelete={handleApprove}
       />
-      <UpdateBill
-        open={edit}
-        preData={data}
-        handleClose={() => setEdit(false)}
+
+      <ConfirmDialog
+        open={reject}
+        setOpen={setReject}
+        content="Reject Conveyance"
+        handleDelete={handleReject}
       />
       {/* popup items */}
       <Popper
@@ -187,55 +221,46 @@ const MyBillAction = ({ data }) => {
                           }
                         />
                       </ListItemButton>
-
-                      {data?.status === 'Pending' ? (
-                        <>
-                          <ListItemButton
-                            sx={{
-                              borderRadius: `${customization.borderRadius}px`,
-                            }}
-                            onClick={(e) => {
-                              setEdit(true);
-                              handleClose(e);
-                            }}
-                          >
-                            <ListItemIcon>
-                              <IconEdit
-                                stroke={1.5}
-                                size="1.3rem"
-                                color="#1976CD"
-                              />
-                            </ListItemIcon>
-                            <ListItemText
-                              primary={
-                                <Typography variant="body2">Edit</Typography>
-                              }
-                            />
-                          </ListItemButton>
-                          <ListItemButton
-                            sx={{
-                              borderRadius: `${customization.borderRadius}px`,
-                            }}
-                            onClick={(e) => {
-                              setDialog(true);
-                              handleClose(e);
-                            }}
-                          >
-                            <ListItemIcon>
-                              <IconTrashX
-                                stroke={1.5}
-                                size="1.3rem"
-                                color="#c62828"
-                              />
-                            </ListItemIcon>
-                            <ListItemText
-                              primary={
-                                <Typography variant="body2">Delete</Typography>
-                              }
-                            />
-                          </ListItemButton>
-                        </>
-                      ) : null}
+                      <ListItemButton
+                        sx={{
+                          borderRadius: `${customization.borderRadius}px`,
+                        }}
+                        onClick={(e) => {
+                          setApprove(true);
+                          handleClose(e);
+                        }}
+                      >
+                        <ListItemIcon>
+                          <IconCheckbox
+                            stroke={1.5}
+                            size="1.3rem"
+                            color="#1976CD"
+                          />
+                        </ListItemIcon>
+                        <ListItemText
+                          primary={
+                            <Typography variant="body2">Approve</Typography>
+                          }
+                        />
+                      </ListItemButton>
+                      <ListItemButton
+                        sx={{
+                          borderRadius: `${customization.borderRadius}px`,
+                        }}
+                        onClick={(e) => {
+                          setReject(true);
+                          handleClose(e);
+                        }}
+                      >
+                        <ListItemIcon>
+                          <IconBan stroke={1.5} size="1.3rem" color="#c62828" />
+                        </ListItemIcon>
+                        <ListItemText
+                          primary={
+                            <Typography variant="body2">Reject</Typography>
+                          }
+                        />
+                      </ListItemButton>
                     </List>
                   </Box>
                 </MainCard>
@@ -248,4 +273,4 @@ const MyBillAction = ({ data }) => {
   );
 };
 
-export default MyBillAction;
+export default PendingConveyanceAction;

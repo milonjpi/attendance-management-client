@@ -33,6 +33,8 @@ import { selectAuth } from 'store/authSlice';
 import LoadingPage from 'ui-component/LoadingPage';
 import { useGetConveyancesQuery } from 'store/api/conveyance/conveyanceApi';
 import AddConveyance from './AddConveyance';
+import ConveyanceRow from './ConveyanceRow';
+import NotFoundEmployee from 'views/pages/Employees/NotFoundEmployee';
 
 const MyConveyances = () => {
   const userData = useSelector(selectAuth);
@@ -105,7 +107,9 @@ const MyConveyances = () => {
   const allConveyances = data?.conveyances || [];
   const meta = data?.meta;
 
-  const totalAmount = data?.sum?._sum?.amount;
+  const mainAmount = data?.sum?._sum?.amount;
+  const extraAmount = data?.sum?._sum?.extraAmount;
+  const totalAmount = mainAmount + extraAmount;
 
   let sn = page * rowsPerPage + 1;
 
@@ -114,9 +118,9 @@ const MyConveyances = () => {
     return <LoadingPage />;
   }
 
-  // if (!employeeData && !userEmpLoading) {
-  //   return <NotFoundEmployee />;
-  // }
+  if (!employeeData && !userEmpLoading) {
+    return <NotFoundEmployee />;
+  }
   return (
     <MainCard
       title="My Conveyances"
@@ -233,8 +237,17 @@ const MyConveyances = () => {
             <StyledTableCellWithBorder rowSpan={2}>
               Date
             </StyledTableCellWithBorder>
+            <StyledTableCellWithBorder rowSpan={2}>
+              Destination
+            </StyledTableCellWithBorder>
+            <StyledTableCellWithBorder rowSpan={2} align="right">
+              Distance&#40;KM&#41;
+            </StyledTableCellWithBorder>
+            <StyledTableCellWithBorder rowSpan={2} align="right">
+              Cost&#40;TK&#41;
+            </StyledTableCellWithBorder>
             <StyledTableCellWithBorder align="center" colSpan={3}>
-              Conveyance Details
+              Additional Expenses
             </StyledTableCellWithBorder>
             <StyledTableCellWithBorder align="right" rowSpan={2}>
               Total Amount
@@ -247,17 +260,17 @@ const MyConveyances = () => {
             </StyledTableCellWithBorder>
           </TableRow>
           <TableRow>
-            <StyledTableCellWithBorder>Category</StyledTableCellWithBorder>
+            <StyledTableCellWithBorder>Item</StyledTableCellWithBorder>
             <StyledTableCellWithBorder>Details</StyledTableCellWithBorder>
             <StyledTableCellWithBorder align="right">
               Amount
             </StyledTableCellWithBorder>
           </TableRow>
         </TableHead>
-        {/* <TableBody>
+        <TableBody>
           {allConveyances?.length ? (
             allConveyances?.map((el, index) => (
-              <BillRow key={index} sn={sn++} data={el} />
+              <ConveyanceRow key={index} sn={sn++} data={el} />
             ))
           ) : (
             <TableRow>
@@ -276,7 +289,7 @@ const MyConveyances = () => {
           {allConveyances?.length ? (
             <TableRow>
               <StyledTableCellWithBorder
-                colSpan={7}
+                colSpan={8}
                 sx={{ fontSize: '12px !important', fontWeight: 700 }}
               >
                 TOTAL
@@ -294,7 +307,7 @@ const MyConveyances = () => {
               ></StyledTableCellWithBorder>
             </TableRow>
           ) : null}
-        </TableBody> */}
+        </TableBody>
       </Table>
       <TablePagination
         rowsPerPageOptions={[10, 20, 40, 100]}

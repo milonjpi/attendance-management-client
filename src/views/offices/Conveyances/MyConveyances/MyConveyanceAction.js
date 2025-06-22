@@ -23,11 +23,11 @@ import { IconEdit, IconTrashX, IconMenu2 } from '@tabler/icons-react';
 import { setToast } from 'store/toastSlice';
 import { IconEye } from '@tabler/icons-react';
 import ConfirmDialog from 'ui-component/ConfirmDialog';
-import { useDeleteBillMutation } from 'store/api/bill/billApi';
-import UpdateBill from './UpdateBill';
-import ViewBill from '../ViewBill';
+import { useDeleteConveyanceMutation } from 'store/api/conveyance/conveyanceApi';
+import UpdateConveyance from './UpdateConveyance';
+import ViewConveyance from '../ViewConveyance';
 
-const MyBillAction = ({ data }) => {
+const MyConveyanceAction = ({ data }) => {
   const theme = useTheme();
   const customization = useSelector((state) => state.customization);
 
@@ -63,18 +63,18 @@ const MyBillAction = ({ data }) => {
   const [dialog, setDialog] = useState(false);
 
   const dispatch = useDispatch();
-  const [deleteBill] = useDeleteBillMutation();
+  const [deleteConveyance] = useDeleteConveyanceMutation();
 
   const handleDelete = async () => {
     setDialog(false);
     try {
-      const res = await deleteBill(data?.id).unwrap();
+      const res = await deleteConveyance(data?.id).unwrap();
       if (res.success) {
         dispatch(
           setToast({
             open: true,
             variant: 'success',
-            message: 'Bill Deleted Successfully',
+            message: 'Conveyance Deleted Successfully',
           })
         );
       }
@@ -105,15 +105,19 @@ const MyBillAction = ({ data }) => {
         <IconMenu2 size={14} />
       </Button>
       {/* popup items */}
-      <ViewBill open={view} handleClose={() => setView(false)} data={data} />
+      <ViewConveyance
+        open={view}
+        handleClose={() => setView(false)}
+        data={data}
+      />
 
       <ConfirmDialog
         open={dialog}
         setOpen={setDialog}
-        content="Delete Bill"
+        content="Delete Conveyance"
         handleDelete={handleDelete}
       />
-      <UpdateBill
+      <UpdateConveyance
         open={edit}
         preData={data}
         handleClose={() => setEdit(false)}
@@ -248,4 +252,4 @@ const MyBillAction = ({ data }) => {
   );
 };
 
-export default MyBillAction;
+export default MyConveyanceAction;

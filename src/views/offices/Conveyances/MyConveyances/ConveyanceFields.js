@@ -5,8 +5,7 @@ import TextField from '@mui/material/TextField';
 import { Controller } from 'react-hook-form';
 import { IconSquareRoundedXFilled } from '@tabler/icons-react';
 import { StyledTableCell, StyledTableRow } from 'ui-component/table-component';
-import { useState } from 'react';
-import { useGetConveyanceLocationsQuery } from 'store/api/conveyance/conveyanceApi';
+
 
 const ConveyanceFields = ({
   field,
@@ -15,25 +14,14 @@ const ConveyanceFields = ({
   handleRemove,
   register,
   allItemTypes,
-  allVehicleTypes,
 }) => {
-  const [itemType, setItemType] = useState(field?.itemType || null);
-  const [from, setFrom] = useState(field?.from || null);
-  const [to, setTo] = useState(field?.to || null);
-  const [vehicleType, setVehicleType] = useState(field?.vehicleType || null);
-
-  const { data: locationData } = useGetConveyanceLocationsQuery(
-    { type: itemType?.label || 'Transport' },
-    { refetchOnMountOrArgChange: true }
-  );
-  const allLocations = locationData?.locations || [];
   return (
     <StyledTableRow>
       <StyledTableCell sx={{ minWidth: 130, py: '12px !important' }}>
         <Controller
           render={({ field: { onChange, value } }) => (
             <Autocomplete
-              value={itemType}
+              defaultValue={field?.itemType || null}
               size="small"
               options={allItemTypes}
               fullWidth
@@ -42,16 +30,12 @@ const ConveyanceFields = ({
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  label="Category"
+                  label="Select Item"
                   variant="outlined"
                   required
                 />
               )}
               onChange={(e, data) => {
-                setItemType(data);
-                setFrom(null);
-                setTo(null);
-                setVehicleType(null);
                 onChange(data);
                 return data;
               }}
@@ -68,81 +52,6 @@ const ConveyanceFields = ({
           size="small"
           label="Details"
           {...register(`conveyanceDetails[${index}].details`)}
-        />
-      </StyledTableCell>
-      <StyledTableCell sx={{ minWidth: 120, py: '12px !important' }}>
-        <Controller
-          render={({ field: { onChange, value } }) => (
-            <Autocomplete
-              value={from}
-              size="small"
-              options={allLocations}
-              fullWidth
-              freeSolo
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="From"
-                  variant="outlined"
-                  required
-                />
-              )}
-              onChange={(e, data) => {
-                setFrom(data);
-                onChange(data);
-                return data;
-              }}
-            />
-          )}
-          name={`conveyanceDetails[${index}].from`}
-          control={control}
-        />
-      </StyledTableCell>
-      <StyledTableCell sx={{ minWidth: 120, py: '12px !important' }}>
-        <Controller
-          render={({ field: { onChange, value } }) => (
-            <Autocomplete
-              value={to}
-              size="small"
-              options={allLocations}
-              fullWidth
-              freeSolo
-              renderInput={(params) => (
-                <TextField {...params} label="To" variant="outlined" required />
-              )}
-              onChange={(e, data) => {
-                setTo(data);
-                onChange(data);
-                return data;
-              }}
-            />
-          )}
-          name={`conveyanceDetails[${index}].to`}
-          control={control}
-        />
-      </StyledTableCell>
-      <StyledTableCell sx={{ minWidth: 0, py: '12px !important' }}>
-        <Controller
-          render={({ field: { onChange, value } }) => (
-            <Autocomplete
-              value={vehicleType}
-              size="small"
-              options={allVehicleTypes}
-              fullWidth
-              getOptionLabel={(option) => option.label}
-              isOptionEqualToValue={(item, value) => item.id === value.id}
-              renderInput={(params) => (
-                <TextField {...params} label="By" variant="outlined" required />
-              )}
-              onChange={(e, data) => {
-                setVehicleType(data);
-                onChange(data);
-                return data;
-              }}
-            />
-          )}
-          name={`conveyanceDetails[${index}].vehicleType`}
-          control={control}
         />
       </StyledTableCell>
       <StyledTableCell sx={{ width: 120 }}>

@@ -107,9 +107,7 @@ const MyBills = () => {
   const allBills = data?.bills || [];
   const meta = data?.meta;
 
-  const quantity = data?.sum?._sum?.quantity;
   const totalAmount = data?.sum?._sum?.amount;
-  const totalPaidAmount = data?.sum?._sum?.paidAmount;
 
   let sn = page * rowsPerPage + 1;
 
@@ -118,9 +116,9 @@ const MyBills = () => {
     return <LoadingPage />;
   }
 
-  // if (!employeeData && !userEmpLoading) {
-  //   return <NotFoundEmployee />;
-  // }
+  if (!employeeData && !userEmpLoading) {
+    return <NotFoundEmployee />;
+  }
   return (
     <MainCard
       title="My Bills"

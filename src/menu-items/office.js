@@ -28,7 +28,7 @@ const offices = {
           title: 'My Conveyances',
           type: 'item',
           url: '/offices/conveyances/my-conveyances',
-          access: ['super_admin', 'admin', 'user'],
+          access: ['user'],
         },
         {
           id: 'pending-conveyances',
@@ -66,7 +66,7 @@ const offices = {
           title: 'My Bills',
           type: 'item',
           url: '/offices/bills/my-bills',
-          access: ['super_admin', 'admin', 'user'],
+          access: ['user'],
         },
         {
           id: 'pending-bills',

@@ -18,7 +18,6 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import CloseIcon from '@mui/icons-material/Close';
 import { useDispatch } from 'react-redux';
 import { setToast } from 'store/toastSlice';
-import moment from 'moment';
 import { useFieldArray, useForm, useWatch } from 'react-hook-form';
 import {
   IconDeviceFloppy,
@@ -29,8 +28,8 @@ import { StyledTableCell, StyledTableRow } from 'ui-component/table-component';
 import { useGetItemTypesQuery } from 'store/api/itemType/itemTypeApi';
 import { useGetVehicleTypesQuery } from 'store/api/vehicleType/vehicleTypeApi';
 import {
-  useCreateConveyanceMutation,
   useGetConveyanceLocationsQuery,
+  useUpdateConveyanceMutation,
 } from 'store/api/conveyance/conveyanceApi';
 import ConveyanceFields from './ConveyanceFields';
 import { Autocomplete } from '@mui/material';
@@ -54,13 +53,13 @@ const defaultValue = {
   remarks: '',
 };
 
-const AddConveyance = ({ open, handleClose, employeeData }) => {
+const UpdateConveyance = ({ open, handleClose, preData }) => {
   const [loading, setLoading] = useState(false);
 
-  const [date, setDate] = useState(moment());
-  const [from, setFrom] = useState(null);
-  const [to, setTo] = useState(null);
-  const [vehicleType, setVehicleType] = useState(null);
+  const [date, setDate] = useState(preData?.date);
+  const [from, setFrom] = useState(preData?.from || null);
+  const [to, setTo] = useState(preData?.to || null);
+  const [vehicleType, setVehicleType] = useState(preData?.vehicleType || null);
 
   // library
   const { data: itemTypeData } = useGetItemTypesQuery(
@@ -83,10 +82,8 @@ const AddConveyance = ({ open, handleClose, employeeData }) => {
   // end library
 
   // hook form
-  const { register, handleSubmit, control, reset } = useForm({
-    defaultValues: {
-      conveyanceDetails: [defaultValue],
-    },
+  const { register, handleSubmit, control } = useForm({
+    defaultValues: preData,
   });
   const { fields, append, remove } = useFieldArray({
     control,
@@ -105,7 +102,7 @@ const AddConveyance = ({ open, handleClose, employeeData }) => {
   // end calculation
 
   const dispatch = useDispatch();
-  const [createConveyance] = useCreateConveyanceMutation();
+  const [updateConveyance] = useUpdateConveyanceMutation();
 
   const onSubmit = async (data) => {
     const newData = {
@@ -113,7 +110,6 @@ const AddConveyance = ({ open, handleClose, employeeData }) => {
       to: to,
       distance: data?.distance,
       vehicleTypeId: vehicleType?.id,
-      officeId: employeeData?.officeId,
       date: date,
       amount: data?.amount,
       extraAmount: totalAmount,
@@ -127,15 +123,13 @@ const AddConveyance = ({ open, handleClose, employeeData }) => {
     };
     try {
       setLoading(true);
-      const res = await createConveyance({ ...newData }).unwrap();
+      const res = await updateConveyance({
+        id: preData?.id,
+        body: newData,
+      }).unwrap();
       if (res.success) {
         handleClose();
         setLoading(false);
-        setDate(moment());
-        setFrom(null);
-        setTo(null);
-        setVehicleType(null);
-        reset({ conveyanceDetails: [defaultValue] });
         dispatch(
           setToast({
             open: true,
@@ -261,6 +255,7 @@ const AddConveyance = ({ open, handleClose, employeeData }) => {
                 )}
               />
             </Grid>
+
             <Grid item xs={12} md={3}>
               <TextField
                 fullWidth
@@ -340,7 +335,7 @@ const AddConveyance = ({ open, handleClose, employeeData }) => {
                 variant="contained"
                 type="submit"
               >
-                Submit
+                Update
               </LoadingButton>
             </Grid>
           </Grid>
@@ -350,4 +345,4 @@ const AddConveyance = ({ open, handleClose, employeeData }) => {
   );
 };
 
-export default AddConveyance;
+export default UpdateConveyance;

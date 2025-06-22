@@ -51,7 +51,7 @@ const AddConveyanceCategory = ({ open, handleClose }) => {
           setToast({
             open: true,
             variant: 'success',
-            message: 'Category Added Successfully',
+            message: 'Item Added Successfully',
           })
         );
         setLoading(false);
@@ -79,7 +79,7 @@ const AddConveyanceCategory = ({ open, handleClose }) => {
           }}
         >
           <Typography sx={{ fontSize: 16, color: '#878781' }}>
-            Add Conveyance Category
+            Add Conveyance Item
           </Typography>
           <IconButton color="error" size="small" onClick={handleClose}>
             <CloseIcon fontSize="small" />
@@ -97,7 +97,7 @@ const AddConveyanceCategory = ({ open, handleClose }) => {
                 fullWidth
                 required
                 size="small"
-                label="Conveyance Category"
+                label="Conveyance Item"
                 {...register('label', { required: true })}
               />
             </Grid>

@@ -7,7 +7,7 @@ import { useLocation, Link, Outlet } from 'react-router-dom';
 const menuList = [
   {
     id: 1,
-    label: 'Conveyance Category',
+    label: 'Conveyance Item',
     path: '',
   },
   {

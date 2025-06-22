@@ -53,7 +53,7 @@ const UpdateConveyanceCategory = ({ open, handleClose, preData }) => {
           setToast({
             open: true,
             variant: 'success',
-            message: 'Category Updated Successfully',
+            message: 'Item Updated Successfully',
           })
         );
         setLoading(false);
@@ -81,7 +81,7 @@ const UpdateConveyanceCategory = ({ open, handleClose, preData }) => {
           }}
         >
           <Typography sx={{ fontSize: 16, color: '#878781' }}>
-            Edit Conveyance Category
+            Edit Conveyance Item
           </Typography>
           <IconButton color="error" size="small" onClick={handleClose}>
             <CloseIcon fontSize="small" />
@@ -99,7 +99,7 @@ const UpdateConveyanceCategory = ({ open, handleClose, preData }) => {
                 fullWidth
                 required
                 size="small"
-                label="Conveyance Category"
+                label="Conveyance Item"
                 {...register('label', { required: true })}
               />
             </Grid>

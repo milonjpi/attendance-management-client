@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 // material-ui
 import Button from '@mui/material/Button';
@@ -19,15 +19,11 @@ import {
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
 import Transitions from 'ui-component/extended/Transitions';
-import { IconEdit, IconTrashX, IconMenu2 } from '@tabler/icons-react';
-import { setToast } from 'store/toastSlice';
+import { IconMenu2 } from '@tabler/icons-react';
 import { IconEye } from '@tabler/icons-react';
-import ConfirmDialog from 'ui-component/ConfirmDialog';
-import { useDeleteBillMutation } from 'store/api/bill/billApi';
-import UpdateBill from './UpdateBill';
-import ViewBill from '../ViewBill';
+import ViewConveyance from '../ViewConveyance';
 
-const MyBillAction = ({ data }) => {
+const AllConveyanceAction = ({ data }) => {
   const theme = useTheme();
   const customization = useSelector((state) => state.customization);
 
@@ -59,36 +55,6 @@ const MyBillAction = ({ data }) => {
 
   // operation
   const [view, setView] = useState(false);
-  const [edit, setEdit] = useState(false);
-  const [dialog, setDialog] = useState(false);
-
-  const dispatch = useDispatch();
-  const [deleteBill] = useDeleteBillMutation();
-
-  const handleDelete = async () => {
-    setDialog(false);
-    try {
-      const res = await deleteBill(data?.id).unwrap();
-      if (res.success) {
-        dispatch(
-          setToast({
-            open: true,
-            variant: 'success',
-            message: 'Bill Deleted Successfully',
-          })
-        );
-      }
-    } catch (err) {
-      dispatch(
-        setToast({
-          open: true,
-          variant: 'error',
-          message: err?.data?.message || 'Something Went Wrong',
-          errorMessages: err?.data?.errorMessages,
-        })
-      );
-    }
-  };
 
   return (
     <>
@@ -105,18 +71,10 @@ const MyBillAction = ({ data }) => {
         <IconMenu2 size={14} />
       </Button>
       {/* popup items */}
-      <ViewBill open={view} handleClose={() => setView(false)} data={data} />
-
-      <ConfirmDialog
-        open={dialog}
-        setOpen={setDialog}
-        content="Delete Bill"
-        handleDelete={handleDelete}
-      />
-      <UpdateBill
-        open={edit}
-        preData={data}
-        handleClose={() => setEdit(false)}
+      <ViewConveyance
+        open={view}
+        handleClose={() => setView(false)}
+        data={data}
       />
       {/* popup items */}
       <Popper
@@ -187,55 +145,6 @@ const MyBillAction = ({ data }) => {
                           }
                         />
                       </ListItemButton>
-
-                      {data?.status === 'Pending' ? (
-                        <>
-                          <ListItemButton
-                            sx={{
-                              borderRadius: `${customization.borderRadius}px`,
-                            }}
-                            onClick={(e) => {
-                              setEdit(true);
-                              handleClose(e);
-                            }}
-                          >
-                            <ListItemIcon>
-                              <IconEdit
-                                stroke={1.5}
-                                size="1.3rem"
-                                color="#1976CD"
-                              />
-                            </ListItemIcon>
-                            <ListItemText
-                              primary={
-                                <Typography variant="body2">Edit</Typography>
-                              }
-                            />
-                          </ListItemButton>
-                          <ListItemButton
-                            sx={{
-                              borderRadius: `${customization.borderRadius}px`,
-                            }}
-                            onClick={(e) => {
-                              setDialog(true);
-                              handleClose(e);
-                            }}
-                          >
-                            <ListItemIcon>
-                              <IconTrashX
-                                stroke={1.5}
-                                size="1.3rem"
-                                color="#c62828"
-                              />
-                            </ListItemIcon>
-                            <ListItemText
-                              primary={
-                                <Typography variant="body2">Delete</Typography>
-                              }
-                            />
-                          </ListItemButton>
-                        </>
-                      ) : null}
                     </List>
                   </Box>
                 </MainCard>
@@ -248,4 +157,4 @@ const MyBillAction = ({ data }) => {
   );
 };
 
-export default MyBillAction;
+export default AllConveyanceAction;

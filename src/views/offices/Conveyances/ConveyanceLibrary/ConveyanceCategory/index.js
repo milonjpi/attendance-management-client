@@ -39,7 +39,7 @@ const ConveyanceCategory = () => {
       align: 'center',
     },
     {
-      title: 'Category',
+      title: 'Conveyance Item',
     },
     {
       title: 'Action',
@@ -77,7 +77,7 @@ const ConveyanceCategory = () => {
   let sn = page * rowsPerPage + 1;
   return (
     <MainCard
-      title="Conveyance Category"
+      title="Conveyance Items"
       secondary={
         <CardAction
           title="Create"

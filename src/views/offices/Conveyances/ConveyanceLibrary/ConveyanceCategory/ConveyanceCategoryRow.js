@@ -24,7 +24,7 @@ const ConveyanceCategoryRow = ({ sn, data }) => {
           setToast({
             open: true,
             variant: 'success',
-            message: 'Category Deleted Successfully',
+            message: 'Item Deleted Successfully',
           })
         );
       }
@@ -67,7 +67,7 @@ const ConveyanceCategoryRow = ({ sn, data }) => {
         <ConfirmDialog
           open={dialog}
           setOpen={setDialog}
-          content="Delete Conveyance Category"
+          content="Delete Conveyance Item"
           handleDelete={handleDelete}
         />
         <UpdateConveyanceCategory
