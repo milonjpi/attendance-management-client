@@ -41,7 +41,7 @@ const CreateUser = ({ open, handleClose, userData }) => {
     const newData = {
       fullName: userData?.name,
       userName: userData?.officeId,
-      password: data?.password || '123',
+      password: data?.password,
       isEmployee: true,
     };
 

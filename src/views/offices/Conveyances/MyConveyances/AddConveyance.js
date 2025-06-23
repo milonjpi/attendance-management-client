@@ -83,11 +83,7 @@ const AddConveyance = ({ open, handleClose, employeeData }) => {
   // end library
 
   // hook form
-  const { register, handleSubmit, control, reset } = useForm({
-    defaultValues: {
-      conveyanceDetails: [defaultValue],
-    },
-  });
+  const { register, handleSubmit, control, reset } = useForm();
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'conveyanceDetails',
