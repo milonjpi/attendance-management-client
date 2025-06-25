@@ -33,7 +33,7 @@ const style = {
   p: 3,
 };
 
-const AddAttendance = ({ open, handleClose }) => {
+const AddManualAttendance = ({ open, handleClose }) => {
   const [loading, setLoading] = useState(false);
   const [location, setLocation] = useState(null);
   const [employee, setEmployee] = useState(null);
@@ -200,4 +200,4 @@ const AddAttendance = ({ open, handleClose }) => {
   );
 };
 
-export default AddAttendance;
+export default AddManualAttendance;

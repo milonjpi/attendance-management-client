@@ -62,6 +62,23 @@ const TransferEmployee = Loadable(
   lazy(() => import('views/pages/Employees/TransferEmployee'))
 );
 
+// employees libraries
+const EmployeeLibrary = Loadable(
+  lazy(() => import('views/pages/Employees/EmployeeLibrary'))
+);
+const Designation = Loadable(
+  lazy(() => import('views/pages/Employees/EmployeeLibrary/Designation'))
+);
+const Department = Loadable(
+  lazy(() => import('views/pages/Employees/EmployeeLibrary/Department'))
+);
+const Area = Loadable(
+  lazy(() => import('views/pages/Employees/EmployeeLibrary/Area'))
+);
+const LocationPage = Loadable(
+  lazy(() => import('views/pages/Employees/EmployeeLibrary/Location'))
+);
+
 // attendances
 const DailyAttendance = Loadable(
   lazy(() => import('views/pages/Attendance/DailyAttendance'))
@@ -69,9 +86,15 @@ const DailyAttendance = Loadable(
 const AllAttendance = Loadable(
   lazy(() => import('views/pages/Attendance/AllAttendance'))
 );
-const PresentManagement = Loadable(
-  lazy(() => import('views/pages/PresentManagement'))
+
+// present management
+const ManualPresent = Loadable(
+  lazy(() => import('views/pages/PresentManagement/ManualPresent'))
 );
+const PresentNow = Loadable(
+  lazy(() => import('views/pages/PresentManagement/PresentNow'))
+);
+
 const MyLeaves = Loadable(
   lazy(() => import('views/pages/LeaveManagement/MyLeaves'))
 );
@@ -135,11 +158,6 @@ const BillUom = Loadable(
 );
 // end offices
 
-// libraries
-const Designation = Loadable(lazy(() => import('views/Libraries/Designation')));
-const Department = Loadable(lazy(() => import('views/Libraries/Department')));
-const Area = Loadable(lazy(() => import('views/Libraries/Area')));
-const LocationPage = Loadable(lazy(() => import('views/Libraries/Location')));
 // utilities routing
 
 // setting routing
@@ -277,6 +295,35 @@ const MainRoutes = {
                     </AuthenticationRoutes>
                   ),
                 },
+                {
+                  path: 'employee-library',
+                  element: (
+                    <AuthenticationRoutes
+                      allowedRoles={['super_admin', 'admin']}
+                      allowedCodes={['employee-library']}
+                    >
+                      <EmployeeLibrary />
+                    </AuthenticationRoutes>
+                  ),
+                  children: [
+                    {
+                      path: 'designation',
+                      element: <Designation />,
+                    },
+                    {
+                      path: 'department',
+                      element: <Department />,
+                    },
+                    {
+                      path: 'area',
+                      element: <Area />,
+                    },
+                    {
+                      path: 'branch',
+                      element: <LocationPage />,
+                    },
+                  ],
+                },
               ],
             },
             {
@@ -335,14 +382,30 @@ const MainRoutes = {
             },
             {
               path: 'present-management',
-              element: (
-                <AuthenticationRoutes
-                  allowedRoles={['super_admin', 'admin']}
-                  allowedCodes={['present-management']}
-                >
-                  <PresentManagement />
-                </AuthenticationRoutes>
-              ),
+              children: [
+                {
+                  path: 'geo-attendance',
+                  element: (
+                    <AuthenticationRoutes
+                      allowedRoles={['user']}
+                      allowedCodes={['geo-attendance']}
+                    >
+                      <PresentNow />
+                    </AuthenticationRoutes>
+                  ),
+                },
+                {
+                  path: 'manual-present',
+                  element: (
+                    <AuthenticationRoutes
+                      allowedRoles={['super_admin', 'admin']}
+                      allowedCodes={['manual-present']}
+                    >
+                      <ManualPresent />
+                    </AuthenticationRoutes>
+                  ),
+                },
+              ],
             },
             {
               path: 'leave-management',
@@ -384,55 +447,7 @@ const MainRoutes = {
             },
           ],
         },
-        {
-          path: 'libraries',
-          children: [
-            {
-              path: 'designation',
-              element: (
-                <AuthenticationRoutes
-                  allowedRoles={['super_admin', 'admin']}
-                  allowedCodes={['designation']}
-                >
-                  <Designation />
-                </AuthenticationRoutes>
-              ),
-            },
-            {
-              path: 'department',
-              element: (
-                <AuthenticationRoutes
-                  allowedRoles={['super_admin', 'admin']}
-                  allowedCodes={['department']}
-                >
-                  <Department />
-                </AuthenticationRoutes>
-              ),
-            },
-            {
-              path: 'area',
-              element: (
-                <AuthenticationRoutes
-                  allowedRoles={['super_admin', 'admin']}
-                  allowedCodes={['area']}
-                >
-                  <Area />
-                </AuthenticationRoutes>
-              ),
-            },
-            {
-              path: 'branch',
-              element: (
-                <AuthenticationRoutes
-                  allowedRoles={['super_admin', 'admin']}
-                  allowedCodes={['branch']}
-                >
-                  <LocationPage />
-                </AuthenticationRoutes>
-              ),
-            },
-          ],
-        },
+
         {
           path: 'offices',
           children: [

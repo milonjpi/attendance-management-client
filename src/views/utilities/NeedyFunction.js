@@ -1,4 +1,5 @@
 import moment from 'moment';
+import { v4 as uuidv4 } from 'uuid';
 
 // Random Text
 export const randomText = (length) => {
@@ -109,3 +110,33 @@ export const calculateDuration = (start, end) => {
     (minutes ? minutes + ' Min' : '')
   );
 };
+
+export const getDistanceFromLatLonInMeters = (lat1, lon1, lat2, lon2) => {
+  const R = 6371e3; // Earth radius in meters
+  const toRad = (value) => (value * Math.PI) / 180;
+
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRad(lat1)) *
+      Math.cos(toRad(lat2)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const distance = R * c;
+
+  return distance; // in meters
+};
+
+export const getDeviceId = () => {
+  let id = localStorage.getItem('device_id');
+  if (!id) {
+    id = uuidv4();
+    localStorage.setItem('device_id', id);
+  }
+  return id;
+};
+

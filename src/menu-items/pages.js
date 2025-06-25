@@ -90,6 +90,13 @@ const pages = {
           url: '/pages/employee-management/transfer-employees',
           access: ['super_admin', 'admin'],
         },
+        {
+          id: 'employee-library',
+          title: 'Library',
+          type: 'item',
+          url: '/pages/employee-management/employee-library/designation',
+          access: ['super_admin', 'admin'],
+        },
       ],
     },
     {
@@ -120,11 +127,26 @@ const pages = {
     {
       id: 'present-management',
       title: 'Present Management',
-      type: 'item',
+      type: 'collapse',
       color: '#0C356A',
       icon: icons.IconCalendarStats,
-      url: '/pages/present-management',
-      access: ['super_admin', 'admin'],
+      access: ['super_admin', 'admin', 'user'],
+      children: [
+        {
+          id: 'geo-attendance',
+          title: 'Geo Attendance',
+          type: 'item',
+          url: '/pages/present-management/geo-attendance',
+          access: ['user'],
+        },
+        {
+          id: 'manual-present',
+          title: 'Manual Present',
+          type: 'item',
+          url: '/pages/present-management/manual-present',
+          access: ['super_admin', 'admin'],
+        },
+      ],
     },
     {
       id: 'leave-management',

@@ -127,6 +127,7 @@ const TransferEmployeeRow = ({ sn, data }) => {
           size="small"
           sx={{ minWidth: 0, mr: 0.5 }}
           onClick={() => setApprove(true)}
+          disabled={data?.isApproved}
         >
           <IconCheckbox size={14} />
         </Button>
@@ -136,6 +137,7 @@ const TransferEmployeeRow = ({ sn, data }) => {
           size="small"
           sx={{ minWidth: 0, mr: 0.5 }}
           onClick={() => setOpen(true)}
+          disabled={data?.isApproved}
         >
           <IconEdit size={14} />
         </Button>
@@ -146,6 +148,7 @@ const TransferEmployeeRow = ({ sn, data }) => {
           size="small"
           sx={{ minWidth: 0 }}
           onClick={() => setDialog(true)}
+          disabled={data?.isApproved}
         >
           <IconTrashXFilled size={14} />
         </Button>

@@ -18,12 +18,12 @@ import MainCard from 'ui-component/cards/MainCard';
 import { getDaysInMonth } from 'views/utilities/NeedyFunction';
 import moment from 'moment';
 import { useGetAttendanceQuery } from 'store/api/attendance/attendanceApi';
-import PresentManagementRow from './PresentManagementRow';
 import CardAction from 'ui-component/cards/CardAction';
 import AddIcon from '@mui/icons-material/Add';
-import AddAttendance from './AddAttendance';
 import { useGetEmployeesQuery } from 'store/api/employee/employeeApi';
 import { useGetLocationsQuery } from 'store/api/location/locationApi';
+import AddManualAttendance from './AddManualAttendance';
+import ManualPresentRow from './ManualPresentRow';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -48,7 +48,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 const currentMonth = new Date().getMonth();
 const currentYear = new Date().getFullYear();
 
-const PresentManagement = () => {
+const ManualPresent = () => {
   const [location, setLocation] = useState(null);
   const [employee, setEmployee] = useState(null);
 
@@ -143,7 +143,7 @@ const PresentManagement = () => {
       }
     >
       {/* popup items */}
-      <AddAttendance open={open} handleClose={() => setOpen(false)} />
+      <AddManualAttendance open={open} handleClose={() => setOpen(false)} />
       {/* end popup items */}
       <Box sx={{ mb: 2 }}>
         <Grid container spacing={1} sx={{ alignItems: 'end' }}>
@@ -227,7 +227,7 @@ const PresentManagement = () => {
           <TableBody>
             {attendances?.length ? (
               attendances.map((item) => (
-                <PresentManagementRow key={item.id} sn={sn++} data={item} />
+                <ManualPresentRow key={item.id} sn={sn++} data={item} />
               ))
             ) : (
               <StyledTableRow>
@@ -256,4 +256,4 @@ const PresentManagement = () => {
   );
 };
 
-export default PresentManagement;
+export default ManualPresent;
