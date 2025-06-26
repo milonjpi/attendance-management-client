@@ -1,7 +1,7 @@
 {
   "name": "client",
   "version": "3.3.1",
-  "homepage": "http://vas.tbz.com.bd",
+  "homepage": "https://vas.tbz.com.bd/",
   "private": true,
   "dependencies": {
     "@emotion/cache": "^11.9.3",
