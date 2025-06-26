@@ -12,6 +12,25 @@ export const attendanceApi = api.injectEndpoints({
       }),
       invalidatesTags: ['attendance'],
     }),
+
+    createGeoAttendance: build.mutation({
+      query: (data) => ({
+        url: `${ATTENDANCE_URL}/geo-attendance`,
+        method: 'POST',
+        data: data,
+      }),
+      invalidatesTags: ['attendance'],
+    }),
+
+    createGeoLeave: build.mutation({
+      query: (data) => ({
+        url: `${ATTENDANCE_URL}/geo-leave`,
+        method: 'POST',
+        data: data,
+      }),
+      invalidatesTags: ['attendance'],
+    }),
+
     getAttendance: build.query({
       query: (arg) => ({
         url: `${ATTENDANCE_URL}`,
@@ -26,6 +45,14 @@ export const attendanceApi = api.injectEndpoints({
       },
       providesTags: ['attendance'],
     }),
+    getSingleAttendance: build.query({
+      query: (arg) => ({
+        url: `${ATTENDANCE_URL}/single`,
+        method: 'GET',
+        params: arg,
+      }),
+      providesTags: ['attendance'],
+    }),
     deleteAttendance: build.mutation({
       query: (id) => ({
         url: `${ATTENDANCE_URL}/${id}`,
@@ -38,6 +65,9 @@ export const attendanceApi = api.injectEndpoints({
 
 export const {
   useCreateAttendanceMutation,
+  useCreateGeoAttendanceMutation,
+  useCreateGeoLeaveMutation,
   useGetAttendanceQuery,
+  useGetSingleAttendanceQuery,
   useDeleteAttendanceMutation,
 } = attendanceApi;
