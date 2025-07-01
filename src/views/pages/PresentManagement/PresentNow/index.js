@@ -191,13 +191,17 @@ const PresentNow = () => {
                   sx={{
                     fontWeight: 700,
                     fontSize: 20,
-                    color: Number(distance) < 50 ? 'green' : 'red',
+                    color:
+                      Number(distance) && Number(distance) < 50
+                        ? 'green'
+                        : 'red',
                   }}
                 >
-                  {distance + ' meters'}
+                  {distance ? distance + ' meters' : 'Your Location is Off'}
                 </Typography>
               </Paper>
-              {Number(distance) < 50 &&
+              {Number(distance) &&
+              Number(distance) < 50 &&
               !todayAttendance &&
               moment().hour() < 12 ? (
                 <Button
@@ -209,7 +213,9 @@ const PresentNow = () => {
                 </Button>
               ) : null}
 
-              {Number(distance) < 50 && moment().hour() >= 12 ? (
+              {Number(distance) &&
+              Number(distance) < 50 &&
+              moment().hour() >= 12 ? (
                 <Button variant="contained" color="error" onClick={handleLeave}>
                   Leave Now
                 </Button>
