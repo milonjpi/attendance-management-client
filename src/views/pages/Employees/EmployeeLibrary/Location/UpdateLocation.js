@@ -16,6 +16,7 @@ import { setToast } from 'store/toastSlice';
 import { useUpdateLocationMutation } from 'store/api/location/locationApi';
 import { useGetAreasQuery } from 'store/api/area/areaApi';
 import { Autocomplete } from '@mui/material';
+import { weekDays } from 'assets/data';
 
 const style = {
   position: 'absolute',
@@ -32,6 +33,7 @@ const style = {
 const UpdateLocation = ({ open, handleClose, preData }) => {
   const [loading, setLoading] = useState(false);
   const [area, setArea] = useState(preData?.area || null);
+  const [weekend, setWeekend] = useState(preData?.weekend || null);
   const { register, handleSubmit } = useForm({ defaultValues: preData });
 
   // library
@@ -57,6 +59,7 @@ const UpdateLocation = ({ open, handleClose, preData }) => {
       address: data?.address,
       lat: data?.lat || '',
       lon: data?.lon || '',
+      weekend,
     };
     try {
       const res = await updateLocation({
@@ -177,6 +180,18 @@ const UpdateLocation = ({ open, handleClose, preData }) => {
                   />
                 </Grid>
               </Grid>
+            </Grid>
+            <Grid item xs={12}>
+              <Autocomplete
+                value={weekend}
+                fullWidth
+                size="small"
+                options={weekDays}
+                onChange={(e, newValue) => setWeekend(newValue)}
+                renderInput={(params) => (
+                  <TextField {...params} label="Select Weekend" required />
+                )}
+              />
             </Grid>
             <Grid item xs={12}>
               <LoadingButton

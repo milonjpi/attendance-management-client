@@ -24,5 +24,15 @@ export const monthList = [
   'December',
 ];
 
+export const weekDays = [
+  'Saturday',
+  'Sunday',
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+];
+
 export const salaryYear = ['2024', '2025', '2026', '2027', '2028'];
 export const mainStatus = ['Pending', 'Approved', 'Rejected'];

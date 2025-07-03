@@ -67,6 +67,7 @@ const LocationRow = ({ sn, data }) => {
           ? 'Lat: ' + data?.lat + ', Lon: ' + data?.lon
           : 'n/a'}
       </StyledTableCell>
+      <StyledTableCell>{data?.weekend}</StyledTableCell>
       <StyledTableCell align="center" sx={{ minWidth: 85 }}>
         <Button
           color="primary"

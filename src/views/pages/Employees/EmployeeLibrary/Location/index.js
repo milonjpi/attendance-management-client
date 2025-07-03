@@ -164,6 +164,7 @@ const LocationPage = () => {
               <StyledTableCell>Branch</StyledTableCell>
               <StyledTableCell>Address</StyledTableCell>
               <StyledTableCell>Geo Address</StyledTableCell>
+              <StyledTableCell>Weekend</StyledTableCell>
               <StyledTableCell align="center">Action</StyledTableCell>
             </StyledTableRow>
           </TableHead>

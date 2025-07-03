@@ -26,6 +26,7 @@ import { IconPrinter } from '@tabler/icons-react';
 import { monthList, salaryYear } from 'assets/data';
 import MonthlySalaryRow from './MonthlySalaryRow';
 import PrintMonthlySalaries from './PrintMonthlySalaries';
+import { useGetEmployeesQuery } from 'store/api/employee/employeeApi';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -53,6 +54,7 @@ const MonthlySalaries = () => {
   const [year, setYear] = useState(moment().format('YYYY'));
   const [month, setMonth] = useState(moment().format('MMMM'));
   const [location, setLocation] = useState(null);
+  const [employee, setEmployee] = useState(null);
 
   // library
   const { data: locationData, isLoading: locationLoading } =
@@ -64,6 +66,18 @@ const MonthlySalaries = () => {
     );
 
   const allLocations = locationData?.locations || [];
+
+  // employee
+  const empQuery = {};
+  empQuery['limit'] = 100;
+  empQuery['page'] = 0;
+  empQuery['isActive'] = true;
+  empQuery['isOwn'] = false;
+  if (location) {
+    empQuery['locationId'] = location?.id;
+  }
+  const { data: employeeData } = useGetEmployeesQuery({ ...empQuery });
+  const employees = employeeData?.employees || [];
   // end library
 
   // filtering and pagination
@@ -81,6 +95,10 @@ const MonthlySalaries = () => {
 
   if (location) {
     query['locationId'] = location.id;
+  }
+
+  if (employee) {
+    query['employeeId'] = employee.officeId;
   }
 
   const { data, isLoading } = useGetSalaryReportQuery(
@@ -102,7 +120,7 @@ const MonthlySalaries = () => {
            }
            `,
   });
-
+  console.log(moment('2025-02-05').endOf('month').format('YYYY-MM-DD'));
   return (
     <MainCard
       title="Month Salary"
@@ -121,7 +139,7 @@ const MonthlySalaries = () => {
           rowSpacing={2}
           sx={{ alignItems: 'end' }}
         >
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid item xs={12} sm={6} md={2}>
             <FormControl fullWidth size="small">
               <InputLabel id="select-year-id">Year</InputLabel>
               <Select
@@ -138,7 +156,7 @@ const MonthlySalaries = () => {
               </Select>
             </FormControl>
           </Grid>
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid item xs={12} sm={6} md={2.5}>
             <FormControl fullWidth size="small">
               <InputLabel id="select-month-id">Month</InputLabel>
               <Select
@@ -156,7 +174,7 @@ const MonthlySalaries = () => {
             </FormControl>
           </Grid>
 
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} md={3.5}>
             <Autocomplete
               loading={locationLoading}
               value={location}
@@ -167,9 +185,27 @@ const MonthlySalaries = () => {
                 option.label + ', ' + option.area?.label
               }
               isOptionEqualToValue={(item, value) => item.id === value.id}
-              onChange={(e, newValue) => setLocation(newValue)}
+              onChange={(e, newValue) => {
+                setLocation(newValue);
+                setEmployee(null);
+              }}
               renderInput={(params) => (
                 <TextField {...params} label="Select Branch" />
+              )}
+            />
+          </Grid>
+
+          <Grid item xs={12} md={4}>
+            <Autocomplete
+              value={employee}
+              fullWidth
+              size="small"
+              options={employees}
+              getOptionLabel={(option) => option.officeId + ', ' + option.name}
+              isOptionEqualToValue={(item, value) => item.id === value.id}
+              onChange={(e, newValue) => setEmployee(newValue)}
+              renderInput={(params) => (
+                <TextField {...params} label="Select Employee" />
               )}
             />
           </Grid>
