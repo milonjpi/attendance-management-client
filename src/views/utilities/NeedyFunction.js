@@ -140,3 +140,19 @@ export const getDeviceId = () => {
   return id;
 };
 
+export const salaryDistribution = (salary) => {
+  const medical = 750;
+  const conveyance = 450;
+  const food = 1250;
+
+  const basic = Math.round((salary - medical - conveyance - food) / 1.5);
+  const rent = Math.round(basic / 2);
+
+  return {
+    basic: salary ? basic : 0,
+    rent: salary ? rent : 0,
+    medical: salary ? medical : 0,
+    conveyance: salary ? conveyance : 0,
+    food: salary ? food : 0,
+  };
+};

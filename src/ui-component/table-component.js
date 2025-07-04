@@ -32,6 +32,22 @@ export const StyledTableCellWithBorder = styled(TableCell)(({ theme }) => ({
     border: '1px solid #686868',
   },
 }));
+
+export const StyledTableCellWithNarrowBorder = styled(TableCell)(
+  ({ theme }) => ({
+    [`&.${tableCellClasses.head}`]: {
+      padding: '3px 6px',
+      fontSize: 10,
+      border: '1px solid #686868',
+    },
+    [`&.${tableCellClasses.body}`]: {
+      fontSize: 10,
+      padding: '3px 6px',
+      border: '1px solid #686868',
+    },
+  })
+);
+
 export const StyledTableCellWithNoBorder = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: '#ede7f6',
