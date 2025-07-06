@@ -25,13 +25,13 @@ const BillRow = ({ sn, data }) => {
               {billDetails[0].item?.label}
             </StyledTableCellWithBorder>
             <StyledTableCellWithBorder>
-              {billDetails[0].details}
+              {billDetails[0].details || 'n/a'}
             </StyledTableCellWithBorder>
             <StyledTableCellWithBorder align="center">
-              {billDetails[0]?.uom?.label}
+              {billDetails[0]?.uom?.label || 'n/a'}
             </StyledTableCellWithBorder>
             <StyledTableCellWithBorder align="right">
-              {billDetails[0].quantity}
+              {data?.isService ? 'n/a' : billDetails[0].quantity}
             </StyledTableCellWithBorder>
             <StyledTableCellWithBorder align="right">
               {billDetails[0].amount}
@@ -57,12 +57,14 @@ const BillRow = ({ sn, data }) => {
           <StyledTableCellWithBorder>
             {el.item?.label}
           </StyledTableCellWithBorder>
-          <StyledTableCellWithBorder>{el.details}</StyledTableCellWithBorder>
+          <StyledTableCellWithBorder>
+            {el.details || 'n/a'}
+          </StyledTableCellWithBorder>
           <StyledTableCellWithBorder align="center">
-            {el?.uom?.label}
+            {el?.uom?.label || 'n/a'}
           </StyledTableCellWithBorder>
           <StyledTableCellWithBorder align="right">
-            {el.quantity}
+            {data?.isService ? 'n/a' : el.quantity}
           </StyledTableCellWithBorder>
           <StyledTableCellWithBorder align="right">
             {el.amount}

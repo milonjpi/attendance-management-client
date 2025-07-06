@@ -188,7 +188,7 @@ const TransferEmployee = () => {
       <AddTransfer open={open} handleClose={() => setOpen(false)} />
       {/* end popup items */}
       <Box sx={{ overflow: 'auto' }}>
-        <Table sx={{ minWidth: 400 }}>
+        <Table sx={{ minWidth: 850 }}>
           <TableHead>
             <StyledTableRow>
               <StyledTableCell align="center">SN</StyledTableCell>

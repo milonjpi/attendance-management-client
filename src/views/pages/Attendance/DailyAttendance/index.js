@@ -237,7 +237,7 @@ const DailyAttendance = () => {
       </Box>
       {/* end popup item */}
       <Box sx={{ overflow: 'auto' }}>
-        <Table sx={{ minWidth: 700 }}>
+        <Table sx={{ minWidth: 750 }}>
           <TableHead>
             <StyledTableRow>
               <StyledTableCell align="center">SN</StyledTableCell>

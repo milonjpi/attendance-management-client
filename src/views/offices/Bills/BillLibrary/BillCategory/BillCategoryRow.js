@@ -43,6 +43,9 @@ const BillCategoryRow = ({ sn, data }) => {
     <StyledTableRow>
       <StyledTableCell align="center">{sn}</StyledTableCell>
       <StyledTableCell>{data?.label}</StyledTableCell>
+      <StyledTableCell>
+        {data?.isService ? 'Service' : 'Product'}
+      </StyledTableCell>
       <StyledTableCell align="center" sx={{ minWidth: 85 }}>
         <Button
           color="primary"

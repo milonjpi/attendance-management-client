@@ -3,6 +3,10 @@ import Modal from '@mui/material/Modal';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableHead from '@mui/material/TableHead';
@@ -55,12 +59,19 @@ const defaultValue = {
 
 const AddBill = ({ open, handleClose, employeeData }) => {
   const [loading, setLoading] = useState(false);
+  const [itemType, setItemType] = useState('');
 
   const [date, setDate] = useState(moment());
 
   // library
   const { data: itemData } = useGetItemsQuery(
-    { limit: 500, sortBy: 'label', sortOrder: 'asc' },
+    {
+      limit: 500,
+      sortBy: 'label',
+      sortOrder: 'asc',
+      searchTerm: itemType === '' ? 'trueFalseTrueFalse' : '',
+      isService: itemType ? true : false,
+    },
     { refetchOnMountOrArgChange: true }
   );
   const allItems = itemData?.items || [];
@@ -84,9 +95,9 @@ const AddBill = ({ open, handleClose, employeeData }) => {
   // end library
 
   // hook form
-  const { register, handleSubmit, control, reset } = useForm({
+  const { register, handleSubmit, control, setValue, reset } = useForm({
     defaultValues: {
-      billDetails: [defaultValue],
+      billDetails: [],
     },
   });
   const { fields, append, remove } = useFieldArray({
@@ -110,6 +121,7 @@ const AddBill = ({ open, handleClose, employeeData }) => {
 
   const onSubmit = async (data) => {
     const newData = {
+      isService: itemType,
       officeId: employeeData?.officeId,
       date: date,
       amount: totalAmount,
@@ -118,7 +130,7 @@ const AddBill = ({ open, handleClose, employeeData }) => {
         itemId: el.item?.id,
         shopId: el.shop?.id,
         details: el.details || '',
-        uomId: el.uom?.id,
+        uomId: el.uom?.id || null,
         quantity: el.quantity,
         amount: el.amount,
         remarks: el.remarks || '',
@@ -179,7 +191,7 @@ const AddBill = ({ open, handleClose, employeeData }) => {
           onSubmit={handleSubmit(onSubmit)}
         >
           <Grid container spacing={2}>
-            <Grid item xs={12} md={4}>
+            <Grid item xs={12} md={2.5}>
               <LocalizationProvider dateAdapter={AdapterMoment}>
                 <DatePicker
                   label="Date"
@@ -201,7 +213,27 @@ const AddBill = ({ open, handleClose, employeeData }) => {
                 />
               </LocalizationProvider>
             </Grid>
-            <Grid item xs={12} md={8}>
+            <Grid item xs={12} md={2.5}>
+              <FormControl fullWidth required size="small">
+                <InputLabel id="select-item-type-id">Bill Type</InputLabel>
+                <Select
+                  labelId="select-item-type-id"
+                  value={itemType}
+                  label="Bill Type"
+                  onChange={(e) => {
+                    setItemType(e.target.value);
+                    setValue('billDetails', []);
+                  }}
+                >
+                  <MenuItem value="">
+                    <em>None</em>
+                  </MenuItem>
+                  <MenuItem value={false}>Product</MenuItem>
+                  <MenuItem value={true}>Service</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} md={7}>
               <TextField
                 fullWidth
                 size="small"
@@ -231,14 +263,21 @@ const AddBill = ({ open, handleClose, employeeData }) => {
                         allItems={allItems}
                         allShops={allShops}
                         allUom={allUom}
+                        itemType={itemType}
                       />
                     ))}
                     <StyledTableRow>
                       <StyledTableCell sx={{ verticalAlign: 'top' }}>
                         <Tooltip title="Add Row">
-                          <IconButton color="primary" onClick={handleAppend}>
-                            <IconSquareRoundedPlusFilled size={20} />
-                          </IconButton>
+                          <span>
+                            <IconButton
+                              color="primary"
+                              onClick={handleAppend}
+                              disabled={itemType === '' ? true : false}
+                            >
+                              <IconSquareRoundedPlusFilled size={20} />
+                            </IconButton>
+                          </span>
                         </Tooltip>
                       </StyledTableCell>
 
@@ -246,7 +285,7 @@ const AddBill = ({ open, handleClose, employeeData }) => {
                         <StyledTableCell
                           sx={{ fontSize: 12, fontWeight: 700 }}
                           align="right"
-                          colSpan={5}
+                          colSpan={itemType ? 3 : 5}
                         >
                           Total Amount: {totalAmount}
                         </StyledTableCell>

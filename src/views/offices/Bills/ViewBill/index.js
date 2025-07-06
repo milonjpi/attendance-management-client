@@ -30,7 +30,7 @@ const style = {
 
 const ViewBill = ({ open, handleClose, data }) => {
   const employee = data?.employee;
-  const tableHeads = [
+  let tableHeads = [
     {
       title: 'SN',
       align: 'center',
@@ -42,7 +42,7 @@ const ViewBill = ({ open, handleClose, data }) => {
       title: 'DETAILS',
     },
     {
-      title: 'SHOP',
+      title: 'SUPPLIER',
     },
     {
       title: 'UOM',
@@ -57,6 +57,12 @@ const ViewBill = ({ open, handleClose, data }) => {
       align: 'right',
     },
   ];
+
+  if (data?.isService) {
+    tableHeads = tableHeads.filter(
+      (el) => !['UOM', 'QUANTITY'].includes(el.title)
+    );
+  }
 
   // handle print
   const componentRef = useRef();
@@ -204,7 +210,12 @@ const ViewBill = ({ open, handleClose, data }) => {
                     tableHeads={tableHeads}
                     data={data?.billDetails || []}
                     options={(el, index) => (
-                      <ViewBillRow key={el.id} sn={index + 1} data={el} />
+                      <ViewBillRow
+                        key={el.id}
+                        sn={index + 1}
+                        data={el}
+                        isService={data?.isService}
+                      />
                     )}
                     extra={
                       data?.remarks ? (

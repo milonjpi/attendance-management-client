@@ -207,7 +207,7 @@ const ActiveEmployees = () => {
       <AddEmployee open={open} handleClose={() => setOpen(false)} />
       {/* end popup items */}
       <Box sx={{ overflow: 'auto' }}>
-        <Table sx={{ minWidth: 400 }}>
+        <Table sx={{ minWidth: 750 }}>
           <TableHead>
             <StyledTableRow>
               <StyledTableCell align="center">SN</StyledTableCell>

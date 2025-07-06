@@ -2,9 +2,8 @@ import { StyledTableCellWithBorder } from 'ui-component/table-component';
 import moment from 'moment';
 import ShowStatus from 'ui-component/ShowStatus';
 import { TableRow } from '@mui/material';
-import PendingBillAction from './PendingBillAction';
 
-const PendingBillRow = ({ sn, data }) => {
+const PrintAllBillRow = ({ sn, data }) => {
   const billDetails = data?.billDetails || [];
   const rowSpan = billDetails.length || 1;
   return (
@@ -49,9 +48,6 @@ const PendingBillRow = ({ sn, data }) => {
         <StyledTableCellWithBorder align="center" rowSpan={rowSpan}>
           <ShowStatus status={data?.status} />
         </StyledTableCellWithBorder>
-        <StyledTableCellWithBorder align="center" rowSpan={rowSpan}>
-          <PendingBillAction data={data} />
-        </StyledTableCellWithBorder>
       </TableRow>
 
       {/* Remaining Income Details Rows */}
@@ -78,4 +74,4 @@ const PendingBillRow = ({ sn, data }) => {
   );
 };
 
-export default PendingBillRow;
+export default PrintAllBillRow;

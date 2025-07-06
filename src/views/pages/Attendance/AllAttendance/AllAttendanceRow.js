@@ -22,6 +22,8 @@ const AllAttendanceRow = ({ sn, data, firstSlot, secondSlot }) => {
   const attendanceDetails = data?.attendances || [];
   const rowSpan = firstSlot?.length && secondSlot?.length ? 2 : 1;
 
+  const weekend = data?.location?.weekend || 'Friday';
+
   return (
     <>
       {/* Main Row */}
@@ -97,7 +99,7 @@ const AllAttendanceRow = ({ sn, data, firstSlot, secondSlot }) => {
                   </>
                 ) : (
                   <span style={{ display: 'block' }}>
-                    {mainDate?.getDay() === 5 ? (
+                    {moment(mainDate).format('dddd') === weekend ? (
                       moment(mainDate).format('dddd')
                     ) : mainDate?.getTime() > new Date().getTime() ? (
                       'Upcoming'
@@ -172,7 +174,7 @@ const AllAttendanceRow = ({ sn, data, firstSlot, secondSlot }) => {
                   </>
                 ) : (
                   <span style={{ display: 'block' }}>
-                    {mainDate?.getDay() === 5 ? (
+                    {moment(mainDate).format('dddd') === weekend ? (
                       moment(mainDate).format('dddd')
                     ) : mainDate?.getTime() > new Date().getTime() ? (
                       'Upcoming'

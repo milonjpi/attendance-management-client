@@ -24,7 +24,7 @@ const ShopRow = ({ sn, data }) => {
           setToast({
             open: true,
             variant: 'success',
-            message: 'Shop Deleted Successfully',
+            message: 'Supplier Deleted Successfully',
           })
         );
       }
@@ -68,7 +68,7 @@ const ShopRow = ({ sn, data }) => {
         <ConfirmDialog
           open={dialog}
           setOpen={setDialog}
-          content="Delete Shop"
+          content="Delete Supplier"
           handleDelete={handleDelete}
         />
         <UpdateShop

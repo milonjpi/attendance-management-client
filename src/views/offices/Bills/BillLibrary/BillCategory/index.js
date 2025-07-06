@@ -42,6 +42,9 @@ const BillCategory = () => {
       title: 'Bill Item',
     },
     {
+      title: 'Type',
+    },
+    {
       title: 'Action',
       align: 'center',
     },

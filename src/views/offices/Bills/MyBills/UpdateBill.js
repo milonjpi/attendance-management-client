@@ -7,6 +7,10 @@ import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableHead from '@mui/material/TableHead';
 import Divider from '@mui/material/Divider';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
@@ -54,12 +58,19 @@ const defaultValue = {
 
 const UpdateBill = ({ open, handleClose, preData }) => {
   const [loading, setLoading] = useState(false);
+  const [itemType, setItemType] = useState(preData?.isService);
 
   const [date, setDate] = useState(preData?.date);
 
   // library
   const { data: itemData } = useGetItemsQuery(
-    { limit: 500, sortBy: 'label', sortOrder: 'asc' },
+    {
+      limit: 500,
+      sortBy: 'label',
+      sortOrder: 'asc',
+      searchTerm: itemType === '' ? 'trueFalseTrueFalse' : '',
+      isService: itemType ? true : false,
+    },
     { refetchOnMountOrArgChange: true }
   );
   const allItems = itemData?.items || [];
@@ -114,7 +125,7 @@ const UpdateBill = ({ open, handleClose, preData }) => {
         itemId: el.item?.id,
         shopId: el.shop?.id,
         details: el.details || '',
-        uomId: el.uom?.id,
+        uomId: el.uom?.id || null,
         quantity: el.quantity,
         amount: el.amount,
         remarks: el.remarks || '',
@@ -173,7 +184,7 @@ const UpdateBill = ({ open, handleClose, preData }) => {
           onSubmit={handleSubmit(onSubmit)}
         >
           <Grid container spacing={2}>
-            <Grid item xs={12} md={4}>
+            <Grid item xs={12} md={2.5}>
               <LocalizationProvider dateAdapter={AdapterMoment}>
                 <DatePicker
                   label="Date"
@@ -195,7 +206,26 @@ const UpdateBill = ({ open, handleClose, preData }) => {
                 />
               </LocalizationProvider>
             </Grid>
-            <Grid item xs={12} md={8}>
+            <Grid item xs={12} md={2.5}>
+              <FormControl fullWidth required size="small" disabled>
+                <InputLabel id="select-item-type-id">Bill Type</InputLabel>
+                <Select
+                  labelId="select-item-type-id"
+                  value={itemType}
+                  label="Bill Type"
+                  onChange={(e) => {
+                    setItemType(e.target.value);
+                  }}
+                >
+                  <MenuItem value="">
+                    <em>None</em>
+                  </MenuItem>
+                  <MenuItem value={false}>Product</MenuItem>
+                  <MenuItem value={true}>Service</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} md={7}>
               <TextField
                 fullWidth
                 size="small"
@@ -225,6 +255,7 @@ const UpdateBill = ({ open, handleClose, preData }) => {
                         allItems={allItems}
                         allShops={allShops}
                         allUom={allUom}
+                        itemType={itemType}
                       />
                     ))}
                     <StyledTableRow>
@@ -240,7 +271,7 @@ const UpdateBill = ({ open, handleClose, preData }) => {
                         <StyledTableCell
                           sx={{ fontSize: 12, fontWeight: 700 }}
                           align="right"
-                          colSpan={5}
+                          colSpan={itemType ? 3 : 5}
                         >
                           Total Amount: {totalAmount}
                         </StyledTableCell>

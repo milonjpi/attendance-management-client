@@ -12,8 +12,8 @@ const menuList = [
   },
   {
     id: 2,
-    label: 'Shop',
-    path: 'shop',
+    label: 'Supplier',
+    path: 'supplier',
   },
   {
     id: 3,

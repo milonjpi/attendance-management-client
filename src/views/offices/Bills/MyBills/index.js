@@ -226,84 +226,87 @@ const MyBills = () => {
       {/* end filter area */}
 
       {/* data table */}
-      <Table>
-        <TableHead>
-          <TableRow>
-            <StyledTableCellWithBorder align="center" rowSpan={2}>
-              SN
-            </StyledTableCellWithBorder>
-            <StyledTableCellWithBorder rowSpan={2}>
-              Date
-            </StyledTableCellWithBorder>
-            <StyledTableCellWithBorder align="center" colSpan={5}>
-              Bill Details
-            </StyledTableCellWithBorder>
-            <StyledTableCellWithBorder align="right" rowSpan={2}>
-              Amount
-            </StyledTableCellWithBorder>
-            <StyledTableCellWithBorder align="center" rowSpan={2}>
-              Status
-            </StyledTableCellWithBorder>
-            <StyledTableCellWithBorder align="center" rowSpan={2}>
-              Action
-            </StyledTableCellWithBorder>
-          </TableRow>
-          <TableRow>
-            <StyledTableCellWithBorder>Item</StyledTableCellWithBorder>
-            <StyledTableCellWithBorder>Details</StyledTableCellWithBorder>
-            <StyledTableCellWithBorder align="center">
-              UOM
-            </StyledTableCellWithBorder>
-            <StyledTableCellWithBorder align="right">
-              Quantity
-            </StyledTableCellWithBorder>
-            <StyledTableCellWithBorder align="right">
-              Price
-            </StyledTableCellWithBorder>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {allBills?.length ? (
-            allBills?.map((el, index) => (
-              <BillRow key={index} sn={sn++} data={el} />
-            ))
-          ) : (
+      <Box sx={{ overflow: 'auto' }}>
+        <Table sx={{ minWidth: 850 }}>
+          <TableHead>
             <TableRow>
-              <StyledTableCellWithBorder colSpan={15} align="center">
-                {isLoading ? (
-                  <LinearProgress
-                    color="primary"
-                    sx={{ opacity: 0.5, py: 0.5 }}
-                  />
-                ) : (
-                  'No Data'
-                )}
+              <StyledTableCellWithBorder align="center" rowSpan={2}>
+                SN
+              </StyledTableCellWithBorder>
+              <StyledTableCellWithBorder rowSpan={2}>
+                Date
+              </StyledTableCellWithBorder>
+              <StyledTableCellWithBorder align="center" colSpan={5}>
+                Bill Details
+              </StyledTableCellWithBorder>
+              <StyledTableCellWithBorder align="right" rowSpan={2}>
+                Amount
+              </StyledTableCellWithBorder>
+              <StyledTableCellWithBorder align="center" rowSpan={2}>
+                Status
+              </StyledTableCellWithBorder>
+              <StyledTableCellWithBorder align="center" rowSpan={2}>
+                Action
               </StyledTableCellWithBorder>
             </TableRow>
-          )}
-          {allBills?.length ? (
             <TableRow>
-              <StyledTableCellWithBorder
-                colSpan={7}
-                sx={{ fontSize: '12px !important', fontWeight: 700 }}
-              >
-                TOTAL
+              <StyledTableCellWithBorder>Item</StyledTableCellWithBorder>
+              <StyledTableCellWithBorder>Details</StyledTableCellWithBorder>
+              <StyledTableCellWithBorder align="center">
+                UOM
               </StyledTableCellWithBorder>
-              <StyledTableCellWithBorder
-                align="right"
-                sx={{ fontSize: '12px !important', fontWeight: 700 }}
-              >
-                {totalAmount}
+              <StyledTableCellWithBorder align="right">
+                Quantity
               </StyledTableCellWithBorder>
-              <StyledTableCellWithBorder
-                align="right"
-                sx={{ fontSize: '12px !important', fontWeight: 700 }}
-                colSpan={2}
-              ></StyledTableCellWithBorder>
+              <StyledTableCellWithBorder align="right">
+                Price
+              </StyledTableCellWithBorder>
             </TableRow>
-          ) : null}
-        </TableBody>
-      </Table>
+          </TableHead>
+          <TableBody>
+            {allBills?.length ? (
+              allBills?.map((el, index) => (
+                <BillRow key={index} sn={sn++} data={el} />
+              ))
+            ) : (
+              <TableRow>
+                <StyledTableCellWithBorder colSpan={15} align="center">
+                  {isLoading ? (
+                    <LinearProgress
+                      color="primary"
+                      sx={{ opacity: 0.5, py: 0.5 }}
+                    />
+                  ) : (
+                    'No Data'
+                  )}
+                </StyledTableCellWithBorder>
+              </TableRow>
+            )}
+            {allBills?.length ? (
+              <TableRow>
+                <StyledTableCellWithBorder
+                  colSpan={7}
+                  sx={{ fontSize: '12px !important', fontWeight: 700 }}
+                >
+                  TOTAL
+                </StyledTableCellWithBorder>
+                <StyledTableCellWithBorder
+                  align="right"
+                  sx={{ fontSize: '12px !important', fontWeight: 700 }}
+                >
+                  {totalAmount}
+                </StyledTableCellWithBorder>
+                <StyledTableCellWithBorder
+                  align="right"
+                  sx={{ fontSize: '12px !important', fontWeight: 700 }}
+                  colSpan={2}
+                ></StyledTableCellWithBorder>
+              </TableRow>
+            ) : null}
+          </TableBody>
+        </Table>
+      </Box>
+
       <TablePagination
         rowsPerPageOptions={[10, 20, 40, 100]}
         component="div"

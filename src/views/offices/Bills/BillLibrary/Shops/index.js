@@ -39,7 +39,7 @@ const Shops = () => {
       align: 'center',
     },
     {
-      title: 'Shop Name',
+      title: 'Supplier Name',
     },
     {
       title: 'Address',
@@ -80,7 +80,7 @@ const Shops = () => {
   let sn = page * rowsPerPage + 1;
   return (
     <MainCard
-      title="Shops"
+      title="Suppliers"
       secondary={
         <CardAction
           title="Create"

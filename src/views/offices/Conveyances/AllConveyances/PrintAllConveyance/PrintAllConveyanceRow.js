@@ -2,11 +2,10 @@ import { StyledTableCellWithBorder } from 'ui-component/table-component';
 import moment from 'moment';
 import ShowStatus from 'ui-component/ShowStatus';
 import { TableRow } from '@mui/material';
-import PendingBillAction from './PendingBillAction';
 
-const PendingBillRow = ({ sn, data }) => {
-  const billDetails = data?.billDetails || [];
-  const rowSpan = billDetails.length || 1;
+const PrintAllConveyanceRow = ({ sn, data }) => {
+  const conveyanceDetails = data?.conveyanceDetails || [];
+  const rowSpan = conveyanceDetails.length || 1;
   return (
     <>
       {/* Main Row */}
@@ -20,55 +19,53 @@ const PendingBillRow = ({ sn, data }) => {
         <StyledTableCellWithBorder rowSpan={rowSpan}>
           {data?.employee?.name}
         </StyledTableCellWithBorder>
+        <StyledTableCellWithBorder rowSpan={rowSpan}>
+          {data?.from + ' '}
+          <em>to</em>
+          {' ' + data?.to}
+        </StyledTableCellWithBorder>
+        <StyledTableCellWithBorder rowSpan={rowSpan} align="right">
+          {data?.distance}
+        </StyledTableCellWithBorder>
+        <StyledTableCellWithBorder rowSpan={rowSpan} align="right">
+          {data?.amount}
+        </StyledTableCellWithBorder>
 
         {/* First row includes totals and actions */}
-        {billDetails.length > 0 && (
+        {conveyanceDetails.length > 0 ? (
           <>
             <StyledTableCellWithBorder>
-              {billDetails[0].item?.label}
+              {conveyanceDetails[0].itemType?.label}
             </StyledTableCellWithBorder>
             <StyledTableCellWithBorder>
-              {billDetails[0].details || 'n/a'}
-            </StyledTableCellWithBorder>
-            <StyledTableCellWithBorder align="center">
-              {billDetails[0]?.uom?.label || 'n/a'}
+              {conveyanceDetails[0].details}
             </StyledTableCellWithBorder>
             <StyledTableCellWithBorder align="right">
-              {data?.isService ? 'n/a' : billDetails[0].quantity}
-            </StyledTableCellWithBorder>
-            <StyledTableCellWithBorder align="right">
-              {billDetails[0].amount}
+              {conveyanceDetails[0].amount}
             </StyledTableCellWithBorder>
           </>
+        ) : (
+          <StyledTableCellWithBorder colSpan={3} align="center">
+            n/a
+          </StyledTableCellWithBorder>
         )}
 
         {/* Totals and Actions */}
         <StyledTableCellWithBorder align="right" rowSpan={rowSpan}>
-          {data?.amount}
+          {data?.amount + data?.extraAmount}
         </StyledTableCellWithBorder>
         <StyledTableCellWithBorder align="center" rowSpan={rowSpan}>
           <ShowStatus status={data?.status} />
         </StyledTableCellWithBorder>
-        <StyledTableCellWithBorder align="center" rowSpan={rowSpan}>
-          <PendingBillAction data={data} />
-        </StyledTableCellWithBorder>
       </TableRow>
 
       {/* Remaining Income Details Rows */}
-      {billDetails.slice(1).map((el, index) => (
+      {conveyanceDetails.slice(1).map((el, index) => (
         <TableRow key={index}>
           <StyledTableCellWithBorder>
-            {el.item?.label}
+            {el.itemType?.label}
           </StyledTableCellWithBorder>
-          <StyledTableCellWithBorder>
-            {el.details || 'n/a'}
-          </StyledTableCellWithBorder>
-          <StyledTableCellWithBorder align="center">
-            {el?.uom?.label || 'n/a'}
-          </StyledTableCellWithBorder>
-          <StyledTableCellWithBorder align="right">
-            {data?.isService ? 'n/a' : el.quantity}
-          </StyledTableCellWithBorder>
+          <StyledTableCellWithBorder>{el.details}</StyledTableCellWithBorder>
           <StyledTableCellWithBorder align="right">
             {el.amount}
           </StyledTableCellWithBorder>
@@ -78,4 +75,4 @@ const PendingBillRow = ({ sn, data }) => {
   );
 };
 
-export default PendingBillRow;
+export default PrintAllConveyanceRow;

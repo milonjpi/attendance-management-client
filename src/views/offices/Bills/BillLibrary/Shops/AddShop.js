@@ -52,7 +52,7 @@ const AddShop = ({ open, handleClose }) => {
           setToast({
             open: true,
             variant: 'success',
-            message: 'Shop Added Successfully',
+            message: 'Supplier Added Successfully',
           })
         );
         setLoading(false);
@@ -80,7 +80,7 @@ const AddShop = ({ open, handleClose }) => {
           }}
         >
           <Typography sx={{ fontSize: 16, color: '#878781' }}>
-            Add Shop
+            Add Supplier
           </Typography>
           <IconButton color="error" size="small" onClick={handleClose}>
             <CloseIcon fontSize="small" />
@@ -98,7 +98,7 @@ const AddShop = ({ open, handleClose }) => {
                 fullWidth
                 required
                 size="small"
-                label="Shop Name"
+                label="Supplier Name"
                 {...register('label', { required: true })}
               />
             </Grid>

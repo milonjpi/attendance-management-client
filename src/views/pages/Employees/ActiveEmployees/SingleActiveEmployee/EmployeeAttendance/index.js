@@ -170,8 +170,8 @@ const EmployeeAttendance = () => {
         />
       </Box>
       {/* end popup item */}
-      <Box sx={{ overflow: 'auto' }}>
-        <Table sx={{ minWidth: 950 }}>
+      <Box>
+        <Table>
           <TableHead>
             <StyledTableRow>
               <StyledTableCell align="center" sx={{ width: 50 }}>

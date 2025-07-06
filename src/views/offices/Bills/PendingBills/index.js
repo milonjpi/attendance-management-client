@@ -30,6 +30,7 @@ const PendingBills = () => {
   const [employee, setEmployee] = useState(null);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
+  const [itemType, setItemType] = useState(null);
 
   // library
   // employee
@@ -82,6 +83,10 @@ const PendingBills = () => {
     query['endDate'] = moment(endDate).format('YYYY-MM-DD');
   }
 
+  if (itemType) {
+    query['isService'] = itemType?.value;
+  }
+
   // search term
   const debouncedSearchTerm = useDebounced({
     searchQuery: searchText,
@@ -114,7 +119,7 @@ const PendingBills = () => {
           columnSpacing={1}
           sx={{ alignItems: 'end' }}
         >
-          <Grid item xs={12} md={3}>
+          <Grid item xs={12} md={2.5}>
             <InputBase
               fullWidth
               placeholder="Search..."
@@ -128,7 +133,7 @@ const PendingBills = () => {
               }
             />
           </Grid>
-          <Grid item xs={12} md={4}>
+          <Grid item xs={12} md={3.5}>
             <Autocomplete
               loading={employeeLoading}
               value={employee}
@@ -143,7 +148,7 @@ const PendingBills = () => {
               )}
             />
           </Grid>
-          <Grid item xs={6} md={2.5}>
+          <Grid item xs={6} md={2}>
             <LocalizationProvider dateAdapter={AdapterMoment}>
               <DatePicker
                 label="Date (From)"
@@ -164,7 +169,7 @@ const PendingBills = () => {
               />
             </LocalizationProvider>
           </Grid>
-          <Grid item xs={6} md={2.5}>
+          <Grid item xs={6} md={2}>
             <LocalizationProvider dateAdapter={AdapterMoment}>
               <DatePicker
                 label="Date (To)"
@@ -185,92 +190,112 @@ const PendingBills = () => {
               />
             </LocalizationProvider>
           </Grid>
+          <Grid item xs={12} md={2}>
+            <Autocomplete
+              value={itemType}
+              fullWidth
+              size="small"
+              options={[
+                { id: 1, label: 'Product', value: false },
+                { id: 2, label: 'Service', value: true },
+              ]}
+              getOptionLabel={(option) => option.label}
+              isOptionEqualToValue={(item, value) => item.id === value.id}
+              onChange={(e, newValue) => setItemType(newValue)}
+              renderInput={(params) => (
+                <TextField {...params} label="Bill Type" />
+              )}
+            />
+          </Grid>
         </Grid>
       </Box>
       {/* end filter area */}
 
       {/* data table */}
-      <Table>
-        <TableHead>
-          <TableRow>
-            <StyledTableCellWithBorder align="center" rowSpan={2}>
-              SN
-            </StyledTableCellWithBorder>
-            <StyledTableCellWithBorder rowSpan={2}>
-              Date
-            </StyledTableCellWithBorder>
-            <StyledTableCellWithBorder rowSpan={2}>
-              Employee
-            </StyledTableCellWithBorder>
-            <StyledTableCellWithBorder align="center" colSpan={5}>
-              Bill Details
-            </StyledTableCellWithBorder>
-            <StyledTableCellWithBorder align="right" rowSpan={2}>
-              Amount
-            </StyledTableCellWithBorder>
-            <StyledTableCellWithBorder align="center" rowSpan={2}>
-              Status
-            </StyledTableCellWithBorder>
-            <StyledTableCellWithBorder align="center" rowSpan={2}>
-              Action
-            </StyledTableCellWithBorder>
-          </TableRow>
-          <TableRow>
-            <StyledTableCellWithBorder>Item</StyledTableCellWithBorder>
-            <StyledTableCellWithBorder>Details</StyledTableCellWithBorder>
-            <StyledTableCellWithBorder align="center">
-              UOM
-            </StyledTableCellWithBorder>
-            <StyledTableCellWithBorder align="right">
-              Quantity
-            </StyledTableCellWithBorder>
-            <StyledTableCellWithBorder align="right">
-              Price
-            </StyledTableCellWithBorder>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {allBills?.length ? (
-            allBills?.map((el, index) => (
-              <PendingBillRow key={index} sn={sn++} data={el} />
-            ))
-          ) : (
+      <Box sx={{ overflow: 'auto' }}>
+        <Table sx={{ minWidth: 850 }}>
+          <TableHead>
             <TableRow>
-              <StyledTableCellWithBorder colSpan={15} align="center">
-                {isLoading ? (
-                  <LinearProgress
-                    color="primary"
-                    sx={{ opacity: 0.5, py: 0.5 }}
-                  />
-                ) : (
-                  'No Data'
-                )}
+              <StyledTableCellWithBorder align="center" rowSpan={2}>
+                SN
+              </StyledTableCellWithBorder>
+              <StyledTableCellWithBorder rowSpan={2}>
+                Date
+              </StyledTableCellWithBorder>
+              <StyledTableCellWithBorder rowSpan={2}>
+                Employee
+              </StyledTableCellWithBorder>
+              <StyledTableCellWithBorder align="center" colSpan={5}>
+                Bill Details
+              </StyledTableCellWithBorder>
+              <StyledTableCellWithBorder align="right" rowSpan={2}>
+                Amount
+              </StyledTableCellWithBorder>
+              <StyledTableCellWithBorder align="center" rowSpan={2}>
+                Status
+              </StyledTableCellWithBorder>
+              <StyledTableCellWithBorder align="center" rowSpan={2}>
+                Action
               </StyledTableCellWithBorder>
             </TableRow>
-          )}
-          {allBills?.length ? (
             <TableRow>
-              <StyledTableCellWithBorder
-                colSpan={8}
-                sx={{ fontSize: '12px !important', fontWeight: 700 }}
-              >
-                TOTAL
+              <StyledTableCellWithBorder>Item</StyledTableCellWithBorder>
+              <StyledTableCellWithBorder>Details</StyledTableCellWithBorder>
+              <StyledTableCellWithBorder align="center">
+                UOM
               </StyledTableCellWithBorder>
-              <StyledTableCellWithBorder
-                align="right"
-                sx={{ fontSize: '12px !important', fontWeight: 700 }}
-              >
-                {totalAmount}
+              <StyledTableCellWithBorder align="right">
+                Quantity
               </StyledTableCellWithBorder>
-              <StyledTableCellWithBorder
-                align="right"
-                sx={{ fontSize: '12px !important', fontWeight: 700 }}
-                colSpan={2}
-              ></StyledTableCellWithBorder>
+              <StyledTableCellWithBorder align="right">
+                Price
+              </StyledTableCellWithBorder>
             </TableRow>
-          ) : null}
-        </TableBody>
-      </Table>
+          </TableHead>
+          <TableBody>
+            {allBills?.length ? (
+              allBills?.map((el, index) => (
+                <PendingBillRow key={index} sn={sn++} data={el} />
+              ))
+            ) : (
+              <TableRow>
+                <StyledTableCellWithBorder colSpan={15} align="center">
+                  {isLoading ? (
+                    <LinearProgress
+                      color="primary"
+                      sx={{ opacity: 0.5, py: 0.5 }}
+                    />
+                  ) : (
+                    'No Data'
+                  )}
+                </StyledTableCellWithBorder>
+              </TableRow>
+            )}
+            {allBills?.length ? (
+              <TableRow>
+                <StyledTableCellWithBorder
+                  colSpan={8}
+                  sx={{ fontSize: '12px !important', fontWeight: 700 }}
+                >
+                  TOTAL
+                </StyledTableCellWithBorder>
+                <StyledTableCellWithBorder
+                  align="right"
+                  sx={{ fontSize: '12px !important', fontWeight: 700 }}
+                >
+                  {totalAmount}
+                </StyledTableCellWithBorder>
+                <StyledTableCellWithBorder
+                  align="right"
+                  sx={{ fontSize: '12px !important', fontWeight: 700 }}
+                  colSpan={2}
+                ></StyledTableCellWithBorder>
+              </TableRow>
+            ) : null}
+          </TableBody>
+        </Table>
+      </Box>
+
       <TablePagination
         rowsPerPageOptions={[10, 20, 40, 100]}
         component="div"

@@ -15,6 +15,7 @@ const BillFields = ({
   allItems,
   allUom,
   allShops,
+  itemType,
 }) => {
   return (
     <StyledTableRow>
@@ -68,7 +69,7 @@ const BillFields = ({
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  label="Shop"
+                  label="Supplier"
                   variant="outlined"
                   required
                 />
@@ -83,49 +84,54 @@ const BillFields = ({
           control={control}
         />
       </StyledTableCell>
-      <StyledTableCell sx={{ minWidth: 0, py: '12px !important' }}>
-        <Controller
-          render={({ field: { onChange, value } }) => (
-            <Autocomplete
-              defaultValue={field.uom}
-              size="small"
-              options={allUom}
-              fullWidth
-              getOptionLabel={(option) => option.label}
-              isOptionEqualToValue={(item, value) => item.id === value.id}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="UOM"
-                  variant="outlined"
-                  required
+      {itemType ? null : (
+        <>
+          <StyledTableCell sx={{ minWidth: 0, py: '12px !important' }}>
+            <Controller
+              render={({ field: { onChange, value } }) => (
+                <Autocomplete
+                  defaultValue={field.uom}
+                  size="small"
+                  options={allUom}
+                  fullWidth
+                  getOptionLabel={(option) => option.label}
+                  isOptionEqualToValue={(item, value) => item.id === value.id}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="UOM"
+                      variant="outlined"
+                      required
+                    />
+                  )}
+                  onChange={(e, data) => {
+                    onChange(data);
+                    return data;
+                  }}
                 />
               )}
-              onChange={(e, data) => {
-                onChange(data);
-                return data;
-              }}
+              name={`billDetails[${index}].uom`}
+              control={control}
             />
-          )}
-          name={`billDetails[${index}].uom`}
-          control={control}
-        />
-      </StyledTableCell>
-      <StyledTableCell sx={{ width: 100 }}>
-        <TextField
-          fullWidth
-          size="small"
-          required
-          type="number"
-          label="Quantity"
-          InputProps={{ inputProps: { min: 0, step: '0.01' } }}
-          name={`billDetails[${index}].quantity`}
-          {...register(`billDetails[${index}].quantity`, {
-            required: true,
-            valueAsNumber: true,
-          })}
-        />
-      </StyledTableCell>
+          </StyledTableCell>
+          <StyledTableCell sx={{ width: 100 }}>
+            <TextField
+              fullWidth
+              size="small"
+              required
+              type="number"
+              label="Quantity"
+              InputProps={{ inputProps: { min: 0, step: '0.01' } }}
+              name={`billDetails[${index}].quantity`}
+              {...register(`billDetails[${index}].quantity`, {
+                required: true,
+                valueAsNumber: true,
+              })}
+            />
+          </StyledTableCell>
+        </>
+      )}
+
       <StyledTableCell sx={{ width: 120 }}>
         <TextField
           fullWidth

@@ -1,7 +1,7 @@
 import { StyledTableCellWithBorder } from 'ui-component/table-component';
 import { TableRow } from '@mui/material';
 
-const ViewBillRow = ({ sn, data }) => {
+const ViewBillRow = ({ sn, data, isService }) => {
   return (
     <TableRow>
       <StyledTableCellWithBorder align="center">{sn}</StyledTableCellWithBorder>
@@ -12,12 +12,17 @@ const ViewBillRow = ({ sn, data }) => {
       <StyledTableCellWithBorder>
         {data?.shop?.label || 'n/a'}
       </StyledTableCellWithBorder>
-      <StyledTableCellWithBorder align="center">
-        {data?.uom?.label}
-      </StyledTableCellWithBorder>
-      <StyledTableCellWithBorder align="right">
-        {data?.quantity}
-      </StyledTableCellWithBorder>
+      {isService ? null : (
+        <>
+          <StyledTableCellWithBorder align="center">
+            {data?.uom?.label}
+          </StyledTableCellWithBorder>
+          <StyledTableCellWithBorder align="right">
+            {data?.quantity}
+          </StyledTableCellWithBorder>
+        </>
+      )}
+
       <StyledTableCellWithBorder align="right">
         {data?.amount}
       </StyledTableCellWithBorder>

@@ -15,6 +15,7 @@ import { StyledTableCellWithBorder } from 'ui-component/table-component';
 import SearchIcon from '@mui/icons-material/Search';
 import {
   Autocomplete,
+  IconButton,
   InputAdornment,
   InputBase,
   LinearProgress,
@@ -29,6 +30,10 @@ import { useGetEmployeesQuery } from 'store/api/employee/employeeApi';
 import { useGetConveyancesQuery } from 'store/api/conveyance/conveyanceApi';
 import { mainStatus } from 'assets/data';
 import AllConveyanceRow from './AllConveyanceRow';
+import { useRef } from 'react';
+import { useReactToPrint } from 'react-to-print';
+import { IconPrinter } from '@tabler/icons';
+import PrintAllConveyance from './PrintAllConveyance';
 
 const AllConveyances = () => {
   const [searchText, setSearchText] = useState('');
@@ -115,8 +120,54 @@ const AllConveyances = () => {
   const totalAmount = mainAmount + extraAmount;
 
   let sn = page * rowsPerPage + 1;
+
+  // print data fetching
+  const { data: printData, isLoading: printDataLoading } =
+    useGetConveyancesQuery(
+      { ...query, page: 0, limit: 5000 },
+      { refetchOnMountOrArgChange: true }
+    );
+
+  const allPrintConveyances = printData?.conveyances || [];
+  const mainPrintAmount = printData?.sum?._sum?.amount;
+  const extraPrintAmount = printData?.sum?._sum?.extraAmount;
+  const totalPrintAmount = mainPrintAmount + extraPrintAmount;
+  // handle print
+  const componentRef = useRef();
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+    pageStyle: `
+            @media print {
+              .pageBreakRow {
+                page-break-inside: avoid;
+              }
+            }
+            `,
+  });
   return (
-    <MainCard title="All Conveyances">
+    <MainCard
+      title="All Conveyances"
+      secondary={
+        <IconButton
+          disabled={printDataLoading}
+          color="primary"
+          onClick={handlePrint}
+        >
+          <IconPrinter size={20} />
+        </IconButton>
+      }
+    >
+      {/* pop up items */}
+      <Box component="div" sx={{ overflow: 'hidden', height: 0 }}>
+        <PrintAllConveyance
+          ref={componentRef}
+          startDate={startDate}
+          endDate={endDate}
+          allConveyances={allPrintConveyances}
+          totalAmount={totalPrintAmount}
+        />
+      </Box>
+      {/* pop up items */}
       {/* filter area */}
       <Box sx={{ mb: 2 }}>
         <Grid
@@ -221,90 +272,93 @@ const AllConveyances = () => {
       {/* end filter area */}
 
       {/* data table */}
-      <Table>
-        <TableHead>
-          <TableRow>
-            <StyledTableCellWithBorder align="center" rowSpan={2}>
-              SN
-            </StyledTableCellWithBorder>
-            <StyledTableCellWithBorder rowSpan={2}>
-              Date
-            </StyledTableCellWithBorder>
-            <StyledTableCellWithBorder rowSpan={2}>
-              Employee
-            </StyledTableCellWithBorder>
-            <StyledTableCellWithBorder rowSpan={2}>
-              Destination
-            </StyledTableCellWithBorder>
-            <StyledTableCellWithBorder rowSpan={2} align="right">
-              Distance&#40;KM&#41;
-            </StyledTableCellWithBorder>
-            <StyledTableCellWithBorder rowSpan={2} align="right">
-              Cost&#40;TK&#41;
-            </StyledTableCellWithBorder>
-            <StyledTableCellWithBorder align="center" colSpan={3}>
-              Additional Expenses
-            </StyledTableCellWithBorder>
-            <StyledTableCellWithBorder align="right" rowSpan={2}>
-              Total Amount
-            </StyledTableCellWithBorder>
-            <StyledTableCellWithBorder align="center" rowSpan={2}>
-              Status
-            </StyledTableCellWithBorder>
-            <StyledTableCellWithBorder align="center" rowSpan={2}>
-              Action
-            </StyledTableCellWithBorder>
-          </TableRow>
-          <TableRow>
-            <StyledTableCellWithBorder>Item</StyledTableCellWithBorder>
-            <StyledTableCellWithBorder>Details</StyledTableCellWithBorder>
-            <StyledTableCellWithBorder align="right">
-              Amount
-            </StyledTableCellWithBorder>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {allConveyances?.length ? (
-            allConveyances?.map((el, index) => (
-              <AllConveyanceRow key={index} sn={sn++} data={el} />
-            ))
-          ) : (
+      <Box sx={{ overflow: 'auto' }}>
+        <Table sx={{ minWidth: 850 }}>
+          <TableHead>
             <TableRow>
-              <StyledTableCellWithBorder colSpan={15} align="center">
-                {isLoading ? (
-                  <LinearProgress
-                    color="primary"
-                    sx={{ opacity: 0.5, py: 0.5 }}
-                  />
-                ) : (
-                  'No Data'
-                )}
+              <StyledTableCellWithBorder align="center" rowSpan={2}>
+                SN
+              </StyledTableCellWithBorder>
+              <StyledTableCellWithBorder rowSpan={2}>
+                Date
+              </StyledTableCellWithBorder>
+              <StyledTableCellWithBorder rowSpan={2}>
+                Employee
+              </StyledTableCellWithBorder>
+              <StyledTableCellWithBorder rowSpan={2}>
+                Destination
+              </StyledTableCellWithBorder>
+              <StyledTableCellWithBorder rowSpan={2} align="right">
+                Distance&#40;KM&#41;
+              </StyledTableCellWithBorder>
+              <StyledTableCellWithBorder rowSpan={2} align="right">
+                Cost&#40;TK&#41;
+              </StyledTableCellWithBorder>
+              <StyledTableCellWithBorder align="center" colSpan={3}>
+                Additional Expenses
+              </StyledTableCellWithBorder>
+              <StyledTableCellWithBorder align="right" rowSpan={2}>
+                Total Amount
+              </StyledTableCellWithBorder>
+              <StyledTableCellWithBorder align="center" rowSpan={2}>
+                Status
+              </StyledTableCellWithBorder>
+              <StyledTableCellWithBorder align="center" rowSpan={2}>
+                Action
               </StyledTableCellWithBorder>
             </TableRow>
-          )}
-          {allConveyances?.length ? (
             <TableRow>
-              <StyledTableCellWithBorder
-                colSpan={9}
-                sx={{ fontSize: '12px !important', fontWeight: 700 }}
-              >
-                TOTAL
+              <StyledTableCellWithBorder>Item</StyledTableCellWithBorder>
+              <StyledTableCellWithBorder>Details</StyledTableCellWithBorder>
+              <StyledTableCellWithBorder align="right">
+                Amount
               </StyledTableCellWithBorder>
-              <StyledTableCellWithBorder
-                align="right"
-                sx={{ fontSize: '12px !important', fontWeight: 700 }}
-              >
-                {totalAmount}
-              </StyledTableCellWithBorder>
-              <StyledTableCellWithBorder
-                align="right"
-                sx={{ fontSize: '12px !important', fontWeight: 700 }}
-                colSpan={2}
-              ></StyledTableCellWithBorder>
             </TableRow>
-          ) : null}
-        </TableBody>
-      </Table>
+          </TableHead>
+          <TableBody>
+            {allConveyances?.length ? (
+              allConveyances?.map((el, index) => (
+                <AllConveyanceRow key={index} sn={sn++} data={el} />
+              ))
+            ) : (
+              <TableRow>
+                <StyledTableCellWithBorder colSpan={15} align="center">
+                  {isLoading ? (
+                    <LinearProgress
+                      color="primary"
+                      sx={{ opacity: 0.5, py: 0.5 }}
+                    />
+                  ) : (
+                    'No Data'
+                  )}
+                </StyledTableCellWithBorder>
+              </TableRow>
+            )}
+            {allConveyances?.length ? (
+              <TableRow>
+                <StyledTableCellWithBorder
+                  colSpan={9}
+                  sx={{ fontSize: '12px !important', fontWeight: 700 }}
+                >
+                  TOTAL
+                </StyledTableCellWithBorder>
+                <StyledTableCellWithBorder
+                  align="right"
+                  sx={{ fontSize: '12px !important', fontWeight: 700 }}
+                >
+                  {totalAmount}
+                </StyledTableCellWithBorder>
+                <StyledTableCellWithBorder
+                  align="right"
+                  sx={{ fontSize: '12px !important', fontWeight: 700 }}
+                  colSpan={2}
+                ></StyledTableCellWithBorder>
+              </TableRow>
+            ) : null}
+          </TableBody>
+        </Table>
+      </Box>
+
       <TablePagination
         rowsPerPageOptions={[10, 20, 40, 100]}
         component="div"

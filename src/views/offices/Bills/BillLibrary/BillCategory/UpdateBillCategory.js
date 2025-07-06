@@ -3,6 +3,10 @@ import Modal from '@mui/material/Modal';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
 import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
@@ -29,6 +33,7 @@ const style = {
 
 const UpdateBillCategory = ({ open, handleClose, preData }) => {
   const [loading, setLoading] = useState(false);
+  const [itemType, setItemType] = useState(preData?.isService);
 
   const { register, handleSubmit } = useForm({ defaultValues: preData });
 
@@ -39,6 +44,7 @@ const UpdateBillCategory = ({ open, handleClose, preData }) => {
   const onSubmit = async (data) => {
     const newData = {
       label: data?.label,
+      isService: itemType,
     };
     try {
       setLoading(true);
@@ -91,7 +97,7 @@ const UpdateBillCategory = ({ open, handleClose, preData }) => {
           onSubmit={handleSubmit(onSubmit)}
         >
           <Grid container spacing={2}>
-            <Grid item xs={12}>
+            <Grid item xs={12} md={8}>
               <TextField
                 fullWidth
                 required
@@ -99,6 +105,23 @@ const UpdateBillCategory = ({ open, handleClose, preData }) => {
                 label="Bill Item"
                 {...register('label', { required: true })}
               />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <FormControl fullWidth required size="small">
+                <InputLabel id="select-item-type-id">Type</InputLabel>
+                <Select
+                  labelId="select-item-type-id"
+                  value={itemType}
+                  label="Type"
+                  onChange={(e) => setItemType(e.target.value)}
+                >
+                  <MenuItem value="">
+                    <em>None</em>
+                  </MenuItem>
+                  <MenuItem value={false}>Product</MenuItem>
+                  <MenuItem value={true}>Service</MenuItem>
+                </Select>
+              </FormControl>
             </Grid>
             <Grid item xs={12}>
               <LoadingButton

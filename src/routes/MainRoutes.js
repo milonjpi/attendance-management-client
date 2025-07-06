@@ -562,7 +562,7 @@ const MainRoutes = {
                       element: <BillCategory />,
                     },
                     {
-                      path: 'shop',
+                      path: 'supplier',
                       element: <Shops />,
                     },
                     {

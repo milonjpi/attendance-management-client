@@ -15,6 +15,7 @@ import { StyledTableCellWithBorder } from 'ui-component/table-component';
 import SearchIcon from '@mui/icons-material/Search';
 import {
   Autocomplete,
+  IconButton,
   InputAdornment,
   InputBase,
   LinearProgress,
@@ -29,6 +30,10 @@ import { useGetBillsQuery } from 'store/api/bill/billApi';
 import { useGetEmployeesQuery } from 'store/api/employee/employeeApi';
 import AllBillRow from './AllBillRow';
 import { mainStatus } from 'assets/data';
+import PrintAllBill from './PrintAllBill';
+import { useRef } from 'react';
+import { useReactToPrint } from 'react-to-print';
+import { IconPrinter } from '@tabler/icons-react';
 
 const AllBills = () => {
   const [searchText, setSearchText] = useState('');
@@ -36,6 +41,7 @@ const AllBills = () => {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [status, setStatus] = useState('Approved');
+  const [itemType, setItemType] = useState(null);
 
   // library
   // employee
@@ -91,6 +97,10 @@ const AllBills = () => {
     query['status'] = status;
   }
 
+  if (itemType) {
+    query['isService'] = itemType?.value;
+  }
+
   // search term
   const debouncedSearchTerm = useDebounced({
     searchQuery: searchText,
@@ -113,17 +123,60 @@ const AllBills = () => {
 
   let sn = page * rowsPerPage + 1;
 
+  // print data fetching
+  const { data: printData, isLoading: printDataLoading } = useGetBillsQuery(
+    { ...query, page: 0, limit: 5000 },
+    { refetchOnMountOrArgChange: true }
+  );
+
+  const allPrintBills = printData?.bills || [];
+  const totalPrintAmount = printData?.sum?._sum?.amount;
+  // handle print
+  const componentRef = useRef();
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+    pageStyle: `
+          @media print {
+            .pageBreakRow {
+              page-break-inside: avoid;
+            }
+          }
+          `,
+  });
+
   return (
-    <MainCard title="All Bills">
+    <MainCard
+      title="All Bills"
+      secondary={
+        <IconButton
+          disabled={printDataLoading}
+          color="primary"
+          onClick={handlePrint}
+        >
+          <IconPrinter size={20} />
+        </IconButton>
+      }
+    >
+      {/* pop up items */}
+      <Box component="div" sx={{ overflow: 'hidden', height: 0 }}>
+        <PrintAllBill
+          ref={componentRef}
+          startDate={startDate}
+          endDate={endDate}
+          allBills={allPrintBills}
+          totalAmount={totalPrintAmount}
+        />
+      </Box>
+      {/* pop up items */}
       {/* filter area */}
       <Box sx={{ mb: 2 }}>
         <Grid
           container
           rowSpacing={2}
-          columnSpacing={1}
+          columnSpacing={0.5}
           sx={{ alignItems: 'end' }}
         >
-          <Grid item xs={12} md={2.5}>
+          <Grid item xs={12} md={2}>
             <InputBase
               fullWidth
               placeholder="Search..."
@@ -137,7 +190,7 @@ const AllBills = () => {
               }
             />
           </Grid>
-          <Grid item xs={12} md={3.5}>
+          <Grid item xs={12} md={3}>
             <Autocomplete
               loading={employeeLoading}
               value={employee}
@@ -152,7 +205,7 @@ const AllBills = () => {
               )}
             />
           </Grid>
-          <Grid item xs={6} md={2}>
+          <Grid item xs={6} md={1.8}>
             <LocalizationProvider dateAdapter={AdapterMoment}>
               <DatePicker
                 label="Date (From)"
@@ -173,7 +226,7 @@ const AllBills = () => {
               />
             </LocalizationProvider>
           </Grid>
-          <Grid item xs={6} md={2}>
+          <Grid item xs={6} md={1.8}>
             <LocalizationProvider dateAdapter={AdapterMoment}>
               <DatePicker
                 label="Date (To)"
@@ -194,7 +247,7 @@ const AllBills = () => {
               />
             </LocalizationProvider>
           </Grid>
-          <Grid item xs={12} md={2}>
+          <Grid item xs={12} md={1.8}>
             <FormControl fullWidth size="small">
               <InputLabel id="expense-status-id">Status</InputLabel>
               <Select
@@ -214,92 +267,112 @@ const AllBills = () => {
               </Select>
             </FormControl>
           </Grid>
+          <Grid item xs={12} md={1.6}>
+            <Autocomplete
+              value={itemType}
+              fullWidth
+              size="small"
+              options={[
+                { id: 1, label: 'Product', value: false },
+                { id: 2, label: 'Service', value: true },
+              ]}
+              getOptionLabel={(option) => option.label}
+              isOptionEqualToValue={(item, value) => item.id === value.id}
+              onChange={(e, newValue) => setItemType(newValue)}
+              renderInput={(params) => (
+                <TextField {...params} label="Bill Type" />
+              )}
+            />
+          </Grid>
         </Grid>
       </Box>
       {/* end filter area */}
 
       {/* data table */}
-      <Table>
-        <TableHead>
-          <TableRow>
-            <StyledTableCellWithBorder align="center" rowSpan={2}>
-              SN
-            </StyledTableCellWithBorder>
-            <StyledTableCellWithBorder rowSpan={2}>
-              Date
-            </StyledTableCellWithBorder>
-            <StyledTableCellWithBorder rowSpan={2}>
-              Employee
-            </StyledTableCellWithBorder>
-            <StyledTableCellWithBorder align="center" colSpan={5}>
-              Bill Details
-            </StyledTableCellWithBorder>
-            <StyledTableCellWithBorder align="right" rowSpan={2}>
-              Amount
-            </StyledTableCellWithBorder>
-            <StyledTableCellWithBorder align="center" rowSpan={2}>
-              Status
-            </StyledTableCellWithBorder>
-            <StyledTableCellWithBorder align="center" rowSpan={2}>
-              Action
-            </StyledTableCellWithBorder>
-          </TableRow>
-          <TableRow>
-            <StyledTableCellWithBorder>Item</StyledTableCellWithBorder>
-            <StyledTableCellWithBorder>Details</StyledTableCellWithBorder>
-            <StyledTableCellWithBorder align="center">
-              UOM
-            </StyledTableCellWithBorder>
-            <StyledTableCellWithBorder align="right">
-              Quantity
-            </StyledTableCellWithBorder>
-            <StyledTableCellWithBorder align="right">
-              Price
-            </StyledTableCellWithBorder>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {allBills?.length ? (
-            allBills?.map((el, index) => (
-              <AllBillRow key={index} sn={sn++} data={el} />
-            ))
-          ) : (
+      <Box sx={{ overflow: 'auto' }}>
+        <Table sx={{ minWidth: 850 }}>
+          <TableHead>
             <TableRow>
-              <StyledTableCellWithBorder colSpan={15} align="center">
-                {isLoading ? (
-                  <LinearProgress
-                    color="primary"
-                    sx={{ opacity: 0.5, py: 0.5 }}
-                  />
-                ) : (
-                  'No Data'
-                )}
+              <StyledTableCellWithBorder align="center" rowSpan={2}>
+                SN
+              </StyledTableCellWithBorder>
+              <StyledTableCellWithBorder rowSpan={2}>
+                Date
+              </StyledTableCellWithBorder>
+              <StyledTableCellWithBorder rowSpan={2}>
+                Employee
+              </StyledTableCellWithBorder>
+              <StyledTableCellWithBorder align="center" colSpan={5}>
+                Bill Details
+              </StyledTableCellWithBorder>
+              <StyledTableCellWithBorder align="right" rowSpan={2}>
+                Amount
+              </StyledTableCellWithBorder>
+              <StyledTableCellWithBorder align="center" rowSpan={2}>
+                Status
+              </StyledTableCellWithBorder>
+              <StyledTableCellWithBorder align="center" rowSpan={2}>
+                Action
               </StyledTableCellWithBorder>
             </TableRow>
-          )}
-          {allBills?.length ? (
             <TableRow>
-              <StyledTableCellWithBorder
-                colSpan={8}
-                sx={{ fontSize: '12px !important', fontWeight: 700 }}
-              >
-                TOTAL
+              <StyledTableCellWithBorder>Item</StyledTableCellWithBorder>
+              <StyledTableCellWithBorder>Details</StyledTableCellWithBorder>
+              <StyledTableCellWithBorder align="center">
+                UOM
               </StyledTableCellWithBorder>
-              <StyledTableCellWithBorder
-                align="right"
-                sx={{ fontSize: '12px !important', fontWeight: 700 }}
-              >
-                {totalAmount}
+              <StyledTableCellWithBorder align="right">
+                Quantity
               </StyledTableCellWithBorder>
-              <StyledTableCellWithBorder
-                align="right"
-                sx={{ fontSize: '12px !important', fontWeight: 700 }}
-                colSpan={2}
-              ></StyledTableCellWithBorder>
+              <StyledTableCellWithBorder align="right">
+                Price
+              </StyledTableCellWithBorder>
             </TableRow>
-          ) : null}
-        </TableBody>
-      </Table>
+          </TableHead>
+          <TableBody>
+            {allBills?.length ? (
+              allBills?.map((el, index) => (
+                <AllBillRow key={index} sn={sn++} data={el} />
+              ))
+            ) : (
+              <TableRow>
+                <StyledTableCellWithBorder colSpan={15} align="center">
+                  {isLoading ? (
+                    <LinearProgress
+                      color="primary"
+                      sx={{ opacity: 0.5, py: 0.5 }}
+                    />
+                  ) : (
+                    'No Data'
+                  )}
+                </StyledTableCellWithBorder>
+              </TableRow>
+            )}
+            {allBills?.length ? (
+              <TableRow>
+                <StyledTableCellWithBorder
+                  colSpan={8}
+                  sx={{ fontSize: '12px !important', fontWeight: 700 }}
+                >
+                  TOTAL
+                </StyledTableCellWithBorder>
+                <StyledTableCellWithBorder
+                  align="right"
+                  sx={{ fontSize: '12px !important', fontWeight: 700 }}
+                >
+                  {totalAmount}
+                </StyledTableCellWithBorder>
+                <StyledTableCellWithBorder
+                  align="right"
+                  sx={{ fontSize: '12px !important', fontWeight: 700 }}
+                  colSpan={2}
+                ></StyledTableCellWithBorder>
+              </TableRow>
+            ) : null}
+          </TableBody>
+        </Table>
+      </Box>
+
       <TablePagination
         rowsPerPageOptions={[10, 20, 40, 100]}
         component="div"
