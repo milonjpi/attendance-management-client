@@ -66,14 +66,17 @@ const PrintMonthlySalaries = forwardRef(
               <StyledTableCell>Employee</StyledTableCell>
               <StyledTableCell>Department</StyledTableCell>
               <StyledTableCell>Branch</StyledTableCell>
-              <StyledTableCell align="right">Total Day</StyledTableCell>
-              <StyledTableCell align="right">Weekend</StyledTableCell>
-              <StyledTableCell align="right">Working Day</StyledTableCell>
-              <StyledTableCell align="right">Presents</StyledTableCell>
-              <StyledTableCell align="right">Leaves</StyledTableCell>
-              <StyledTableCell align="right">Absent</StyledTableCell>
+              <StyledTableCell align="right">Total Days</StyledTableCell>
+              <StyledTableCell align="right">Working Days</StyledTableCell>
+              <StyledTableCell align="right">Absents</StyledTableCell>
               <StyledTableCell align="right">
                 Salary &#40;TK&#41;
+              </StyledTableCell>
+              <StyledTableCell align="right">
+                Deduction &#40;TK&#41;
+              </StyledTableCell>
+              <StyledTableCell align="right">
+                Payable &#40;TK&#41;
               </StyledTableCell>
             </StyledTableRow>
           </TableHead>

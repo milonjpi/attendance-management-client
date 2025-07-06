@@ -17,16 +17,16 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { useGetLocationsQuery } from 'store/api/location/locationApi';
 import { useGetSalaryReportQuery } from 'store/api/report/reportApi';
-
 import moment from 'moment';
 import { useRef } from 'react';
 import { useReactToPrint } from 'react-to-print';
-import { IconButton, Tooltip } from '@mui/material';
+import { Button, IconButton, Tooltip } from '@mui/material';
 import { IconPrinter } from '@tabler/icons-react';
 import { monthList, salaryYear } from 'assets/data';
 import MonthlySalaryRow from './MonthlySalaryRow';
 import PrintMonthlySalaries from './PrintMonthlySalaries';
 import { useGetEmployeesQuery } from 'store/api/employee/employeeApi';
+import ViewPaySlip from './ViewPaySlip';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -89,9 +89,12 @@ const MonthlySalaries = () => {
     .startOf('month')
     .format('YYYY-MM-DD');
 
-  query['endDate'] = moment(`${year}-${month}`, 'YYYY-MMMM')
-    .endOf('month')
-    .format('YYYY-MM-DD');
+  query['endDate'] =
+    moment().format('YYYY-MMMM') === `${year}-${month}`
+      ? moment().format('YYYY-MM-DD')
+      : moment(`${year}-${month}`, 'YYYY-MMMM')
+          .endOf('month')
+          .format('YYYY-MM-DD');
 
   if (location) {
     query['locationId'] = location.id;
@@ -120,16 +123,43 @@ const MonthlySalaries = () => {
            }
            `,
   });
-  console.log(moment('2025-02-05').endOf('month').format('YYYY-MM-DD'));
+
+  // handle pay slip print
+  const payComponentRef = useRef();
+  const handlePayslipPrint = useReactToPrint({
+    content: () => payComponentRef.current,
+    pageStyle: `
+           @media print {
+            //  .row {
+            //    page-break-inside: avoid;
+            //  }
+           }
+           `,
+  });
+
   return (
     <MainCard
-      title="Month Salary"
+      title={
+        <span>
+          Month Salary{' '}
+          <Tooltip title="Print">
+            <IconButton size="small" color="secondary" onClick={handlePrint}>
+              <IconPrinter size={18} />
+            </IconButton>
+          </Tooltip>
+        </span>
+      }
       secondary={
-        <Tooltip title="Print">
-          <IconButton size="small" color="secondary" onClick={handlePrint}>
-            <IconPrinter size={20} />
-          </IconButton>
-        </Tooltip>
+        <Button
+          variant="outlined"
+          color="primary"
+          size="small"
+          sx={{ fontSize: 11 }}
+          startIcon={<IconPrinter size={14} />}
+          onClick={handlePayslipPrint}
+        >
+          Pay Slip
+        </Button>
       }
     >
       <Box sx={{ mb: 2 }}>
@@ -222,6 +252,14 @@ const MonthlySalaries = () => {
           isLoading={isLoading}
         />
       </Box>
+      <Box component="div" sx={{ overflow: 'hidden', height: 0 }}>
+        <ViewPaySlip
+          ref={payComponentRef}
+          data={allSalaries}
+          year={year}
+          month={month}
+        />
+      </Box>
       {/* end popup item */}
       <Box sx={{ overflow: 'auto' }}>
         <Table sx={{ minWidth: 950 }}>
@@ -231,14 +269,17 @@ const MonthlySalaries = () => {
               <StyledTableCell>Employee</StyledTableCell>
               <StyledTableCell>Department</StyledTableCell>
               <StyledTableCell>Branch</StyledTableCell>
-              <StyledTableCell align="right">Total Day</StyledTableCell>
-              <StyledTableCell align="right">Weekend</StyledTableCell>
-              <StyledTableCell align="right">Working Day</StyledTableCell>
-              <StyledTableCell align="right">Presents</StyledTableCell>
-              <StyledTableCell align="right">Leaves</StyledTableCell>
-              <StyledTableCell align="right">Absent</StyledTableCell>
+              <StyledTableCell align="right">Total Days</StyledTableCell>
+              <StyledTableCell align="right">Working Days</StyledTableCell>
+              <StyledTableCell align="right">Absents</StyledTableCell>
               <StyledTableCell align="right">
                 Salary &#40;TK&#41;
+              </StyledTableCell>
+              <StyledTableCell align="right">
+                Deduction &#40;TK&#41;
+              </StyledTableCell>
+              <StyledTableCell align="right">
+                Payable &#40;TK&#41;
               </StyledTableCell>
             </StyledTableRow>
           </TableHead>

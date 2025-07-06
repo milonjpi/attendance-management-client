@@ -32,12 +32,11 @@ const MonthlySalaryRow = ({ sn, data }) => {
       <StyledTableCell>{data?.department}</StyledTableCell>
       <StyledTableCell>{data?.branch}</StyledTableCell>
       <StyledTableCell align="right">{data?.totalDay}</StyledTableCell>
-      <StyledTableCell align="right">{data?.weekend}</StyledTableCell>
       <StyledTableCell align="right">{data?.workingDay}</StyledTableCell>
-      <StyledTableCell align="right">{data?.presents}</StyledTableCell>
-      <StyledTableCell align="right">{data?.leaves}</StyledTableCell>
       <StyledTableCell align="right">{data?.absent}</StyledTableCell>
       <StyledTableCell align="right">{data?.salary}</StyledTableCell>
+      <StyledTableCell align="right">{data?.deduction}</StyledTableCell>
+      <StyledTableCell align="right">{data?.earnSalary}</StyledTableCell>
     </StyledTableRow>
   );
 };
