@@ -1,4 +1,10 @@
-import { Button, Grid, Paper, Typography } from '@mui/material';
+import {
+  Button,
+  CircularProgress,
+  Grid,
+  Paper,
+  Typography,
+} from '@mui/material';
 import moment from 'moment';
 import React from 'react';
 import { useEffect } from 'react';
@@ -23,6 +29,7 @@ import {
 
 const PresentNow = () => {
   const userData = useSelector(selectAuth);
+  const [loading, setLoading] = useState(false);
 
   // employee data
   const { data: userEmpData, isLoading } = useGetSingleUserEmployeeQuery(
@@ -41,7 +48,7 @@ const PresentNow = () => {
       startDate: moment().format('YYYY-MM-DD'),
       endDate: moment().format('YYYY-MM-DD'),
     },
-    { refetchOnMountOrArgChange: true, pollingInterval: 10000 }
+    { refetchOnMountOrArgChange: true, pollingInterval: 4000 }
   );
 
   const todayAttendance = attendanceData?.data;
@@ -52,6 +59,7 @@ const PresentNow = () => {
 
   useEffect(() => {
     if (!employeeData?.location?.lat || !employeeData?.location?.lon) return;
+    setLoading(true);
 
     const officeLocation = {
       lat: Number(employeeData.location.lat),
@@ -77,6 +85,7 @@ const PresentNow = () => {
           officeLocation.lon
         );
         setDistance(distance.toFixed(2));
+        setLoading(false);
       },
       (err) => {
         setError('Location not fetched yet');
@@ -197,7 +206,13 @@ const PresentNow = () => {
                         : 'red',
                   }}
                 >
-                  {distance ? distance + ' meters' : 'Your Location is Off'}
+                  {distance ? (
+                    distance + ' meters'
+                  ) : loading ? (
+                    <CircularProgress size={20} />
+                  ) : (
+                    'Your Location is Off'
+                  )}
                 </Typography>
               </Paper>
               {Number(distance) &&
