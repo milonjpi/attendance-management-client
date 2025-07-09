@@ -49,9 +49,12 @@ const style = {
 
 const defaultValue = {
   itemType: null,
+  from: null,
+  to: null,
+  distance: '',
+  vehicleType: null,
   details: '',
   amount: '',
-  remarks: '',
 };
 
 const AddConveyance = ({ open, handleClose, employeeData }) => {
@@ -83,7 +86,7 @@ const AddConveyance = ({ open, handleClose, employeeData }) => {
   // end library
 
   // hook form
-  const { register, handleSubmit, control, reset } = useForm();
+  const { register, handleSubmit, control, setValue, reset } = useForm();
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'conveyanceDetails',
@@ -179,7 +182,7 @@ const AddConveyance = ({ open, handleClose, employeeData }) => {
           onSubmit={handleSubmit(onSubmit)}
         >
           <Grid container spacing={2}>
-            <Grid item xs={12} md={3}>
+            <Grid item xs={12} md={4}>
               <LocalizationProvider dateAdapter={AdapterMoment}>
                 <DatePicker
                   label="Date"
@@ -201,78 +204,8 @@ const AddConveyance = ({ open, handleClose, employeeData }) => {
                 />
               </LocalizationProvider>
             </Grid>
-            <Grid item xs={12} md={3}>
-              <Autocomplete
-                value={from}
-                fullWidth
-                size="small"
-                freeSolo
-                options={allLocations}
-                onChange={(e, newValue) => setFrom(newValue)}
-                onInputChange={(e, newValue) => setFrom(newValue)}
-                renderInput={(params) => (
-                  <TextField {...params} label="From Location" required />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} md={3}>
-              <Autocomplete
-                value={to}
-                fullWidth
-                size="small"
-                freeSolo
-                options={allLocations}
-                onChange={(e, newValue) => setTo(newValue)}
-                onInputChange={(e, newValue) => setTo(newValue || null)}
-                renderInput={(params) => (
-                  <TextField {...params} label="To Location" required />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} md={3}>
-              <TextField
-                fullWidth
-                required
-                size="small"
-                type="number"
-                label="Distance"
-                InputProps={{ inputProps: { min: 0, step: '0.1' } }}
-                {...register('distance', {
-                  valueAsNumber: true,
-                  required: true,
-                })}
-              />
-            </Grid>
-            <Grid item xs={12} md={3}>
-              <Autocomplete
-                value={vehicleType}
-                fullWidth
-                size="small"
-                options={allVehicleTypes}
-                getOptionLabel={(option) => option.label}
-                isOptionEqualToValue={(item, value) => item.id === value.id}
-                onChange={(e, newValue) => setVehicleType(newValue)}
-                renderInput={(params) => (
-                  <TextField {...params} label="Select vehicle" required />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} md={3}>
-              <TextField
-                fullWidth
-                required
-                size="small"
-                type="number"
-                label="Cost"
-                InputProps={{ inputProps: { min: 0 } }}
-                {...register('amount', {
-                  valueAsNumber: true,
-                  required: true,
-                })}
-              />
-            </Grid>
 
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={8}>
               <TextField
                 fullWidth
                 size="small"
@@ -286,7 +219,7 @@ const AddConveyance = ({ open, handleClose, employeeData }) => {
                   <TableHead>
                     <StyledTableRow>
                       <StyledTableCell align="center" colSpan={8}>
-                        Additional Expense
+                        Expense Details
                       </StyledTableCell>
                     </StyledTableRow>
                   </TableHead>
@@ -300,6 +233,10 @@ const AddConveyance = ({ open, handleClose, employeeData }) => {
                         handleRemove={handleRemove}
                         register={register}
                         allItemTypes={allItemTypes}
+                        allVehicleTypes={allVehicleTypes}
+                        allLocations={allLocations}
+                        defaultValue={defaultValue}
+                        setValue={setValue}
                       />
                     ))}
                     <StyledTableRow>
