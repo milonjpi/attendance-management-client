@@ -15,6 +15,7 @@ const DataTable = ({
   bordered,
   id,
   tableHeads,
+  headSX,
   extra,
   data,
   options,
@@ -36,7 +37,10 @@ const DataTable = ({
                 <StyledTableCell
                   key={index}
                   align={el.align || 'left'}
-                  sx={{ border: bordered && '1px solid #686868 !important' }}
+                  sx={{
+                    border: bordered && '1px solid #686868 !important',
+                    ...headSX,
+                  }}
                 >
                   {el.title}
                 </StyledTableCell>

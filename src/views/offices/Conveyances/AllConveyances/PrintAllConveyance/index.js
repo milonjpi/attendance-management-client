@@ -5,6 +5,7 @@ import TableRow from '@mui/material/TableRow';
 import { StyledTableCellWithBorder } from 'ui-component/table-component';
 import moment from 'moment';
 import { Table, TableBody, TableHead } from '@mui/material';
+import printLogo from 'assets/images/print_logo.png';
 import PrintAllConveyanceRow from './PrintAllConveyanceRow';
 
 const PrintAllConveyance = forwardRef(
@@ -13,26 +14,51 @@ const PrintAllConveyance = forwardRef(
     return (
       <Box component="div" ref={ref}>
         <Box sx={{ mb: 2 }}>
-          <Typography
-            component="h2"
-            sx={{ fontSize: 22, textAlign: 'center', fontWeight: 700 }}
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              mb: 0.5,
+            }}
           >
-            TBZ ENGINEERING
-          </Typography>
+            <img
+              src={printLogo}
+              alt="G"
+              style={{
+                display: 'inline-block',
+                height: 22,
+                paddingRight: 5,
+              }}
+            />
+            <Typography
+              sx={{
+                textAlign: 'center',
+                fontSize: 20,
+                fontWeight: 700,
+              }}
+            >
+              TBZ ENGINEERING
+            </Typography>
+          </Box>
+
           <Typography
             component="h6"
             sx={{ fontSize: 16, textAlign: 'center', fontWeight: 700 }}
           >
-            CONVEYANCES{' '}
-            {startDate && endDate ? (
-              <span>
-                {' '}
-                <em>{moment(startDate).format('DD/MM/YYYY')}</em> to{' '}
-                <em>{moment(endDate).format('DD/MM/YYYY')}</em>
-              </span>
-            ) : (
-              ''
-            )}
+            CONVEYANCES
+            <br />
+            <span style={{ fontSize: 12 }}>
+              {startDate && endDate ? (
+                <span>
+                  <em>{moment(startDate).format('DD/MM/YYYY')}</em>
+                  {' to '}
+                  <em>{moment(endDate).format('DD/MM/YYYY')}</em>
+                </span>
+              ) : (
+                ''
+              )}
+            </span>
           </Typography>
         </Box>
 
@@ -48,17 +74,8 @@ const PrintAllConveyance = forwardRef(
               <StyledTableCellWithBorder rowSpan={2}>
                 Employee
               </StyledTableCellWithBorder>
-              <StyledTableCellWithBorder rowSpan={2}>
-                Destination
-              </StyledTableCellWithBorder>
-              <StyledTableCellWithBorder rowSpan={2} align="right">
-                Distance&#40;KM&#41;
-              </StyledTableCellWithBorder>
-              <StyledTableCellWithBorder rowSpan={2} align="right">
-                Cost&#40;TK&#41;
-              </StyledTableCellWithBorder>
               <StyledTableCellWithBorder align="center" colSpan={3}>
-                Additional Expenses
+                Conveyance Details
               </StyledTableCellWithBorder>
               <StyledTableCellWithBorder align="right" rowSpan={2}>
                 Total Amount
@@ -90,7 +107,7 @@ const PrintAllConveyance = forwardRef(
             {allConveyances?.length ? (
               <TableRow>
                 <StyledTableCellWithBorder
-                  colSpan={9}
+                  colSpan={6}
                   sx={{ fontSize: '12px !important', fontWeight: 700 }}
                 >
                   TOTAL

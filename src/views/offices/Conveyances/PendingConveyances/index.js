@@ -100,9 +100,7 @@ const PendingConveyances = () => {
   const allConveyances = data?.conveyances || [];
   const meta = data?.meta;
 
-  const mainAmount = data?.sum?._sum?.amount;
-  const extraAmount = data?.sum?._sum?.extraAmount;
-  const totalAmount = mainAmount + extraAmount;
+  const totalAmount = data?.sum?._sum?.amount;
 
   let sn = page * rowsPerPage + 1;
   return (
@@ -204,17 +202,8 @@ const PendingConveyances = () => {
               <StyledTableCellWithBorder rowSpan={2}>
                 Employee
               </StyledTableCellWithBorder>
-              <StyledTableCellWithBorder rowSpan={2}>
-                Destination
-              </StyledTableCellWithBorder>
-              <StyledTableCellWithBorder rowSpan={2} align="right">
-                Distance&#40;KM&#41;
-              </StyledTableCellWithBorder>
-              <StyledTableCellWithBorder rowSpan={2} align="right">
-                Cost&#40;TK&#41;
-              </StyledTableCellWithBorder>
               <StyledTableCellWithBorder align="center" colSpan={3}>
-                Additional Expenses
+                Conveyance Details
               </StyledTableCellWithBorder>
               <StyledTableCellWithBorder align="right" rowSpan={2}>
                 Total Amount
@@ -256,7 +245,7 @@ const PendingConveyances = () => {
             {allConveyances?.length ? (
               <TableRow>
                 <StyledTableCellWithBorder
-                  colSpan={9}
+                  colSpan={6}
                   sx={{ fontSize: '12px !important', fontWeight: 700 }}
                 >
                   TOTAL

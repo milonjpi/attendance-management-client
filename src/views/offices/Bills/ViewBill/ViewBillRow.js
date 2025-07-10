@@ -1,31 +1,35 @@
-import { StyledTableCellWithBorder } from 'ui-component/table-component';
+import { StyledTableCellWithNarrowBorder } from 'ui-component/table-component';
 import { TableRow } from '@mui/material';
 
 const ViewBillRow = ({ sn, data, isService }) => {
   return (
     <TableRow>
-      <StyledTableCellWithBorder align="center">{sn}</StyledTableCellWithBorder>
-      <StyledTableCellWithBorder>{data?.item?.label}</StyledTableCellWithBorder>
-      <StyledTableCellWithBorder>
+      <StyledTableCellWithNarrowBorder align="center">
+        {sn}
+      </StyledTableCellWithNarrowBorder>
+      <StyledTableCellWithNarrowBorder>
+        {data?.item?.label}
+      </StyledTableCellWithNarrowBorder>
+      <StyledTableCellWithNarrowBorder>
         {data?.details || 'n/a'}
-      </StyledTableCellWithBorder>
-      <StyledTableCellWithBorder>
+      </StyledTableCellWithNarrowBorder>
+      <StyledTableCellWithNarrowBorder>
         {data?.shop?.label || 'n/a'}
-      </StyledTableCellWithBorder>
+      </StyledTableCellWithNarrowBorder>
       {isService ? null : (
         <>
-          <StyledTableCellWithBorder align="center">
+          <StyledTableCellWithNarrowBorder align="center">
             {data?.uom?.label}
-          </StyledTableCellWithBorder>
-          <StyledTableCellWithBorder align="right">
+          </StyledTableCellWithNarrowBorder>
+          <StyledTableCellWithNarrowBorder align="right">
             {data?.quantity}
-          </StyledTableCellWithBorder>
+          </StyledTableCellWithNarrowBorder>
         </>
       )}
 
-      <StyledTableCellWithBorder align="right">
+      <StyledTableCellWithNarrowBorder align="right">
         {data?.amount}
-      </StyledTableCellWithBorder>
+      </StyledTableCellWithNarrowBorder>
     </TableRow>
   );
 };

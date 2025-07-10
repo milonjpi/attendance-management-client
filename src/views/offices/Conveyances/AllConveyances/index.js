@@ -79,7 +79,6 @@ const AllConveyances = () => {
   query['page'] = page;
   query['sortBy'] = 'date';
   query['sortOrder'] = 'desc';
-  query['status'] = 'Pending';
 
   if (employee) {
     query['officeId'] = employee?.officeId;
@@ -115,9 +114,7 @@ const AllConveyances = () => {
   const allConveyances = data?.conveyances || [];
   const meta = data?.meta;
 
-  const mainAmount = data?.sum?._sum?.amount;
-  const extraAmount = data?.sum?._sum?.extraAmount;
-  const totalAmount = mainAmount + extraAmount;
+  const totalAmount = data?.sum?._sum?.amount;
 
   let sn = page * rowsPerPage + 1;
 
@@ -129,9 +126,7 @@ const AllConveyances = () => {
     );
 
   const allPrintConveyances = printData?.conveyances || [];
-  const mainPrintAmount = printData?.sum?._sum?.amount;
-  const extraPrintAmount = printData?.sum?._sum?.extraAmount;
-  const totalPrintAmount = mainPrintAmount + extraPrintAmount;
+  const totalPrintAmount = printData?.sum?._sum?.amount;
   // handle print
   const componentRef = useRef();
   const handlePrint = useReactToPrint({
@@ -285,17 +280,8 @@ const AllConveyances = () => {
               <StyledTableCellWithBorder rowSpan={2}>
                 Employee
               </StyledTableCellWithBorder>
-              <StyledTableCellWithBorder rowSpan={2}>
-                Destination
-              </StyledTableCellWithBorder>
-              <StyledTableCellWithBorder rowSpan={2} align="right">
-                Distance&#40;KM&#41;
-              </StyledTableCellWithBorder>
-              <StyledTableCellWithBorder rowSpan={2} align="right">
-                Cost&#40;TK&#41;
-              </StyledTableCellWithBorder>
               <StyledTableCellWithBorder align="center" colSpan={3}>
-                Additional Expenses
+                Conveyance Details
               </StyledTableCellWithBorder>
               <StyledTableCellWithBorder align="right" rowSpan={2}>
                 Total Amount
@@ -337,7 +323,7 @@ const AllConveyances = () => {
             {allConveyances?.length ? (
               <TableRow>
                 <StyledTableCellWithBorder
-                  colSpan={9}
+                  colSpan={6}
                   sx={{ fontSize: '12px !important', fontWeight: 700 }}
                 >
                   TOTAL

@@ -32,7 +32,6 @@ import {
   useUpdateConveyanceMutation,
 } from 'store/api/conveyance/conveyanceApi';
 import ConveyanceFields from './ConveyanceFields';
-import { Autocomplete } from '@mui/material';
 
 const style = {
   position: 'absolute',
@@ -48,18 +47,18 @@ const style = {
 
 const defaultValue = {
   itemType: null,
+  from: null,
+  to: null,
+  distance: '',
+  vehicleType: null,
   details: '',
   amount: '',
-  remarks: '',
 };
 
 const UpdateConveyance = ({ open, handleClose, preData }) => {
   const [loading, setLoading] = useState(false);
 
   const [date, setDate] = useState(preData?.date);
-  const [from, setFrom] = useState(preData?.from || null);
-  const [to, setTo] = useState(preData?.to || null);
-  const [vehicleType, setVehicleType] = useState(preData?.vehicleType || null);
 
   // library
   const { data: itemTypeData } = useGetItemTypesQuery(
@@ -82,7 +81,7 @@ const UpdateConveyance = ({ open, handleClose, preData }) => {
   // end library
 
   // hook form
-  const { register, handleSubmit, control } = useForm({
+  const { register, handleSubmit, control, setValue } = useForm({
     defaultValues: preData,
   });
   const { fields, append, remove } = useFieldArray({
@@ -106,16 +105,15 @@ const UpdateConveyance = ({ open, handleClose, preData }) => {
 
   const onSubmit = async (data) => {
     const newData = {
-      from: from,
-      to: to,
-      distance: data?.distance,
-      vehicleTypeId: vehicleType?.id,
       date: date,
-      amount: data?.amount,
-      extraAmount: totalAmount,
+      amount: totalAmount,
       remarks: data?.remarks || '',
       conveyanceDetails: data?.conveyanceDetails?.map((el) => ({
         itemTypeId: el.itemType?.id,
+        from: el.from,
+        to: el.to,
+        distance: el.distance,
+        vehicleTypeId: el.vehicleType?.id,
         details: el.details || '',
         amount: el.amount,
         remarks: el.remarks || '',
@@ -161,7 +159,7 @@ const UpdateConveyance = ({ open, handleClose, preData }) => {
           }}
         >
           <Typography sx={{ fontSize: 16, color: '#878781' }}>
-            Create Conveyance
+            Edit Conveyance
           </Typography>
           <IconButton color="error" size="small" onClick={handleClose}>
             <CloseIcon fontSize="small" />
@@ -177,7 +175,7 @@ const UpdateConveyance = ({ open, handleClose, preData }) => {
           onSubmit={handleSubmit(onSubmit)}
         >
           <Grid container spacing={2}>
-            <Grid item xs={12} md={3}>
+            <Grid item xs={12} md={4}>
               <LocalizationProvider dateAdapter={AdapterMoment}>
                 <DatePicker
                   label="Date"
@@ -199,79 +197,8 @@ const UpdateConveyance = ({ open, handleClose, preData }) => {
                 />
               </LocalizationProvider>
             </Grid>
-            <Grid item xs={12} md={3}>
-              <Autocomplete
-                value={from}
-                fullWidth
-                size="small"
-                freeSolo
-                options={allLocations}
-                onChange={(e, newValue) => setFrom(newValue)}
-                onInputChange={(e, newValue) => setFrom(newValue)}
-                renderInput={(params) => (
-                  <TextField {...params} label="From Location" required />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} md={3}>
-              <Autocomplete
-                value={to}
-                fullWidth
-                size="small"
-                freeSolo
-                options={allLocations}
-                onChange={(e, newValue) => setTo(newValue)}
-                onInputChange={(e, newValue) => setTo(newValue || null)}
-                renderInput={(params) => (
-                  <TextField {...params} label="To Location" required />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} md={3}>
-              <TextField
-                fullWidth
-                required
-                size="small"
-                type="number"
-                label="Distance"
-                InputProps={{ inputProps: { min: 0, step: '0.1' } }}
-                {...register('distance', {
-                  valueAsNumber: true,
-                  required: true,
-                })}
-              />
-            </Grid>
-            <Grid item xs={12} md={3}>
-              <Autocomplete
-                value={vehicleType}
-                fullWidth
-                size="small"
-                options={allVehicleTypes}
-                getOptionLabel={(option) => option.label}
-                isOptionEqualToValue={(item, value) => item.id === value.id}
-                onChange={(e, newValue) => setVehicleType(newValue)}
-                renderInput={(params) => (
-                  <TextField {...params} label="Select vehicle" required />
-                )}
-              />
-            </Grid>
 
-            <Grid item xs={12} md={3}>
-              <TextField
-                fullWidth
-                required
-                size="small"
-                type="number"
-                label="Cost"
-                InputProps={{ inputProps: { min: 0 } }}
-                {...register('amount', {
-                  valueAsNumber: true,
-                  required: true,
-                })}
-              />
-            </Grid>
-
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={8}>
               <TextField
                 fullWidth
                 size="small"
@@ -285,7 +212,7 @@ const UpdateConveyance = ({ open, handleClose, preData }) => {
                   <TableHead>
                     <StyledTableRow>
                       <StyledTableCell align="center" colSpan={8}>
-                        Additional Expense
+                        Conveyance Details
                       </StyledTableCell>
                     </StyledTableRow>
                   </TableHead>
@@ -299,6 +226,10 @@ const UpdateConveyance = ({ open, handleClose, preData }) => {
                         handleRemove={handleRemove}
                         register={register}
                         allItemTypes={allItemTypes}
+                        allVehicleTypes={allVehicleTypes}
+                        allLocations={allLocations}
+                        defaultValue={defaultValue}
+                        setValue={setValue}
                       />
                     ))}
                     <StyledTableRow>
@@ -314,7 +245,7 @@ const UpdateConveyance = ({ open, handleClose, preData }) => {
                         <StyledTableCell
                           sx={{ fontSize: 12, fontWeight: 700 }}
                           align="right"
-                          colSpan={2}
+                          colSpan={5}
                         >
                           Total Amount: {totalAmount}
                         </StyledTableCell>

@@ -18,12 +18,12 @@ const backgrounds = {
   'In Stand': '#E3FCEF',
 };
 
-const ShowStatus = ({ status }) => {
+const ShowStatus = ({ status, fontSize }) => {
   return (
     <Typography
       component="span"
       sx={{
-        fontSize: 11,
+        fontSize: fontSize || 11,
         display: 'inline-block',
         textTransform: 'uppercase',
         p: 0.5,

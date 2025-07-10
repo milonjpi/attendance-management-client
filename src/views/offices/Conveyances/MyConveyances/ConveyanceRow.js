@@ -17,18 +17,6 @@ const ConveyanceRow = ({ sn, data }) => {
         <StyledTableCellWithBorder rowSpan={rowSpan}>
           {moment(data?.date).format('DD/MM/YYYY')}
         </StyledTableCellWithBorder>
-        <StyledTableCellWithBorder rowSpan={rowSpan}>
-          {data?.from + ' '}
-          <em>to</em>
-          {' ' + data?.to}
-        </StyledTableCellWithBorder>
-        <StyledTableCellWithBorder rowSpan={rowSpan} align="right">
-          {data?.distance}
-        </StyledTableCellWithBorder>
-        <StyledTableCellWithBorder rowSpan={rowSpan} align="right">
-          {data?.amount}
-        </StyledTableCellWithBorder>
-
         {/* First row includes totals and actions */}
         {conveyanceDetails.length > 0 ? (
           <>
@@ -36,7 +24,19 @@ const ConveyanceRow = ({ sn, data }) => {
               {conveyanceDetails[0].itemType?.label}
             </StyledTableCellWithBorder>
             <StyledTableCellWithBorder>
-              {conveyanceDetails[0].details}
+              {conveyanceDetails[0].itemType?.label?.toLowerCase() ===
+              'transport' ? (
+                <span>
+                  {conveyanceDetails[0].from}
+                  <em> to </em>
+                  {conveyanceDetails[0].to}
+                  <em> by </em>
+                  {conveyanceDetails[0].vehicleType?.label} &#40;
+                  {conveyanceDetails[0].distance} km&#41;
+                </span>
+              ) : (
+                conveyanceDetails[0].details
+              )}
             </StyledTableCellWithBorder>
             <StyledTableCellWithBorder align="right">
               {conveyanceDetails[0].amount}
@@ -50,7 +50,7 @@ const ConveyanceRow = ({ sn, data }) => {
 
         {/* Totals and Actions */}
         <StyledTableCellWithBorder align="right" rowSpan={rowSpan}>
-          {data?.amount + data?.extraAmount}
+          {data?.amount}
         </StyledTableCellWithBorder>
         <StyledTableCellWithBorder align="center" rowSpan={rowSpan}>
           <ShowStatus status={data?.status} />
@@ -66,7 +66,20 @@ const ConveyanceRow = ({ sn, data }) => {
           <StyledTableCellWithBorder>
             {el.itemType?.label}
           </StyledTableCellWithBorder>
-          <StyledTableCellWithBorder>{el.details}</StyledTableCellWithBorder>
+          <StyledTableCellWithBorder>
+            {el.itemType?.label?.toLowerCase() === 'transport' ? (
+              <span>
+                {el.from}
+                <em> to </em>
+                {el.to}
+                <em> by </em>
+                {el.vehicleType?.label} &#40;
+                {el.distance} km&#41;
+              </span>
+            ) : (
+              el.details
+            )}
+          </StyledTableCellWithBorder>
           <StyledTableCellWithBorder align="right">
             {el.amount}
           </StyledTableCellWithBorder>

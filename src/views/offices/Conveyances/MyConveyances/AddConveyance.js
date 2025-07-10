@@ -33,7 +33,6 @@ import {
   useGetConveyanceLocationsQuery,
 } from 'store/api/conveyance/conveyanceApi';
 import ConveyanceFields from './ConveyanceFields';
-import { Autocomplete } from '@mui/material';
 
 const style = {
   position: 'absolute',
@@ -61,9 +60,6 @@ const AddConveyance = ({ open, handleClose, employeeData }) => {
   const [loading, setLoading] = useState(false);
 
   const [date, setDate] = useState(moment());
-  const [from, setFrom] = useState(null);
-  const [to, setTo] = useState(null);
-  const [vehicleType, setVehicleType] = useState(null);
 
   // library
   const { data: itemTypeData } = useGetItemTypesQuery(
@@ -108,17 +104,16 @@ const AddConveyance = ({ open, handleClose, employeeData }) => {
 
   const onSubmit = async (data) => {
     const newData = {
-      from: from,
-      to: to,
-      distance: data?.distance,
-      vehicleTypeId: vehicleType?.id,
       officeId: employeeData?.officeId,
       date: date,
-      amount: data?.amount,
-      extraAmount: totalAmount,
+      amount: totalAmount,
       remarks: data?.remarks || '',
       conveyanceDetails: data?.conveyanceDetails?.map((el) => ({
         itemTypeId: el.itemType?.id,
+        from: el.from,
+        to: el.to,
+        distance: el.distance || 0,
+        vehicleTypeId: el.vehicleType?.id,
         details: el.details || '',
         amount: el.amount,
         remarks: el.remarks || '',
@@ -131,9 +126,6 @@ const AddConveyance = ({ open, handleClose, employeeData }) => {
         handleClose();
         setLoading(false);
         setDate(moment());
-        setFrom(null);
-        setTo(null);
-        setVehicleType(null);
         reset({ conveyanceDetails: [defaultValue] });
         dispatch(
           setToast({
@@ -219,7 +211,7 @@ const AddConveyance = ({ open, handleClose, employeeData }) => {
                   <TableHead>
                     <StyledTableRow>
                       <StyledTableCell align="center" colSpan={8}>
-                        Expense Details
+                        Conveyance Details
                       </StyledTableCell>
                     </StyledTableRow>
                   </TableHead>
@@ -252,7 +244,7 @@ const AddConveyance = ({ open, handleClose, employeeData }) => {
                         <StyledTableCell
                           sx={{ fontSize: 12, fontWeight: 700 }}
                           align="right"
-                          colSpan={2}
+                          colSpan={5}
                         >
                           Total Amount: {totalAmount}
                         </StyledTableCell>

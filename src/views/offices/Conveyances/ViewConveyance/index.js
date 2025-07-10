@@ -1,7 +1,6 @@
 import React, { useRef } from 'react';
 import Modal from '@mui/material/Modal';
 import Paper from '@mui/material/Paper';
-import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import Button from '@mui/material/Button';
@@ -11,10 +10,9 @@ import CloseIcon from '@mui/icons-material/Close';
 import moment from 'moment';
 import { useReactToPrint } from 'react-to-print';
 import DataTable from 'ui-component/table';
-import { Table, TableBody, TableRow } from '@mui/material';
-import { StyledTableCellWithBorder } from 'ui-component/table-component';
-import ShowStatus from 'ui-component/ShowStatus';
-import ViewConveyanceRow from './ViewConveyanceRow';
+import { TableRow } from '@mui/material';
+import { StyledTableCellWithNarrowBorder } from 'ui-component/table-component';
+import printLogo from 'assets/images/print_logo.png';
 import ViewConveyanceMainRow from './ViewConveyanceMainRow';
 
 const style = {
@@ -37,36 +35,13 @@ const ViewConveyance = ({ open, handleClose, data }) => {
       align: 'center',
     },
     {
-      title: 'VEHICLE USED',
-    },
-    {
-      title: 'FROM LOCATION',
-    },
-    {
-      title: 'TO LOCATION',
-    },
-    {
-      title: 'DISTANCE (KM)',
-      align: 'right',
-    },
-    {
-      title: 'AMOUNT (TK)',
-      align: 'right',
-    },
-  ];
-  const tableHeadsExtra = [
-    {
-      title: 'SN',
-      align: 'center',
-    },
-    {
       title: 'ITEM',
     },
     {
       title: 'DETAILS',
     },
     {
-      title: 'AMOUNT',
+      title: 'AMOUNT (TK)',
       align: 'right',
     },
   ];
@@ -107,25 +82,42 @@ const ViewConveyance = ({ open, handleClose, data }) => {
         <Box sx={{ overflow: 'auto' }}>
           <Box sx={{ minWidth: 800 }}>
             <Box ref={componentRef}>
-              <Box sx={{ mb: 3 }}>
+              <Box sx={{ mb: 2 }}>
                 <Box
                   sx={{
                     mb: 0.8,
                   }}
                 >
-                  <Typography
+                  <Box
                     sx={{
-                      fontSize: 25,
-                      textAlign: 'center',
-                      fontWeight: 700,
-                      textTransform: 'uppercase',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      mb: 0.5,
                     }}
                   >
-                    TBZ Engineering
-                  </Typography>
+                    <img
+                      src={printLogo}
+                      alt="G"
+                      style={{
+                        display: 'inline-block',
+                        height: 22,
+                        paddingRight: 5,
+                      }}
+                    />
+                    <Typography
+                      sx={{
+                        textAlign: 'center',
+                        fontSize: 20,
+                        fontWeight: 700,
+                      }}
+                    >
+                      TBZ ENGINEERING
+                    </Typography>
+                  </Box>
                   <Typography
                     sx={{
-                      fontSize: 12,
+                      fontSize: 11,
                       textAlign: 'center',
                       fontWeight: 500,
                       textTransform: 'uppercase',
@@ -139,155 +131,94 @@ const ViewConveyance = ({ open, handleClose, data }) => {
                 <Typography
                   component="h2"
                   sx={{
-                    fontSize: 18,
+                    fontSize: 15,
                     textAlign: 'center',
                     fontWeight: 700,
-                    mt: 2,
                     textTransform: 'uppercase',
                   }}
                 >
-                  Conveyance Bill
+                  Conveyance
+                </Typography>
+                <Typography
+                  sx={{
+                    fontSize: 10,
+                    textAlign: 'center',
+                    textTransform: 'uppercase',
+                  }}
+                >
+                  &#40;
+                  {employee?.name +
+                    ', ' +
+                    employee?.designation?.label +
+                    ', ' +
+                    employee?.department?.label}
+                  &#41;
                 </Typography>
               </Box>
-              <Grid container spacing={2}>
-                <Grid item xs={5}>
-                  <Table>
-                    <TableBody>
-                      <TableRow>
-                        <StyledTableCellWithBorder sx={{ width: 100 }}>
-                          OFFICE ID
-                        </StyledTableCellWithBorder>
-                        <StyledTableCellWithBorder>
-                          {employee?.officeId}
-                        </StyledTableCellWithBorder>
-                      </TableRow>
-                      <TableRow>
-                        <StyledTableCellWithBorder sx={{ width: 100 }}>
-                          NAME
-                        </StyledTableCellWithBorder>
-                        <StyledTableCellWithBorder>
-                          {employee?.name}
-                        </StyledTableCellWithBorder>
-                      </TableRow>
-                      <TableRow>
-                        <StyledTableCellWithBorder sx={{ width: 100 }}>
-                          DESIGNATION
-                        </StyledTableCellWithBorder>
-                        <StyledTableCellWithBorder>
-                          {employee?.designation?.label}
-                        </StyledTableCellWithBorder>
-                      </TableRow>
-                      <TableRow>
-                        <StyledTableCellWithBorder sx={{ width: 100 }}>
-                          DEPARTMENT
-                        </StyledTableCellWithBorder>
-                        <StyledTableCellWithBorder>
-                          {employee?.department?.label}
-                        </StyledTableCellWithBorder>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
-                </Grid>
-                <Grid item xs={7}>
-                  <Typography
-                    sx={{ textAlign: 'right', fontSize: 12, mb: 0.5 }}
-                  >
-                    <span sx={{ fontWeight: 500 }}>DATE: </span>
-                    {moment(data?.date).format('DD/MM/YYYY')}
-                  </Typography>
-                  <Typography sx={{ textAlign: 'right', fontSize: 11 }}>
-                    <span sx={{ fontWeight: 500 }}>STATUS: </span>
-                    <ShowStatus status={data?.status} />
-                  </Typography>
-                </Grid>
-                <Grid item xs={12}>
-                  <Typography
-                    sx={{
-                      textTransform: 'uppercase',
-                      fontWeight: 700,
-                      fontSize: 12,
-                      mb: 0.5,
-                    }}
-                  >
-                    Conveyance Details
-                  </Typography>
-                  <DataTable
-                    bordered
-                    tableHeads={tableHeadsMain}
-                    data={[{ ...data }]}
-                    options={(el, index) => (
-                      <ViewConveyanceMainRow
-                        key={el.id}
-                        sn={index + 1}
-                        data={el}
-                      />
-                    )}
-                    extra={
-                      data?.remarks ? (
-                        <TableRow>
-                          <StyledTableCellWithBorder
-                            colSpan={6}
-                            sx={{ fontSize: '10px !important' }}
-                            align="center"
-                          >
-                            <span style={{ fontWeight: 500 }}>Remarks: </span>
-                            {data?.remarks}
-                          </StyledTableCellWithBorder>
-                        </TableRow>
-                      ) : null
-                    }
-                  />
-                </Grid>
-                {data?.conveyanceDetails?.length ? (
-                  <Grid item xs={12}>
-                    <Typography
-                      sx={{
-                        textTransform: 'uppercase',
-                        fontWeight: 700,
-                        fontSize: 12,
-                        mb: 0.5,
-                      }}
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  mb: 0.5,
+                }}
+              >
+                <Typography
+                  sx={{
+                    textTransform: 'uppercase',
+                    fontWeight: 700,
+                    fontSize: 12,
+                  }}
+                >
+                  Conveyance Details
+                </Typography>
+                <Typography sx={{ fontSize: 10 }}>
+                  <span sx={{ fontWeight: 500 }}>DATE: </span>
+                  {moment(data?.date).format('DD/MM/YYYY')}
+                </Typography>
+              </Box>
+
+              <DataTable
+                bordered
+                headSX={{
+                  fontSize: '10px !important',
+                  padding: '2px 6px !important',
+                }}
+                tableHeads={tableHeadsMain}
+                data={data?.conveyanceDetails || []}
+                options={(el, index) => (
+                  <ViewConveyanceMainRow key={el.id} sn={index + 1} data={el} />
+                )}
+                extra={
+                  <TableRow>
+                    <StyledTableCellWithNarrowBorder
+                      colSpan={3}
+                      sx={{ fontSize: '11px !important', fontWeight: 700 }}
                     >
-                      Additional Expenses
-                    </Typography>
-                    <DataTable
-                      bordered
-                      tableHeads={tableHeadsExtra}
-                      data={data?.conveyanceDetails || []}
-                      options={(el, index) => (
-                        <ViewConveyanceRow
-                          key={el.id}
-                          sn={index + 1}
-                          data={el}
-                        />
-                      )}
-                    />
-                  </Grid>
-                ) : null}
-                <Grid item xs={12}>
-                  <Table sx={{ mt: 1.5 }}>
-                    <TableBody>
-                      <TableRow>
-                        <StyledTableCellWithBorder
-                          sx={{ width: '50%', fontWeight: 700, fontSize: 12 }}
-                        >
-                          TOTAL
-                        </StyledTableCellWithBorder>
-                        <StyledTableCellWithBorder
-                          sx={{
-                            width: '50%',
-                            fontWeight: 700,
-                            fontSize: 12,
-                            textAlign: 'right',
-                          }}
-                        >
-                          {data?.amount + data?.extraAmount}
-                        </StyledTableCellWithBorder>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
-                </Grid>
-              </Grid>
+                      TOTAL
+                    </StyledTableCellWithNarrowBorder>
+                    <StyledTableCellWithNarrowBorder
+                      sx={{ fontSize: '11px !important', fontWeight: 700 }}
+                      align="right"
+                    >
+                      {data?.amount}
+                    </StyledTableCellWithNarrowBorder>
+                  </TableRow>
+                }
+              />
+              {data?.remarks ? (
+                <Typography
+                  sx={{
+                    textTransform: 'uppercase',
+                    fontWeight: 500,
+                    fontSize: 8,
+                    mt: 0.5,
+                  }}
+                >
+                  Remarks:{' '}
+                  <span style={{ fontWeight: 300 }}>{data?.remarks}</span>
+                </Typography>
+              ) : null}
             </Box>
           </Box>
         </Box>
