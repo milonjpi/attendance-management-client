@@ -29,12 +29,12 @@ export const conveyanceApi = api.injectEndpoints({
     }),
     getConveyanceLocations: build.query({
       query: () => ({
-        url: `${CONVEYANCE_URL}`,
+        url: `${CONVEYANCE_URL}/location`,
         method: 'GET',
       }),
       transformResponse: (response) => {
         return {
-          locations: response?.locations,
+          locations: response?.data,
         };
       },
       providesTags: ['conveyance'],
