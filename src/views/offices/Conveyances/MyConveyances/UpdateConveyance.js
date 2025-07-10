@@ -112,7 +112,7 @@ const UpdateConveyance = ({ open, handleClose, preData }) => {
         itemTypeId: el.itemType?.id,
         from: el.from,
         to: el.to,
-        distance: el.distance,
+        distance: el.distance || 0,
         vehicleTypeId: el.vehicleType?.id,
         details: el.details || '',
         amount: el.amount,
