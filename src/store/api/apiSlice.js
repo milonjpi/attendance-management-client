@@ -26,6 +26,8 @@ export const api = createApi({
     'shop',
     'uom',
     'bill',
+    'monthSalary',
+    'monthSalaryDetail',
   ],
   endpoints: () => ({}),
 });

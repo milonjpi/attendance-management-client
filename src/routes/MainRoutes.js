@@ -109,6 +109,9 @@ const ApprovedLeaves = Loadable(
 const MonthlySalaries = Loadable(
   lazy(() => import('views/pages/SalaryManagement/MonthlySalaries'))
 );
+const PaySalary = Loadable(
+  lazy(() => import('views/pages/SalaryManagement/PaySalary'))
+);
 const PresentSalary = Loadable(
   lazy(() => import('views/pages/SalaryManagement/PresentSalary'))
 );
@@ -364,6 +367,17 @@ const MainRoutes = {
                       allowedCodes={['monthly-salaries']}
                     >
                       <MonthlySalaries />
+                    </AuthenticationRoutes>
+                  ),
+                },
+                {
+                  path: 'pay-salary',
+                  element: (
+                    <AuthenticationRoutes
+                      allowedRoles={['super_admin', 'admin']}
+                      allowedCodes={['pay-salary']}
+                    >
+                      <PaySalary />
                     </AuthenticationRoutes>
                   ),
                 },

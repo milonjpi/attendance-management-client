@@ -194,6 +194,13 @@ const pages = {
           url: '/pages/salary-management/monthly-salaries',
           access: ['super_admin', 'admin'],
         },
+        {
+          id: 'pay-salary',
+          title: 'Pay Salary',
+          type: 'item',
+          url: '/pages/salary-management/pay-salary',
+          access: ['super_admin', 'admin'],
+        },
       ],
     },
   ],
