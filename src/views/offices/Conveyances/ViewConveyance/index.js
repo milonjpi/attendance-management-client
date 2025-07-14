@@ -172,6 +172,15 @@ const ViewConveyance = ({ open, handleClose, data }) => {
                 >
                   Conveyance Details
                 </Typography>
+                <Typography
+                  sx={{
+                    fontSize: 9,
+                    textAlign: 'center',
+                    textTransform: 'uppercase',
+                  }}
+                >
+                  &#40;This conveyance is for internal use only&#41;
+                </Typography>
                 <Typography sx={{ fontSize: 10 }}>
                   <span sx={{ fontWeight: 500 }}>DATE: </span>
                   {moment(data?.date).format('DD/MM/YYYY')}
@@ -219,6 +228,30 @@ const ViewConveyance = ({ open, handleClose, data }) => {
                   <span style={{ fontWeight: 300 }}>{data?.remarks}</span>
                 </Typography>
               ) : null}
+
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'right',
+                  mt: 5,
+                }}
+              >
+                <Typography
+                  sx={{
+                    width: 100,
+                    fontSize: 10,
+                    textTransform: 'uppercase',
+                    textAlign: 'center',
+                    mx: 5,
+                    px: 1,
+                    pt: 0.2,
+                    borderTop: '1px solid #676767',
+                  }}
+                >
+                  Approved By
+                </Typography>
+              </Box>
             </Box>
           </Box>
         </Box>

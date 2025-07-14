@@ -20,11 +20,14 @@ import { useGetSalaryReportQuery } from 'store/api/report/reportApi';
 import moment from 'moment';
 import { useRef } from 'react';
 import { useReactToPrint } from 'react-to-print';
-import { Button, IconButton, Tooltip } from '@mui/material';
+import { Button, IconButton, TablePagination, Tooltip } from '@mui/material';
 import { IconPlus, IconPrinter } from '@tabler/icons-react';
 import { monthList, salaryYear } from 'assets/data';
 import { useGetEmployeesQuery } from 'store/api/employee/employeeApi';
 import CardAction from 'ui-component/cards/CardAction';
+import CreatePaySlip from './CreatePaySlip';
+import { useGetMonthSalariesQuery } from 'store/api/monthSalary/monthSalaryApi';
+import PaySalaryRow from './PaySalaryRow';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -49,10 +52,12 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 const PaySalary = () => {
-  const [year, setYear] = useState(moment().format('YYYY'));
-  const [month, setMonth] = useState(moment().format('MMMM'));
+  const [year, setYear] = useState(null);
+  const [month, setMonth] = useState(null);
   const [location, setLocation] = useState(null);
   const [employee, setEmployee] = useState(null);
+
+  const [open, setOpen] = useState(false);
 
   // library
   const { data: locationData, isLoading: locationLoading } =
@@ -65,20 +70,22 @@ const PaySalary = () => {
 
   const allLocations = locationData?.locations || [];
 
-  // employee
-  const empQuery = {};
-  empQuery['limit'] = 100;
-  empQuery['page'] = 0;
-  empQuery['isActive'] = true;
-  empQuery['isOwn'] = false;
-  if (location) {
-    empQuery['locationId'] = location?.id;
-  }
-  const { data: employeeData } = useGetEmployeesQuery({ ...empQuery });
-  const employees = employeeData?.employees || [];
   // end library
 
   // filtering and pagination
+  // pagination
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
+  // end pagination
   const query = {};
 
   query['isActive'] = true;
@@ -102,12 +109,13 @@ const PaySalary = () => {
     query['employeeId'] = employee.officeId;
   }
 
-  const { data, isLoading } = useGetSalaryReportQuery(
+  const { data, isLoading } = useGetMonthSalariesQuery(
     { ...query },
     { refetchOnMountOrArgChange: true }
   );
 
-  const allSalaries = data?.data || [];
+  const allSalaries = data?.monthSalaries || [];
+  const meta = data?.meta;
 
   // handle print
   const componentRef = useRef();
@@ -138,7 +146,13 @@ const PaySalary = () => {
   return (
     <MainCard
       title={<span>Pay Salary</span>}
-      secondary={<CardAction icon={<IconPlus />} title="Create Pay Slip" />}
+      secondary={
+        <CardAction
+          icon={<IconPlus />}
+          title="Create Pay Slip"
+          onClick={() => setOpen(true)}
+        />
+      }
     >
       <Box sx={{ mb: 2 }}>
         <Grid
@@ -182,7 +196,7 @@ const PaySalary = () => {
             </FormControl>
           </Grid>
 
-          <Grid item xs={12} md={3.5}>
+          <Grid item xs={12} md={4}>
             <Autocomplete
               loading={locationLoading}
               value={location}
@@ -205,6 +219,7 @@ const PaySalary = () => {
         </Grid>
       </Box>
       {/* popup item */}
+      <CreatePaySlip open={open} handleClose={() => setOpen(false)} />
       {/* <Box component="div" sx={{ overflow: 'hidden', height: 0 }}>
         <PrintMonthlySalaries
           ref={componentRef}
@@ -225,31 +240,24 @@ const PaySalary = () => {
       </Box> */}
       {/* end popup item */}
       <Box sx={{ overflow: 'auto' }}>
-        <Table sx={{ minWidth: 950 }}>
+        <Table sx={{ minWidth: 700 }}>
           <TableHead>
             <StyledTableRow>
               <StyledTableCell align="center">SN</StyledTableCell>
-              <StyledTableCell>Employee</StyledTableCell>
-              <StyledTableCell>Department</StyledTableCell>
+              <StyledTableCell>Year</StyledTableCell>
+              <StyledTableCell>Month</StyledTableCell>
               <StyledTableCell>Branch</StyledTableCell>
-              <StyledTableCell align="right">Total Days</StyledTableCell>
-              <StyledTableCell align="right">Working Days</StyledTableCell>
-              <StyledTableCell align="right">Absents</StyledTableCell>
               <StyledTableCell align="right">
-                Salary &#40;TK&#41;
+                Total Salary &#40;TK&#41;
               </StyledTableCell>
-              <StyledTableCell align="right">
-                Deduction &#40;TK&#41;
-              </StyledTableCell>
-              <StyledTableCell align="right">
-                Payable &#40;TK&#41;
-              </StyledTableCell>
+              <StyledTableCell align="center">View</StyledTableCell>
+              <StyledTableCell align="center">Action</StyledTableCell>
             </StyledTableRow>
           </TableHead>
-          {/* <TableBody>
+          <TableBody>
             {allSalaries?.length ? (
               allSalaries?.map((el, index) => (
-                <MonthlySalaryRow key={index} sn={index + 1} data={el} />
+                <PaySalaryRow key={index} sn={index + 1} data={el} />
               ))
             ) : (
               <StyledTableRow>
@@ -262,8 +270,17 @@ const PaySalary = () => {
                 </StyledTableCell>
               </StyledTableRow>
             )}
-          </TableBody> */}
+          </TableBody>
         </Table>
+        <TablePagination
+          rowsPerPageOptions={[10, 20, 40]}
+          component="div"
+          count={meta?.total || 0}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
       </Box>
     </MainCard>
   );

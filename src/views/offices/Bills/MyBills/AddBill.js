@@ -35,6 +35,8 @@ import { useGetShopsQuery } from 'store/api/shop/shopApi';
 import { useGetUomQuery } from 'store/api/uom/uomApi';
 import { useCreateBillMutation } from 'store/api/bill/billApi';
 import BillFields from './BillFields';
+import { useGetLocationsQuery } from 'store/api/location/locationApi';
+import { Autocomplete } from '@mui/material';
 
 const style = {
   position: 'absolute',
@@ -60,6 +62,7 @@ const defaultValue = {
 const AddBill = ({ open, handleClose, employeeData }) => {
   const [loading, setLoading] = useState(false);
   const [itemType, setItemType] = useState('');
+  const [location, setLocation] = useState(null);
 
   const [date, setDate] = useState(moment());
 
@@ -92,6 +95,13 @@ const AddBill = ({ open, handleClose, employeeData }) => {
   );
 
   const allUom = uomData?.uom || [];
+  const { data: locationData } = useGetLocationsQuery(
+    { limit: 1000, sortBy: 'label', sortOrder: 'asc' },
+    {
+      refetchOnMountOrArgChange: true,
+    }
+  );
+  const allLocations = locationData?.locations || [];
   // end library
 
   // hook form
@@ -122,6 +132,7 @@ const AddBill = ({ open, handleClose, employeeData }) => {
   const onSubmit = async (data) => {
     const newData = {
       isService: itemType,
+      locationId: location?.id || employeeData?.locationId,
       officeId: employeeData?.officeId,
       date: date,
       amount: totalAmount,
@@ -190,7 +201,7 @@ const AddBill = ({ open, handleClose, employeeData }) => {
           autoComplete="off"
           onSubmit={handleSubmit(onSubmit)}
         >
-          <Grid container spacing={2}>
+          <Grid container columnSpacing={1} rowSpacing={2}>
             <Grid item xs={12} md={2.5}>
               <LocalizationProvider dateAdapter={AdapterMoment}>
                 <DatePicker
@@ -222,6 +233,7 @@ const AddBill = ({ open, handleClose, employeeData }) => {
                   label="Bill Type"
                   onChange={(e) => {
                     setItemType(e.target.value);
+                    setLocation(null);
                     setValue('billDetails', []);
                   }}
                 >
@@ -233,7 +245,26 @@ const AddBill = ({ open, handleClose, employeeData }) => {
                 </Select>
               </FormControl>
             </Grid>
-            <Grid item xs={12} md={7}>
+            {itemType ? (
+              <Grid item xs={12} md={3}>
+                <Autocomplete
+                  value={location}
+                  fullWidth
+                  size="small"
+                  options={allLocations}
+                  getOptionLabel={(option) =>
+                    option.label + ', ' + option.area?.label
+                  }
+                  isOptionEqualToValue={(item, value) => item.id === value.id}
+                  onChange={(e, newValue) => setLocation(newValue)}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Select Branch" required />
+                  )}
+                />
+              </Grid>
+            ) : null}
+
+            <Grid item xs={12} md={itemType ? 4 : 7}>
               <TextField
                 fullWidth
                 size="small"

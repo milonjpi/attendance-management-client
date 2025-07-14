@@ -34,6 +34,8 @@ import { useGetShopsQuery } from 'store/api/shop/shopApi';
 import { useGetUomQuery } from 'store/api/uom/uomApi';
 import { useUpdateBillMutation } from 'store/api/bill/billApi';
 import BillFields from './BillFields';
+import { useGetLocationsQuery } from 'store/api/location/locationApi';
+import { Autocomplete } from '@mui/material';
 
 const style = {
   position: 'absolute',
@@ -59,6 +61,7 @@ const defaultValue = {
 const UpdateBill = ({ open, handleClose, preData }) => {
   const [loading, setLoading] = useState(false);
   const [itemType, setItemType] = useState(preData?.isService);
+  const [location, setLocation] = useState(preData?.location || null);
 
   const [date, setDate] = useState(preData?.date);
 
@@ -91,6 +94,13 @@ const UpdateBill = ({ open, handleClose, preData }) => {
   );
 
   const allUom = uomData?.uom || [];
+  const { data: locationData } = useGetLocationsQuery(
+    { limit: 1000, sortBy: 'label', sortOrder: 'asc' },
+    {
+      refetchOnMountOrArgChange: true,
+    }
+  );
+  const allLocations = locationData?.locations || [];
   // end library
 
   // hook form
@@ -118,6 +128,7 @@ const UpdateBill = ({ open, handleClose, preData }) => {
 
   const onSubmit = async (data) => {
     const newData = {
+      locationId: location?.id,
       date: date,
       amount: totalAmount,
       remarks: data?.remarks || '',
@@ -225,7 +236,26 @@ const UpdateBill = ({ open, handleClose, preData }) => {
                 </Select>
               </FormControl>
             </Grid>
-            <Grid item xs={12} md={7}>
+            {itemType ? (
+              <Grid item xs={12} md={3}>
+                <Autocomplete
+                  value={location}
+                  fullWidth
+                  size="small"
+                  options={allLocations}
+                  getOptionLabel={(option) =>
+                    option.label + ', ' + option.area?.label
+                  }
+                  isOptionEqualToValue={(item, value) => item.id === value.id}
+                  onChange={(e, newValue) => setLocation(newValue)}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Select Branch" required />
+                  )}
+                />
+              </Grid>
+            ) : null}
+
+            <Grid item xs={12} md={itemType ? 4 : 7}>
               <TextField
                 fullWidth
                 size="small"

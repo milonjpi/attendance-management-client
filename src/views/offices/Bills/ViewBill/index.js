@@ -141,9 +141,7 @@ const ViewBill = ({ open, handleClose, data }) => {
                       textTransform: 'uppercase',
                     }}
                   >
-                    {employee?.location?.label +
-                      ', ' +
-                      employee?.location?.area?.label}
+                    {data?.location?.label + ', ' + data?.location?.area?.label}
                   </Typography>
                 </Box>
                 <Typography
@@ -191,6 +189,15 @@ const ViewBill = ({ open, handleClose, data }) => {
                   }}
                 >
                   Bill Details
+                </Typography>
+                <Typography
+                  sx={{
+                    fontSize: 9,
+                    textAlign: 'center',
+                    textTransform: 'uppercase',
+                  }}
+                >
+                  &#40;This bill is for internal use only&#41;
                 </Typography>
                 <Typography sx={{ fontSize: 10 }}>
                   <span sx={{ fontWeight: 500 }}>DATE: </span>
@@ -244,6 +251,30 @@ const ViewBill = ({ open, handleClose, data }) => {
                   <span style={{ fontWeight: 300 }}>{data?.remarks}</span>
                 </Typography>
               ) : null}
+
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'right',
+                  mt: 5,
+                }}
+              >
+                <Typography
+                  sx={{
+                    width: 100,
+                    fontSize: 10,
+                    textTransform: 'uppercase',
+                    textAlign: 'center',
+                    mx: 5,
+                    px: 1,
+                    pt: 0.2,
+                    borderTop: '1px solid #676767',
+                  }}
+                >
+                  Approved By
+                </Typography>
+              </Box>
             </Box>
           </Box>
         </Box>

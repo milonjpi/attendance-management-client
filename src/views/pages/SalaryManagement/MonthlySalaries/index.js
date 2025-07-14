@@ -262,7 +262,7 @@ const MonthlySalaries = () => {
       </Box>
       {/* end popup item */}
       <Box sx={{ overflow: 'auto' }}>
-        <Table sx={{ minWidth: 950 }}>
+        <Table sx={{ minWidth: 800 }}>
           <TableHead>
             <StyledTableRow>
               <StyledTableCell align="center">SN</StyledTableCell>
