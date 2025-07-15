@@ -207,7 +207,6 @@ const ViewPaySalary = ({ open, handleClose, data }) => {
                     <StyledTableCell align="center">SN</StyledTableCell>
                     <StyledTableCell>Employee</StyledTableCell>
                     <StyledTableCell>Department</StyledTableCell>
-                    <StyledTableCell>Branch</StyledTableCell>
                     <StyledTableCell align="right">Total Days</StyledTableCell>
                     <StyledTableCell align="right">
                       Working Days

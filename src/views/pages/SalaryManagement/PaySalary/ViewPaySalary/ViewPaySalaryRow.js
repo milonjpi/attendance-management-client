@@ -31,9 +31,8 @@ const ViewPaySalaryRow = ({ sn, data }) => {
         </span>
       </StyledTableCell>
       <StyledTableCell>{employee?.department?.label}</StyledTableCell>
-      <StyledTableCell>{data?.branch}</StyledTableCell>
-      <StyledTableCell align="right">{data?.totalDay}</StyledTableCell>
-      <StyledTableCell align="right">{data?.workingDay}</StyledTableCell>
+      <StyledTableCell align="right">{data?.totalDays}</StyledTableCell>
+      <StyledTableCell align="right">{data?.workingDays}</StyledTableCell>
       <StyledTableCell align="right">{data?.absent}</StyledTableCell>
       <StyledTableCell align="right">{data?.salary}</StyledTableCell>
       <StyledTableCell align="right">{data?.deduction}</StyledTableCell>
