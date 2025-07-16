@@ -59,6 +59,13 @@ const pages = {
           url: '/pages/profile/my-attendances',
           access: ['user'],
         },
+        {
+          id: 'my-salaries',
+          title: 'My Salaries',
+          type: 'item',
+          url: '/pages/profile/my-salaries',
+          access: ['user'],
+        },
       ],
     },
     {

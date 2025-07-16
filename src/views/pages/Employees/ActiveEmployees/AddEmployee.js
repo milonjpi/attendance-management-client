@@ -77,7 +77,7 @@ const AddEmployee = ({ open, handleClose }) => {
 
   const onSubmit = async (data) => {
     setLoading(true);
-    const { photo, ...othersData } = data;
+    const { photo, signature, ...othersData } = data;
 
     const newData = {
       ...othersData,
@@ -89,6 +89,7 @@ const AddEmployee = ({ open, handleClose }) => {
 
     const formData = new FormData();
     formData.append('photo', photo[0] || null);
+    formData.append('signature', signature ? signature[0] : null);
     formData.append('data', JSON.stringify(newData));
 
     try {
@@ -303,6 +304,15 @@ const AddEmployee = ({ open, handleClose }) => {
                 register={register}
                 reset={reset}
                 name="photo"
+                sx={{ mr: 1.5 }}
+              />
+              <UploadPhoto
+                title="Signature (130x80)"
+                width={130}
+                height={80}
+                register={register}
+                reset={reset}
+                name="signature"
               />
             </Grid>
             <Grid item xs={12}>

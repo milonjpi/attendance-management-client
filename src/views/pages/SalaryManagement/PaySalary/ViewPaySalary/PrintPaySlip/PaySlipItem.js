@@ -1,6 +1,6 @@
 import { Box, Typography } from '@mui/material';
 
-const PaySlipItem = ({ title, value, sx = {} }) => {
+const PaySlipItem = ({ title, value, sx = {}, valueSX = {} }) => {
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', ...sx }}>
       <Typography
@@ -13,7 +13,9 @@ const PaySlipItem = ({ title, value, sx = {} }) => {
         {title}
       </Typography>
       <Typography sx={{ px: 0.5, fontSize: 11 }}>:</Typography>
-      <Typography sx={{ fontSize: 11 }}>{value}</Typography>
+      <Typography sx={{ fontSize: 11, ...valueSX, flex: 1 }}>
+        {value}
+      </Typography>
     </Box>
   );
 };

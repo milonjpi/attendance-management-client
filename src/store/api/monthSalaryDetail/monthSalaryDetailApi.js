@@ -20,10 +20,9 @@ export const monthSalaryDetailApi = api.injectEndpoints({
     }),
 
     receiveSalary: build.mutation({
-      query: (data) => ({
-        url: `${MONTH_SALARY_DETAIL_URL}/${data?.id}/receive`,
+      query: (id) => ({
+        url: `${MONTH_SALARY_DETAIL_URL}/${id}/receive`,
         method: 'PATCH',
-        data: data?.body,
       }),
       invalidatesTags: ['monthSalaryDetail'],
     }),

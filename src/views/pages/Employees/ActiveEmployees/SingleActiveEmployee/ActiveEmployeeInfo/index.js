@@ -113,13 +113,21 @@ const ActiveEmployeeInfo = () => {
             <Grid item xs={12} md={6} lg={4}>
               <Box
                 sx={{
-                  height: '100%',
                   display: 'flex',
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}
               >
                 <ImageShower width={250} height={250} url={data?.photo} />
+              </Box>
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              >
+                <ImageShower width={130} height={80} url={data?.signature} />
               </Box>
             </Grid>
             <Grid item xs={12} md={6} lg={8}>

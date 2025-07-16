@@ -17,6 +17,9 @@ const MyInfo = Loadable(lazy(() => import('views/pages/Profile/MyInfo')));
 const MyAttendances = Loadable(
   lazy(() => import('views/pages/Profile/MyAttendances'))
 );
+const MySalaries = Loadable(
+  lazy(() => import('views/pages/Profile/MySalaries'))
+);
 
 // employee management
 const ActiveEmployees = Loadable(
@@ -213,7 +216,7 @@ const MainRoutes = {
                   path: 'my-info',
                   element: (
                     <AuthenticationRoutes
-                      allowedRoles={['super_admin', 'admin', 'user']}
+                      allowedRoles={['user']}
                       allowedCodes={['my-info']}
                     >
                       <MyInfo />
@@ -224,10 +227,21 @@ const MainRoutes = {
                   path: 'my-attendances',
                   element: (
                     <AuthenticationRoutes
-                      allowedRoles={['super_admin', 'admin', 'user']}
+                      allowedRoles={['user']}
                       allowedCodes={['my-attendances']}
                     >
                       <MyAttendances />
+                    </AuthenticationRoutes>
+                  ),
+                },
+                {
+                  path: 'my-salaries',
+                  element: (
+                    <AuthenticationRoutes
+                      allowedRoles={['user']}
+                      allowedCodes={['my-salaries']}
+                    >
+                      <MySalaries />
                     </AuthenticationRoutes>
                   ),
                 },

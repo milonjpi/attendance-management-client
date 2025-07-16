@@ -1,8 +1,6 @@
-import React, { useState } from 'react';
 import Modal from '@mui/material/Modal';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
 import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
@@ -13,20 +11,7 @@ import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import printLogo from 'assets/images/print_logo.png';
-import LoadingButton from '@mui/lab/LoadingButton';
-import TextField from '@mui/material/TextField';
-import Autocomplete from '@mui/material/Autocomplete';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import CloseIcon from '@mui/icons-material/Close';
-import SaveIcon from '@mui/icons-material/Save';
-import { useDispatch } from 'react-redux';
-import { setToast } from 'store/toastSlice';
-import moment from 'moment';
-import { useCreateAttendanceMutation } from 'store/api/attendance/attendanceApi';
-import { useGetEmployeesQuery } from 'store/api/employee/employeeApi';
-import { useGetLocationsQuery } from 'store/api/location/locationApi';
 import ViewPaySalaryRow from './ViewPaySalaryRow';
 import { Button } from '@mui/material';
 import { IconPrinter } from '@tabler/icons-react';
@@ -207,11 +192,14 @@ const ViewPaySalary = ({ open, handleClose, data }) => {
                     <StyledTableCell align="center">SN</StyledTableCell>
                     <StyledTableCell>Employee</StyledTableCell>
                     <StyledTableCell>Department</StyledTableCell>
-                    <StyledTableCell align="right">Total Days</StyledTableCell>
                     <StyledTableCell align="right">
-                      Working Days
+                      Days of Month
                     </StyledTableCell>
-                    <StyledTableCell align="right">Absents</StyledTableCell>
+                    <StyledTableCell align="right">Weekend</StyledTableCell>
+                    <StyledTableCell align="right">Present</StyledTableCell>
+                    <StyledTableCell align="right">Absent</StyledTableCell>
+                    <StyledTableCell align="right">Leave</StyledTableCell>
+                    <StyledTableCell align="right">Lt. Count</StyledTableCell>
                     <StyledTableCell align="right">
                       Salary &#40;TK&#41;
                     </StyledTableCell>

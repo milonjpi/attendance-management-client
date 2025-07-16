@@ -20,9 +20,14 @@ import { TablePagination } from '@mui/material';
 import { IconPlus } from '@tabler/icons-react';
 import { monthList, salaryYear } from 'assets/data';
 import CardAction from 'ui-component/cards/CardAction';
-import CreatePaySlip from './CreatePaySlip';
 import { useGetMonthSalariesQuery } from 'store/api/monthSalary/monthSalaryApi';
-import PaySalaryRow from './PaySalaryRow';
+import { useGetMonthSalaryDetailsQuery } from 'store/api/monthSalaryDetail/monthSalaryDetailApi';
+import LoadingPage from 'ui-component/LoadingPage';
+import NotFoundEmployee from 'views/pages/Employees/NotFoundEmployee';
+import { useSelector } from 'react-redux';
+import { selectAuth } from 'store/authSlice';
+import { useGetSingleUserEmployeeQuery } from 'store/api/employee/employeeApi';
+import MySalaryRow from './MySalaryRow';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -46,24 +51,20 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   // },
 }));
 
-const PaySalary = () => {
-  const [year, setYear] = useState('');
-  const [month, setMonth] = useState('');
-  const [location, setLocation] = useState(null);
-
+const MySalaries = () => {
+  const userData = useSelector(selectAuth);
   const [open, setOpen] = useState(false);
 
-  // library
-  const { data: locationData, isLoading: locationLoading } =
-    useGetLocationsQuery(
-      { limit: 1000, sortBy: 'label', sortOrder: 'asc' },
-      {
-        refetchOnMountOrArgChange: true,
-      }
-    );
+  const { data: userEmpData, isLoading } = useGetSingleUserEmployeeQuery(
+    userData.userName || '123',
+    {
+      refetchOnMountOrArgChange: true,
+    }
+  );
+  const employeeData = userEmpData?.data;
 
-  const allLocations = locationData?.locations || [];
-  // end library
+  const [year, setYear] = useState('');
+  const [status, setStatus] = useState('');
 
   // filtering and pagination
   // pagination
@@ -80,37 +81,35 @@ const PaySalary = () => {
   };
   // end pagination
   const query = {};
+  query['officeId'] = employeeData?.officeId || '123123123';
 
   if (year) {
     query['year'] = year;
   }
-  if (month) {
-    query['month'] = month;
+
+  if (status) {
+    query['isAccepted'] = status === 'Received' ? true : false;
   }
 
-  if (location) {
-    query['locationId'] = location.id;
+  const { data: salaryData, isLoading: salaryLoading } =
+    useGetMonthSalaryDetailsQuery(
+      { ...query },
+      { refetchOnMountOrArgChange: true }
+    );
+
+  const allSalaries = salaryData?.monthSalaryDetails || [];
+  const meta = salaryData?.meta;
+
+  if (isLoading && !employeeData) {
+    return <LoadingPage />;
   }
 
-  const { data, isLoading } = useGetMonthSalariesQuery(
-    { ...query },
-    { refetchOnMountOrArgChange: true }
-  );
-
-  const allSalaries = data?.monthSalaries || [];
-  const meta = data?.meta;
+  if (!employeeData && !isLoading) {
+    return <NotFoundEmployee />;
+  }
 
   return (
-    <MainCard
-      title={<span>Pay Salary</span>}
-      secondary={
-        <CardAction
-          icon={<IconPlus />}
-          title="Create Pay Slip"
-          onClick={() => setOpen(true)}
-        />
-      }
-    >
+    <MainCard title={<span>My Salaries</span>}>
       <Box sx={{ mb: 2 }}>
         <Grid
           container
@@ -140,57 +139,45 @@ const PaySalary = () => {
           </Grid>
           <Grid item xs={12} sm={6} md={2.5}>
             <FormControl fullWidth size="small">
-              <InputLabel id="select-month-id">Month</InputLabel>
+              <InputLabel id="select-status-id">Status</InputLabel>
               <Select
-                labelId="select-month-id"
-                value={month}
-                label="Month"
-                onChange={(e) => setMonth(e.target.value)}
+                labelId="select-status-id"
+                value={status}
+                label="Status"
+                onChange={(e) => setStatus(e.target.value)}
               >
                 <MenuItem value="">
                   <em>None</em>
                 </MenuItem>
-                {monthList?.map((el) => (
-                  <MenuItem key={el} value={el}>
-                    {el}
-                  </MenuItem>
-                ))}
+                <MenuItem value="Pending">Pending</MenuItem>
+                <MenuItem value="Received">Received</MenuItem>
               </Select>
             </FormControl>
           </Grid>
-
-          <Grid item xs={12} md={4}>
-            <Autocomplete
-              loading={locationLoading}
-              value={location}
-              fullWidth
-              size="small"
-              options={allLocations}
-              getOptionLabel={(option) =>
-                option.label + ', ' + option.area?.label
-              }
-              isOptionEqualToValue={(item, value) => item.id === value.id}
-              onChange={(e, newValue) => setLocation(newValue)}
-              renderInput={(params) => (
-                <TextField {...params} label="Select Branch" />
-              )}
-            />
-          </Grid>
         </Grid>
       </Box>
-      {/* popup item */}
-      <CreatePaySlip open={open} handleClose={() => setOpen(false)} />
-      {/* end popup item */}
       <Box sx={{ overflow: 'auto' }}>
-        <Table sx={{ minWidth: 700 }}>
+        <Table sx={{ minWidth: 750 }}>
           <TableHead>
             <StyledTableRow>
               <StyledTableCell align="center">SN</StyledTableCell>
+              <StyledTableCell>Salary Date</StyledTableCell>
               <StyledTableCell>Year</StyledTableCell>
               <StyledTableCell>Month</StyledTableCell>
-              <StyledTableCell>Branch</StyledTableCell>
+              <StyledTableCell align="right">Days of Month</StyledTableCell>
+              <StyledTableCell align="right">Weekend</StyledTableCell>
+              <StyledTableCell align="right">Present</StyledTableCell>
+              <StyledTableCell align="right">Absent</StyledTableCell>
+              <StyledTableCell align="right">Leave</StyledTableCell>
+              <StyledTableCell align="right">Lt. Count</StyledTableCell>
               <StyledTableCell align="right">
-                Total Salary &#40;TK&#41;
+                Salary &#40;TK&#41;
+              </StyledTableCell>
+              <StyledTableCell align="right">
+                Deduction &#40;TK&#41;
+              </StyledTableCell>
+              <StyledTableCell align="right">
+                Receivable &#40;TK&#41;
               </StyledTableCell>
               <StyledTableCell align="center">View</StyledTableCell>
               <StyledTableCell align="center">Action</StyledTableCell>
@@ -199,7 +186,7 @@ const PaySalary = () => {
           <TableBody>
             {allSalaries?.length ? (
               allSalaries?.map((el, index) => (
-                <PaySalaryRow key={index} sn={index + 1} data={el} />
+                <MySalaryRow key={index} sn={index + 1} data={el} />
               ))
             ) : (
               <StyledTableRow>
@@ -228,4 +215,4 @@ const PaySalary = () => {
   );
 };
 
-export default PaySalary;
+export default MySalaries;
