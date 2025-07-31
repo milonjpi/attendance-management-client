@@ -233,8 +233,8 @@ const ViewConveyance = ({ open, handleClose, data }) => {
                 sx={{
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'right',
-                  mt: 5,
+                  justifyContent: 'space-between',
+                  mt: 7,
                 }}
               >
                 <Typography
@@ -243,7 +243,21 @@ const ViewConveyance = ({ open, handleClose, data }) => {
                     fontSize: 10,
                     textTransform: 'uppercase',
                     textAlign: 'center',
-                    mx: 5,
+                    ml: 7,
+                    px: 1,
+                    pt: 0.2,
+                    borderTop: '1px solid #676767',
+                  }}
+                >
+                  Prepared By
+                </Typography>
+                <Typography
+                  sx={{
+                    width: 100,
+                    fontSize: 10,
+                    textTransform: 'uppercase',
+                    textAlign: 'center',
+                    mr: 7,
                     px: 1,
                     pt: 0.2,
                     borderTop: '1px solid #676767',

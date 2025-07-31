@@ -7,7 +7,7 @@ const ViewConveyanceMainRow = ({ sn, data }) => {
       <StyledTableCellWithNarrowBorder align="center">
         {sn}
       </StyledTableCellWithNarrowBorder>
-      <StyledTableCellWithNarrowBorder>
+      <StyledTableCellWithNarrowBorder sx={{ textTransform: 'uppercase' }}>
         {data?.itemType?.label}
       </StyledTableCellWithNarrowBorder>
       <StyledTableCellWithNarrowBorder>
