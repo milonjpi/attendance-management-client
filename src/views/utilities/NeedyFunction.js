@@ -131,6 +131,42 @@ export const getDistanceFromLatLonInMeters = (lat1, lon1, lat2, lon2) => {
   return distance; // in meters
 };
 
+export const getMinDistanceFromLocations = (lat1, lon1, locations) => {
+  const R = 6371e3; // Earth radius in meters
+  const toRad = (value) => (value * Math.PI) / 180;
+
+  const getDistance = (lat2, lon2) => {
+    const dLat = toRad(lat2 - lat1);
+    const dLon = toRad(lon2 - lon1);
+
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(toRad(lat1)) *
+        Math.cos(toRad(lat2)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  };
+
+  let closest = null;
+  let minDistance = Infinity;
+
+  for (const location of locations) {
+    const dist = getDistance(location.lat, location.lon); // or location.latitude, location.longitude
+    if (dist < minDistance) {
+      minDistance = dist;
+      closest = location;
+    }
+  }
+
+  return {
+    closest,
+    distance: minDistance,
+  };
+};
+
 export const getDeviceId = () => {
   let id = localStorage.getItem('device_id');
   if (!id) {

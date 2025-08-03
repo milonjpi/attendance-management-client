@@ -24,7 +24,7 @@ import LoadingPage from 'ui-component/LoadingPage';
 import NotFoundEmployee from 'views/pages/Employees/NotFoundEmployee';
 import {
   getDeviceId,
-  getDistanceFromLatLonInMeters,
+  getMinDistanceFromLocations,
 } from 'views/utilities/NeedyFunction';
 
 const PresentNow = () => {
@@ -53,7 +53,11 @@ const PresentNow = () => {
 
   const todayAttendance = attendanceData?.data;
 
-  const [location, setLocation] = useState({ lat: null, lon: null });
+  const [location, setLocation] = useState({
+    lat: null,
+    lon: null,
+    branch: null,
+  });
   const [distance, setDistance] = useState(null);
   const [error, setError] = useState(null);
 
@@ -61,10 +65,22 @@ const PresentNow = () => {
     if (!employeeData?.location?.lat || !employeeData?.location?.lon) return;
     setLoading(true);
 
-    const officeLocation = {
-      lat: Number(employeeData.location.lat),
-      lon: Number(employeeData.location.lon),
-    };
+    const officeLocations = [
+      ...employeeData?.employeeLocations?.map((el) => ({
+        lat: Number(el.location.lat),
+        lon: Number(el.location.lon),
+        branch: el.location?.label + ', ' + el.location?.area?.label,
+      })),
+      {
+        lat: Number(employeeData.location.lat),
+        lon: Number(employeeData.location.lon),
+        branch:
+          employeeData.location?.label +
+          ', ' +
+          employeeData.location?.area?.label,
+      },
+    ];
+
     if (!navigator.geolocation) {
       setError('Geolocation not supported by browser');
       return;
@@ -76,15 +92,15 @@ const PresentNow = () => {
           lat: pos.coords.latitude,
           lon: pos.coords.longitude,
         };
-        setLocation(userLoc);
 
-        const distance = getDistanceFromLatLonInMeters(
+        const distance = getMinDistanceFromLocations(
           userLoc.lat,
           userLoc.lon,
-          officeLocation.lat,
-          officeLocation.lon
+          officeLocations
         );
-        setDistance(distance.toFixed(2));
+
+        setDistance(distance?.distance.toFixed(2));
+        setLocation({ ...userLoc, branch: distance?.closest?.branch });
         setLoading(false);
       },
       (err) => {
@@ -108,7 +124,7 @@ const PresentNow = () => {
       date: moment().add(6, 'hours'),
       inTime: moment().add(6, 'hours'),
       deviceId: deviceId,
-      location: location?.lat + ', ' + location?.lon,
+      location: location?.lat + ', ' + location?.lon + ', ' + location?.branch,
       realPunch: true,
     };
     try {
@@ -141,7 +157,7 @@ const PresentNow = () => {
       date: moment().add(6, 'hours'),
       outTime: moment().add(6, 'hours'),
       deviceId: deviceId,
-      location: location?.lat + ', ' + location?.lon,
+      location: location?.lat + ', ' + location?.lon + ', ' + location?.branch,
       realPunch: true,
     };
     try {
@@ -196,18 +212,33 @@ const PresentNow = () => {
                 <Typography sx={{ fontWeight: 500 }}>
                   Your Distance From Office
                 </Typography>
-                <Typography
-                  sx={{
-                    fontWeight: 700,
-                    fontSize: 20,
-                    color:
-                      Number(distance) && Number(distance) < 50
-                        ? 'green'
-                        : 'red',
-                  }}
-                >
+                <Typography sx={{}}>
                   {distance ? (
-                    distance + ' meters'
+                    <>
+                      <span
+                        style={{
+                          display: 'block',
+                          fontWeight: 700,
+                          fontSize: 20,
+                          color:
+                            Number(distance) && Number(distance) < 50
+                              ? 'green'
+                              : 'red',
+                        }}
+                      >
+                        {distance + ' meters'}
+                      </span>
+                      <span
+                        style={{
+                          display: 'block',
+                          marginTop: 20,
+                          fontSize: 9,
+                          fontWeight: 500,
+                        }}
+                      >
+                        {'BRANCH: ' + location?.branch}
+                      </span>
+                    </>
                   ) : loading ? (
                     <CircularProgress size={20} />
                   ) : (

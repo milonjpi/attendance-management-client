@@ -61,6 +61,15 @@ export const employeeApi = api.injectEndpoints({
       }),
       invalidatesTags: ['employee'],
     }),
+
+    updateAdditionalLocation: build.mutation({
+      query: (data) => ({
+        url: `${EMPLOYEE_URL}/${data?.id}/additional-location`,
+        method: 'PATCH',
+        data: data?.body,
+      }),
+      invalidatesTags: ['employee'],
+    }),
   }),
 });
 
@@ -71,4 +80,5 @@ export const {
   useGetSingleEmployeeQuery,
   useGetSingleUserEmployeeQuery,
   useUpdateEmployeeMutation,
+  useUpdateAdditionalLocationMutation,
 } = employeeApi;
