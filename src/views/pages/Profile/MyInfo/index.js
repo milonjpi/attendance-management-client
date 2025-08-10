@@ -2,7 +2,7 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import MainCard from 'ui-component/cards/MainCard';
-import ImageShower from 'ui-component/ImageShower';
+// import ImageShower from 'ui-component/ImageShower';
 import KeyIcon from '@mui/icons-material/Key';
 import { useState } from 'react';
 import moment from 'moment';
@@ -19,7 +19,7 @@ const MyInfo = () => {
   const [open, setOpen] = useState(false);
 
   const { data: userEmpData, isLoading } = useGetSingleUserEmployeeQuery(
-    userData.userName || '123',
+    userData?.userName || '123',
     {
       refetchOnMountOrArgChange: true,
     }
@@ -51,14 +51,17 @@ const MyInfo = () => {
       }
     >
       {/* popup Items */}
-      <ChangePassword
-        open={open}
-        handleClose={() => setOpen(false)}
-        uId={userData?.id}
-      />
+      {userData ? (
+        <ChangePassword
+          open={open}
+          handleClose={() => setOpen(false)}
+          uId={userData?.id}
+        />
+      ) : null}
+
       {/* end popup Items */}
       <Grid container spacing={5} sx={{ alignItems: 'stretch' }}>
-        <Grid item xs={12} md={6} lg={4}>
+        {/* <Grid item xs={12} md={6} lg={4}>
           <Box
             sx={{
               height: '100%',
@@ -69,7 +72,7 @@ const MyInfo = () => {
           >
             <ImageShower width={250} height={250} url={employeeData?.photo} />
           </Box>
-        </Grid>
+        </Grid> */}
         <Grid item xs={12} md={6} lg={8}>
           <Grid container rowSpacing={5} columnSpacing={2}>
             <Grid item xs={12} md={6}>
