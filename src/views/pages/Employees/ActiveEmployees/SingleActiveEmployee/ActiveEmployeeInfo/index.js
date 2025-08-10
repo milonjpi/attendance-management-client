@@ -8,6 +8,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import { Link, useOutletContext } from 'react-router-dom';
 import MainCard from 'ui-component/cards/MainCard';
 import ImageShower from 'ui-component/ImageShower';
+import { BrowserView } from 'react-device-detect';
 import UpdateEmployee from '../../UpdateEmployee';
 import { useState } from 'react';
 import moment from 'moment';
@@ -111,24 +112,26 @@ const ActiveEmployeeInfo = () => {
         >
           <Grid container spacing={5} sx={{ alignItems: 'stretch' }}>
             <Grid item xs={12} md={6} lg={4}>
-              <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-              >
-                <ImageShower width={250} height={250} url={data?.photo} />
-              </Box>
-              <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-              >
-                <ImageShower width={130} height={80} url={data?.signature} />
-              </Box>
+              <BrowserView>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                >
+                  <ImageShower width={250} height={250} url={data?.photo} />
+                </Box>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                >
+                  <ImageShower width={130} height={80} url={data?.signature} />
+                </Box>
+              </BrowserView>
             </Grid>
             <Grid item xs={12} md={6} lg={8}>
               <Grid container rowSpacing={5} columnSpacing={2}>

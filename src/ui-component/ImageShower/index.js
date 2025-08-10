@@ -21,34 +21,37 @@ const ImageShower = ({ url, width = 50, height = 50, sx = {} }) => {
         }}
         onClick={() => setOpen(url ? true : false)}
       >
-        {(loading || !url) && (
+        {loading || !url ? (
           <img
             src={loadingImage}
             alt="Loading"
             style={{ display: 'inline-block', width: '100%' }}
           />
+        ) : (
+          <Fade in={!loading} timeout={500} sx={{ outline: 'none' }}>
+            <img
+              src={`${BASE_ADDRESS}/uploads/employees/${url}`}
+              alt="Biker"
+              style={{
+                display: loading || !url ? 'none' : 'inline-block',
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+              }}
+              onLoad={() => setLoading(false)}
+            />
+          </Fade>
         )}
-        <Fade in={!loading} timeout={500} sx={{ outline: 'none' }}>
-          <img
-            src={`${BASE_ADDRESS}/uploads/employees/${url}`}
-            alt="Biker"
-            style={{
-              display: loading || !url ? 'none' : 'inline-block',
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-            }}
-            onLoad={() => setLoading(false)}
-          />
-        </Fade>
 
         {/* popup item */}
       </Box>
-      <ViewImage
-        open={open}
-        handleClose={() => setOpen(false)}
-        url={`${BASE_ADDRESS}/uploads/employees/${url}`}
-      />
+      {url ? (
+        <ViewImage
+          open={open}
+          handleClose={() => setOpen(false)}
+          url={`${BASE_ADDRESS}/uploads/employees/${url}`}
+        />
+      ) : null}
     </>
   );
 };

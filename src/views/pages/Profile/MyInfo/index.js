@@ -2,7 +2,7 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import MainCard from 'ui-component/cards/MainCard';
-// import ImageShower from 'ui-component/ImageShower';
+import ImageShower from 'ui-component/ImageShower';
 import KeyIcon from '@mui/icons-material/Key';
 import { useState } from 'react';
 import moment from 'moment';
@@ -13,6 +13,7 @@ import NotFoundEmployee from 'views/pages/Employees/NotFoundEmployee';
 import LoadingPage from 'ui-component/LoadingPage';
 import { Button } from '@mui/material';
 import ChangePassword from 'views/setting/ManageUser/SingleUser/ChangePassword';
+import { BrowserView } from 'react-device-detect';
 
 const MyInfo = () => {
   const userData = useSelector(selectAuth);
@@ -61,18 +62,20 @@ const MyInfo = () => {
 
       {/* end popup Items */}
       <Grid container spacing={5} sx={{ alignItems: 'stretch' }}>
-        {/* <Grid item xs={12} md={6} lg={4}>
-          <Box
-            sx={{
-              height: '100%',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            <ImageShower width={250} height={250} url={employeeData?.photo} />
-          </Box>
-        </Grid> */}
+        <Grid item xs={12} md={6} lg={4}>
+          <BrowserView>
+            <Box
+              sx={{
+                height: '100%',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <ImageShower width={250} height={250} url={employeeData?.photo} />
+            </Box>
+          </BrowserView>
+        </Grid>
         <Grid item xs={12} md={6} lg={8}>
           <Grid container rowSpacing={5} columnSpacing={2}>
             <Grid item xs={12} md={6}>
