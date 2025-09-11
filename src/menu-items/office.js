@@ -1,10 +1,15 @@
 // assets
-import { IconFileInvoice, IconReceipt2 } from '@tabler/icons-react';
+import {
+  IconFileInvoice,
+  IconReceipt2,
+  IconChartHistogram,
+} from '@tabler/icons-react';
 
 // constant
 const icons = {
   IconFileInvoice,
   IconReceipt2,
+  IconChartHistogram,
 };
 
 // ==============================|| EXTRA PAGES MENU ITEMS ||============================== //
@@ -28,7 +33,7 @@ const offices = {
           title: 'My Conveyances',
           type: 'item',
           url: '/offices/conveyances/my-conveyances',
-          access: ['user'],
+          access: ['admin', 'user'],
         },
         {
           id: 'pending-conveyances',
@@ -66,7 +71,7 @@ const offices = {
           title: 'My Bills',
           type: 'item',
           url: '/offices/bills/my-bills',
-          access: ['user'],
+          access: ['admin', 'user'],
         },
         {
           id: 'pending-bills',
@@ -88,6 +93,37 @@ const offices = {
           type: 'item',
           url: '/offices/bills/bill-library',
           access: ['super_admin', 'admin', 'user'],
+        },
+      ],
+    },
+    {
+      id: 'report',
+      title: 'Report',
+      type: 'collapse',
+      color: '#0C356A',
+      icon: icons.IconChartHistogram,
+      access: ['super_admin', 'admin'],
+      children: [
+        {
+          id: 'expense-summary',
+          title: 'Expense Summary',
+          type: 'item',
+          url: '/offices/report/expense-summary',
+          access: ['super_admin', 'admin'],
+        },
+        {
+          id: 'conveyance-summary',
+          title: 'Conveyance Summary',
+          type: 'item',
+          url: '/offices/report/conveyance-summary',
+          access: ['super_admin', 'admin'],
+        },
+        {
+          id: 'bill-summary',
+          title: 'Bill Summary',
+          type: 'item',
+          url: '/offices/report/bill-summary',
+          access: ['super_admin', 'admin'],
         },
       ],
     },

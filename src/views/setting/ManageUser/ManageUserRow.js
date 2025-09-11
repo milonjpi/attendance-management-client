@@ -10,7 +10,11 @@ import { setToast } from 'store/toastSlice';
 import ConfirmDialog from 'ui-component/ConfirmDialog';
 import UpdateUser from './UpdateUser';
 import { roleValue } from 'assets/data';
-import { useDeleteUserMutation } from 'store/api/user/userApi';
+import {
+  useDeleteUserMutation,
+  useUpdateUserMutation,
+} from 'store/api/user/userApi';
+import { Switch } from '@mui/material';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.body}`]: {
@@ -33,6 +37,8 @@ const ManageUserRow = ({ sn, data }) => {
   const dispatch = useDispatch();
 
   const [deleteUser] = useDeleteUserMutation();
+  const [updateUser] = useUpdateUserMutation();
+
   const handleDelete = async () => {
     setDialog(false);
     try {
@@ -57,6 +63,24 @@ const ManageUserRow = ({ sn, data }) => {
       );
     }
   };
+
+  const handleBranchManager = async (e) => {
+    try {
+      await updateUser({
+        id: data?.id,
+        body: { role: e.target.checked ? 'admin' : 'user' },
+      }).unwrap();
+    } catch (err) {
+      dispatch(
+        setToast({
+          open: true,
+          variant: 'error',
+          message: err?.data?.message || 'Something Went Wrong',
+          errorMessages: err?.data?.errorMessages,
+        })
+      );
+    }
+  };
   return (
     <StyledTableRow>
       <StyledTableCell align="center">{sn}</StyledTableCell>
@@ -67,6 +91,13 @@ const ManageUserRow = ({ sn, data }) => {
       </StyledTableCell>
       <StyledTableCell>{data?.userName}</StyledTableCell>
       <StyledTableCell>{roleValue[data?.role] || ''}</StyledTableCell>
+      <StyledTableCell align="center">
+        <Switch
+          disabled={data?.role === 'super_admin'}
+          checked={data?.role === 'admin' || false}
+          onChange={handleBranchManager}
+        />
+      </StyledTableCell>
       <StyledTableCell align="center" sx={{ minWidth: 85 }}>
         <Button
           disabled={data?.isEmployee}

@@ -118,6 +118,7 @@ const ManageUser = () => {
               <StyledTableCell>Full Name</StyledTableCell>
               <StyledTableCell>User Name</StyledTableCell>
               <StyledTableCell>Role</StyledTableCell>
+              <StyledTableCell align="center">Branch Manager</StyledTableCell>
               <StyledTableCell
                 align="center"
                 sx={{ borderRadius: '0 5px 5px 0' }}

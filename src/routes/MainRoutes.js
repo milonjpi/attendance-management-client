@@ -162,6 +162,18 @@ const Shops = Loadable(
 const BillUom = Loadable(
   lazy(() => import('views/offices/Bills/BillLibrary/BillUom'))
 );
+
+// report
+const ExpenseSummary = Loadable(
+  lazy(() => import('views/offices/Report/ExpenseSummary'))
+);
+const ConveyanceSummary = Loadable(
+  lazy(() => import('views/offices/Report/ConveyanceSummary'))
+);
+const BillSummary = Loadable(
+  lazy(() => import('views/offices/Report/BillSummary'))
+);
+
 // end offices
 
 // utilities routing
@@ -216,7 +228,7 @@ const MainRoutes = {
                   path: 'my-info',
                   element: (
                     <AuthenticationRoutes
-                      allowedRoles={['user']}
+                      allowedRoles={['admin', 'user']}
                       allowedCodes={['my-info']}
                     >
                       <MyInfo />
@@ -227,7 +239,7 @@ const MainRoutes = {
                   path: 'my-attendances',
                   element: (
                     <AuthenticationRoutes
-                      allowedRoles={['user']}
+                      allowedRoles={['admin', 'user']}
                       allowedCodes={['my-attendances']}
                     >
                       <MyAttendances />
@@ -238,7 +250,7 @@ const MainRoutes = {
                   path: 'my-salaries',
                   element: (
                     <AuthenticationRoutes
-                      allowedRoles={['user']}
+                      allowedRoles={['admin', 'user']}
                       allowedCodes={['my-salaries']}
                     >
                       <MySalaries />
@@ -415,7 +427,7 @@ const MainRoutes = {
                   path: 'geo-attendance',
                   element: (
                     <AuthenticationRoutes
-                      allowedRoles={['user']}
+                      allowedRoles={['admin', 'user']}
                       allowedCodes={['geo-attendance']}
                     >
                       <PresentNow />
@@ -442,7 +454,7 @@ const MainRoutes = {
                   path: 'my-leaves',
                   element: (
                     <AuthenticationRoutes
-                      allowedRoles={['super_admin', 'user']}
+                      allowedRoles={['admin', 'user']}
                       allowedCodes={['my-leaves']}
                     >
                       <MyLeaves />
@@ -486,7 +498,7 @@ const MainRoutes = {
                   path: 'my-conveyances',
                   element: (
                     <AuthenticationRoutes
-                      allowedRoles={['user']}
+                      allowedRoles={['admin', 'user']}
                       allowedCodes={['my-conveyances']}
                     >
                       <MyConveyances />
@@ -545,7 +557,7 @@ const MainRoutes = {
                   path: 'my-bills',
                   element: (
                     <AuthenticationRoutes
-                      allowedRoles={['user']}
+                      allowedRoles={['admin', 'user']}
                       allowedCodes={['my-bills']}
                     >
                       <MyBills />
@@ -598,6 +610,44 @@ const MainRoutes = {
                       element: <BillUom />,
                     },
                   ],
+                },
+              ],
+            },
+            {
+              path: 'report',
+              children: [
+                {
+                  path: 'expense-summary',
+                  element: (
+                    <AuthenticationRoutes
+                      allowedRoles={['super_admin', 'admin']}
+                      allowedCodes={['expense-summary']}
+                    >
+                      <ExpenseSummary />
+                    </AuthenticationRoutes>
+                  ),
+                },
+                {
+                  path: 'conveyance-summary',
+                  element: (
+                    <AuthenticationRoutes
+                      allowedRoles={['super_admin', 'admin']}
+                      allowedCodes={['conveyance-summary']}
+                    >
+                      <ConveyanceSummary />
+                    </AuthenticationRoutes>
+                  ),
+                },
+                {
+                  path: 'bill-summary',
+                  element: (
+                    <AuthenticationRoutes
+                      allowedRoles={['super_admin', 'admin']}
+                      allowedCodes={['bill-summary']}
+                    >
+                      <BillSummary />
+                    </AuthenticationRoutes>
+                  ),
                 },
               ],
             },
