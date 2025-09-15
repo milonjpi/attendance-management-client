@@ -4,7 +4,7 @@ import ShowStatus from 'ui-component/ShowStatus';
 import { TableRow } from '@mui/material';
 import MyBillAction from './MyBillAction';
 
-const BillRow = ({ sn, data }) => {
+const BillRow = ({ sn, userData, employeeData, data }) => {
   const billDetails = data?.billDetails || [];
   const rowSpan = billDetails.length || 1;
   return (
@@ -47,7 +47,11 @@ const BillRow = ({ sn, data }) => {
           <ShowStatus status={data?.status} />
         </StyledTableCellWithBorder>
         <StyledTableCellWithBorder align="center" rowSpan={rowSpan}>
-          <MyBillAction data={data} />
+          <MyBillAction
+            data={data}
+            userData={userData}
+            employeeData={employeeData}
+          />
         </StyledTableCellWithBorder>
       </TableRow>
 

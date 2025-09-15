@@ -16,11 +16,16 @@ import LinearProgress from '@mui/material/LinearProgress';
 import SearchIcon from '@mui/icons-material/Search';
 import MainCard from 'ui-component/cards/MainCard';
 import { useDebounced } from 'hooks';
-import { useGetEmployeesQuery } from 'store/api/employee/employeeApi';
+import {
+  useGetEmployeesQuery,
+  useGetSingleUserEmployeeQuery,
+} from 'store/api/employee/employeeApi';
 import { useGetDesignationsQuery } from 'store/api/designation/designationApi';
 import { useGetDepartmentsQuery } from 'store/api/department/departmentApi';
 import { useGetLocationsQuery } from 'store/api/location/locationApi';
 import ResignedEmployeeRow from './ResignedEmployeeRow';
+import { useSelector } from 'react-redux';
+import { selectAuth } from 'store/authSlice';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -43,6 +48,17 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 const ResignedEmployees = () => {
+  const userData = useSelector(selectAuth);
+  // employee data
+  const { data: userEmpData } = useGetSingleUserEmployeeQuery(
+    userData.userName || '123',
+    {
+      refetchOnMountOrArgChange: true,
+      pollingInterval: 10000,
+    }
+  );
+  const employeeData = userEmpData?.data;
+
   const [searchText, setSearchText] = useState('');
   const [designation, setDesignation] = useState(null);
   const [department, setDepartment] = useState(null);
@@ -88,6 +104,11 @@ const ResignedEmployees = () => {
   query['limit'] = rowsPerPage;
   query['page'] = page;
   query['isActive'] = false;
+  query['locationId'] = employeeData?.locationId;
+
+  if (userData?.role === 'super_admin') {
+    delete query.locationId;
+  }
 
   if (designation) {
     query['designationId'] = designation.id;
@@ -170,22 +191,24 @@ const ResignedEmployees = () => {
               )}
             />
           </Grid>
-          <Grid item xs={12} md={3.5}>
-            <Autocomplete
-              value={location}
-              fullWidth
-              size="small"
-              options={allLocations}
-              getOptionLabel={(option) =>
-                option.label + ', ' + option?.area?.label
-              }
-              isOptionEqualToValue={(item, value) => item.id === value.id}
-              onChange={(e, newValue) => setLocation(newValue)}
-              renderInput={(params) => (
-                <TextField {...params} label="Select Branch" />
-              )}
-            />
-          </Grid>
+          {userData?.role === 'super_admin' ? (
+            <Grid item xs={12} md={3.5}>
+              <Autocomplete
+                value={location}
+                fullWidth
+                size="small"
+                options={allLocations}
+                getOptionLabel={(option) =>
+                  option.label + ', ' + option?.area?.label
+                }
+                isOptionEqualToValue={(item, value) => item.id === value.id}
+                onChange={(e, newValue) => setLocation(newValue)}
+                renderInput={(params) => (
+                  <TextField {...params} label="Select Branch" />
+                )}
+              />
+            </Grid>
+          ) : null}
         </Grid>
       </Box>
       <Box sx={{ overflow: 'auto' }}>

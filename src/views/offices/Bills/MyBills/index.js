@@ -134,6 +134,7 @@ const MyBills = () => {
       <AddBill
         open={open}
         handleClose={() => setOpen(false)}
+        userData={userData}
         employeeData={employeeData}
       />
       {/* pop up items */}
@@ -266,7 +267,13 @@ const MyBills = () => {
           <TableBody>
             {allBills?.length ? (
               allBills?.map((el, index) => (
-                <BillRow key={index} sn={sn++} data={el} />
+                <BillRow
+                  key={index}
+                  sn={sn++}
+                  userData={userData}
+                  employeeData={employeeData}
+                  data={el}
+                />
               ))
             ) : (
               <TableRow>

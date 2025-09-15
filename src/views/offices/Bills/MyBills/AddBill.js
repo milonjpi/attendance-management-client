@@ -59,7 +59,7 @@ const defaultValue = {
   amount: '',
 };
 
-const AddBill = ({ open, handleClose, employeeData }) => {
+const AddBill = ({ open, handleClose, userData, employeeData }) => {
   const [loading, setLoading] = useState(false);
   const [itemType, setItemType] = useState('');
   const [location, setLocation] = useState(null);
@@ -95,8 +95,19 @@ const AddBill = ({ open, handleClose, employeeData }) => {
   );
 
   const allUom = uomData?.uom || [];
+
+  // location fetch
+  const locQuery = {};
+  locQuery['limit'] = 1000;
+  locQuery['sortBy'] = 'label';
+  locQuery['sortOrder'] = 'asc';
+  locQuery['searchTerm'] = employeeData?.location?.label || '123';
+
+  if (userData?.role === 'super_admin') {
+    delete locQuery.searchTerm;
+  }
   const { data: locationData } = useGetLocationsQuery(
-    { limit: 1000, sortBy: 'label', sortOrder: 'asc' },
+    { ...locQuery },
     {
       refetchOnMountOrArgChange: true,
     }

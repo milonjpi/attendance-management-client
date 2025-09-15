@@ -27,7 +27,7 @@ import { useDeleteBillMutation } from 'store/api/bill/billApi';
 import UpdateBill from './UpdateBill';
 import ViewBill from '../ViewBill';
 
-const MyBillAction = ({ data }) => {
+const MyBillAction = ({ data, userData, employeeData }) => {
   const theme = useTheme();
   const customization = useSelector((state) => state.customization);
 
@@ -117,6 +117,8 @@ const MyBillAction = ({ data }) => {
         open={edit}
         preData={data}
         handleClose={() => setEdit(false)}
+        userData={userData}
+        employeeData={employeeData}
       />
       {/* popup items */}
       <Popper

@@ -1,7 +1,7 @@
 import { StyledTableCellWithBorder } from 'ui-component/table-component';
 import { TableRow } from '@mui/material';
 
-const MonthlyExpenseSummaryRow = ({ sn, data }) => {
+const MonthSummaryRow = ({ sn, data }) => {
   const locations = data?.locations || [];
   const rowSpan = locations.length || 1;
 
@@ -61,4 +61,4 @@ const MonthlyExpenseSummaryRow = ({ sn, data }) => {
   );
 };
 
-export default MonthlyExpenseSummaryRow;
+export default MonthSummaryRow;

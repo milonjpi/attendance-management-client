@@ -59,7 +59,7 @@ const defaultValue = {
   amount: '',
 };
 
-const UpdateBill = ({ open, handleClose, preData }) => {
+const UpdateBill = ({ open, handleClose, userData, employeeData, preData }) => {
   const [loading, setLoading] = useState(false);
   const [itemType, setItemType] = useState(preData?.isService);
   const [location, setLocation] = useState(preData?.location || null);
@@ -95,8 +95,18 @@ const UpdateBill = ({ open, handleClose, preData }) => {
   );
 
   const allUom = uomData?.uom || [];
+  // location fetch
+  const locQuery = {};
+  locQuery['limit'] = 1000;
+  locQuery['sortBy'] = 'label';
+  locQuery['sortOrder'] = 'asc';
+  locQuery['searchTerm'] = employeeData?.location?.label || '123';
+
+  if (userData?.role === 'super_admin') {
+    delete locQuery.searchTerm;
+  }
   const { data: locationData } = useGetLocationsQuery(
-    { limit: 1000, sortBy: 'label', sortOrder: 'asc' },
+    { ...locQuery },
     {
       refetchOnMountOrArgChange: true,
     }

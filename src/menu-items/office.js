@@ -112,6 +112,13 @@ const offices = {
           access: ['super_admin', 'admin'],
         },
         {
+          id: 'month-summary',
+          title: 'Monthly Expense',
+          type: 'item',
+          url: '/offices/report/month-summary',
+          access: ['super_admin', 'admin'],
+        },
+        {
           id: 'conveyance-summary',
           title: 'Conveyance Summary',
           type: 'item',

@@ -26,6 +26,9 @@ import { IconPrinter } from '@tabler/icons-react';
 import PrintDailyAttendance from './PrintDailyAttendance';
 import { useRef } from 'react';
 import { useReactToPrint } from 'react-to-print';
+import { useSelector } from 'react-redux';
+import { selectAuth } from 'store/authSlice';
+import { useGetSingleUserEmployeeQuery } from 'store/api/employee/employeeApi';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -50,6 +53,17 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 const DailyAttendance = () => {
+  const userData = useSelector(selectAuth);
+  // employee data
+  const { data: userEmpData } = useGetSingleUserEmployeeQuery(
+    userData.userName || '123',
+    {
+      refetchOnMountOrArgChange: true,
+      pollingInterval: 10000,
+    }
+  );
+  const employeeData = userEmpData?.data;
+
   const [designation, setDesignation] = useState(null);
   const [department, setDepartment] = useState(null);
   const [location, setLocation] = useState(null);
@@ -99,6 +113,11 @@ const DailyAttendance = () => {
   query['sortOrder'] = 'asc';
   query['isActive'] = true;
   query['isOwn'] = false;
+  query['locationId'] = employeeData?.locationId;
+
+  if (userData?.role === 'super_admin') {
+    delete query.locationId;
+  }
 
   if (date) {
     query['startDate'] = moment(date).format('YYYY-MM-DD');
@@ -208,22 +227,24 @@ const DailyAttendance = () => {
               )}
             />
           </Grid>
-          <Grid item xs={12} md={3.5}>
-            <Autocomplete
-              value={location}
-              fullWidth
-              size="small"
-              options={allLocations}
-              getOptionLabel={(option) =>
-                option.label + ', ' + option.area?.label
-              }
-              isOptionEqualToValue={(item, value) => item.id === value.id}
-              onChange={(e, newValue) => setLocation(newValue)}
-              renderInput={(params) => (
-                <TextField {...params} label="Select Branch" />
-              )}
-            />
-          </Grid>
+          {userData?.role === 'super_admin' ? (
+            <Grid item xs={12} md={3.5}>
+              <Autocomplete
+                value={location}
+                fullWidth
+                size="small"
+                options={allLocations}
+                getOptionLabel={(option) =>
+                  option.label + ', ' + option.area?.label
+                }
+                isOptionEqualToValue={(item, value) => item.id === value.id}
+                onChange={(e, newValue) => setLocation(newValue)}
+                renderInput={(params) => (
+                  <TextField {...params} label="Select Branch" />
+                )}
+              />
+            </Grid>
+          ) : null}
         </Grid>
       </Box>
       {/* popup item */}

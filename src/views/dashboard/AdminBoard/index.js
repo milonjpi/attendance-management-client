@@ -11,7 +11,7 @@ import { useGetExpenseSummaryQuery } from 'store/api/report/reportApi';
 import { totalSum } from 'views/utilities/NeedyFunction';
 import MainLineChart from './Charts/MainLineChart';
 import SidebarExpense from './SidebarExpense';
-import MonthlyExpenseSummary from './MonthlyExpenseSummary';
+
 
 const AdminBoard = ({ userData }) => {
   // employee data
@@ -103,13 +103,6 @@ const AdminBoard = ({ userData }) => {
             />
           </Grid>
         </Grid>
-      </Grid>
-      <Grid item xs={12}>
-        <MonthlyExpenseSummary
-          userData={userData}
-          employeeData={employeeData}
-          year={year}
-        />
       </Grid>
     </Grid>
   );

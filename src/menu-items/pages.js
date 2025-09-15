@@ -95,7 +95,7 @@ const pages = {
           title: 'Transfer Employees',
           type: 'item',
           url: '/pages/employee-management/transfer-employees',
-          access: ['super_admin', 'admin'],
+          access: ['super_admin'],
         },
         {
           id: 'employee-library',

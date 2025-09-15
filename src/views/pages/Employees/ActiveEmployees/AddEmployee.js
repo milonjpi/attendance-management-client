@@ -39,7 +39,7 @@ const style = {
   p: 2,
 };
 
-const AddEmployee = ({ open, handleClose }) => {
+const AddEmployee = ({ open, handleClose, userData, employeeData }) => {
   const [loading, setLoading] = useState(false);
   const [joiningDate, setJoiningDate] = useState(null);
   const [designation, setDesignation] = useState(null);
@@ -84,7 +84,10 @@ const AddEmployee = ({ open, handleClose }) => {
       joiningDate,
       designationId: designation?.id,
       departmentId: department?.id,
-      locationId: location?.id,
+      locationId:
+        userData?.role === 'super_admin'
+          ? location?.id
+          : employeeData?.locationId,
     };
 
     const formData = new FormData();
@@ -235,22 +238,25 @@ const AddEmployee = ({ open, handleClose }) => {
                 </Tooltip>
               </Box>
             </Grid>
+
             <Grid item xs={12} md={6}>
-              <Autocomplete
-                value={location}
-                fullWidth
-                size="small"
-                sx={{ mb: 2 }}
-                options={allLocations}
-                getOptionLabel={(option) =>
-                  option.label + ', ' + option.area?.label
-                }
-                isOptionEqualToValue={(item, value) => item.id === value.id}
-                onChange={(e, newValue) => setLocation(newValue)}
-                renderInput={(params) => (
-                  <TextField {...params} label="Select Branch" />
-                )}
-              />
+              {userData?.role === 'super_admin' ? (
+                <Autocomplete
+                  value={location}
+                  fullWidth
+                  size="small"
+                  sx={{ mb: 2 }}
+                  options={allLocations}
+                  getOptionLabel={(option) =>
+                    option.label + ', ' + option.area?.label
+                  }
+                  isOptionEqualToValue={(item, value) => item.id === value.id}
+                  onChange={(e, newValue) => setLocation(newValue)}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Select Branch" />
+                  )}
+                />
+              ) : null}
               <LocalizationProvider dateAdapter={AdapterMoment}>
                 <DatePicker
                   label="Joining Date"

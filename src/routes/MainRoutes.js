@@ -167,6 +167,9 @@ const BillUom = Loadable(
 const ExpenseSummary = Loadable(
   lazy(() => import('views/offices/Report/ExpenseSummary'))
 );
+const MonthSummary = Loadable(
+  lazy(() => import('views/offices/Report/MonthSummary'))
+);
 const ConveyanceSummary = Loadable(
   lazy(() => import('views/offices/Report/ConveyanceSummary'))
 );
@@ -317,7 +320,7 @@ const MainRoutes = {
                   path: 'transfer-employees',
                   element: (
                     <AuthenticationRoutes
-                      allowedRoles={['super_admin', 'admin']}
+                      allowedRoles={['super_admin']}
                       allowedCodes={['transfer-employees']}
                     >
                       <TransferEmployee />
@@ -624,6 +627,17 @@ const MainRoutes = {
                       allowedCodes={['expense-summary']}
                     >
                       <ExpenseSummary />
+                    </AuthenticationRoutes>
+                  ),
+                },
+                {
+                  path: 'month-summary',
+                  element: (
+                    <AuthenticationRoutes
+                      allowedRoles={['super_admin', 'admin']}
+                      allowedCodes={['month-summary']}
+                    >
+                      <MonthSummary />
                     </AuthenticationRoutes>
                   ),
                 },
