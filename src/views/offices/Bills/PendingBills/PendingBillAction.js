@@ -28,8 +28,22 @@ import {
   useRejectBillMutation,
 } from 'store/api/bill/billApi';
 import ViewBill from '../ViewBill';
+import moment from 'moment';
+import { selectAuth } from 'store/authSlice';
+import { useGetSingleUserEmployeeQuery } from 'store/api/employee/employeeApi';
 
 const PendingBillAction = ({ data }) => {
+  const userData = useSelector(selectAuth);
+  // employee data
+  const { data: userEmpData } = useGetSingleUserEmployeeQuery(
+    userData.userName || '123',
+    {
+      refetchOnMountOrArgChange: true,
+      pollingInterval: 10000,
+    }
+  );
+  const userEmployee = userEmpData?.data;
+
   const theme = useTheme();
   const customization = useSelector((state) => state.customization);
 
@@ -71,7 +85,10 @@ const PendingBillAction = ({ data }) => {
   const handleApprove = async () => {
     setApprove(false);
     try {
-      const res = await approveBill(data?.id).unwrap();
+      const res = await approveBill({
+        id: data?.id,
+        body: { approverId: userEmployee?.id, approvedTime: moment() },
+      }).unwrap();
       if (res.success) {
         dispatch(
           setToast({
@@ -96,7 +113,10 @@ const PendingBillAction = ({ data }) => {
   const handleReject = async () => {
     setReject(false);
     try {
-      const res = await rejectBill(data?.id).unwrap();
+      const res = await rejectBill({
+        id: data?.id,
+        body: { approverId: userEmployee?.id, approvedTime: moment() },
+      }).unwrap();
       if (res.success) {
         dispatch(
           setToast({

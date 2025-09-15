@@ -135,6 +135,8 @@ const AddBill = ({ open, handleClose, employeeData }) => {
       locationId: location?.id || employeeData?.locationId,
       officeId: employeeData?.officeId,
       date: date,
+      month: moment(date).format('MMMM'),
+      year: moment(date).format('YYYY'),
       amount: totalAmount,
       remarks: data?.remarks || '',
       billDetails: data?.billDetails?.map((el) => ({

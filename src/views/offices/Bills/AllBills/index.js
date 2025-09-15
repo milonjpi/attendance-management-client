@@ -27,15 +27,31 @@ import {
 } from '@mui/material';
 import { useDebounced } from 'hooks';
 import { useGetBillsQuery } from 'store/api/bill/billApi';
-import { useGetEmployeesQuery } from 'store/api/employee/employeeApi';
+import {
+  useGetEmployeesQuery,
+  useGetSingleUserEmployeeQuery,
+} from 'store/api/employee/employeeApi';
 import AllBillRow from './AllBillRow';
 import { mainStatus } from 'assets/data';
 import PrintAllBill from './PrintAllBill';
 import { useRef } from 'react';
 import { useReactToPrint } from 'react-to-print';
 import { IconPrinter } from '@tabler/icons-react';
+import { useSelector } from 'react-redux';
+import { selectAuth } from 'store/authSlice';
 
 const AllBills = () => {
+  const userData = useSelector(selectAuth);
+  // employee data
+  const { data: userEmpData } = useGetSingleUserEmployeeQuery(
+    userData.userName || '123',
+    {
+      refetchOnMountOrArgChange: true,
+      pollingInterval: 10000,
+    }
+  );
+  const userEmployee = userEmpData?.data;
+
   const [searchText, setSearchText] = useState('');
   const [employee, setEmployee] = useState(null);
   const [startDate, setStartDate] = useState(null);
@@ -51,6 +67,11 @@ const AllBills = () => {
   empQuery['sortBy'] = 'name';
   empQuery['sortOrder'] = 'asc';
   empQuery['isActive'] = true;
+  empQuery['locationId'] = userEmployee?.locationId || '0';
+
+  if (userData?.role === 'super_admin') {
+    delete empQuery.locationId;
+  }
 
   const { data: employeeData, isLoading: employeeLoading } =
     useGetEmployeesQuery({ ...empQuery });
@@ -80,6 +101,11 @@ const AllBills = () => {
   query['page'] = page;
   query['sortBy'] = 'date';
   query['sortOrder'] = 'desc';
+  query['locationId'] = userEmployee?.locationId || '0';
+
+  if (userData?.role === 'super_admin') {
+    delete query.locationId;
+  }
 
   if (employee) {
     query['officeId'] = employee?.officeId;

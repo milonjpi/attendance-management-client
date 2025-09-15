@@ -16,7 +16,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import CloseIcon from '@mui/icons-material/Close';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setToast } from 'store/toastSlice';
 import moment from 'moment';
 import { useFieldArray, useForm, useWatch } from 'react-hook-form';
@@ -33,6 +33,8 @@ import {
   useGetConveyanceLocationsQuery,
 } from 'store/api/conveyance/conveyanceApi';
 import ConveyanceFields from './ConveyanceFields';
+import { selectAuth } from 'store/authSlice';
+import { useGetSingleUserEmployeeQuery } from 'store/api/employee/employeeApi';
 
 const style = {
   position: 'absolute',
@@ -57,6 +59,17 @@ const defaultValue = {
 };
 
 const AddConveyance = ({ open, handleClose, employeeData }) => {
+  const userData = useSelector(selectAuth);
+  // employee data
+  const { data: userEmpData } = useGetSingleUserEmployeeQuery(
+    userData.userName || '123',
+    {
+      refetchOnMountOrArgChange: true,
+      pollingInterval: 10000,
+    }
+  );
+  const userEmployee = userEmpData?.data;
+
   const [loading, setLoading] = useState(false);
 
   const [date, setDate] = useState(moment());
@@ -105,7 +118,10 @@ const AddConveyance = ({ open, handleClose, employeeData }) => {
   const onSubmit = async (data) => {
     const newData = {
       officeId: employeeData?.officeId,
+      locationId: userEmployee?.locationId,
       date: date,
+      month: moment(date).format('MMMM'),
+      year: moment(date).format('YYYY'),
       amount: totalAmount,
       remarks: data?.remarks || '',
       conveyanceDetails: data?.conveyanceDetails?.map((el) => ({

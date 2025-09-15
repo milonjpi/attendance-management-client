@@ -21,11 +21,27 @@ import {
   TableRow,
 } from '@mui/material';
 import { useDebounced } from 'hooks';
-import { useGetEmployeesQuery } from 'store/api/employee/employeeApi';
+import {
+  useGetEmployeesQuery,
+  useGetSingleUserEmployeeQuery,
+} from 'store/api/employee/employeeApi';
 import { useGetConveyancesQuery } from 'store/api/conveyance/conveyanceApi';
 import PendingConveyanceRow from './PendingConveyanceRow';
+import { useSelector } from 'react-redux';
+import { selectAuth } from 'store/authSlice';
 
 const PendingConveyances = () => {
+  const userData = useSelector(selectAuth);
+  // employee data
+  const { data: userEmpData } = useGetSingleUserEmployeeQuery(
+    userData.userName || '123',
+    {
+      refetchOnMountOrArgChange: true,
+      pollingInterval: 10000,
+    }
+  );
+  const userEmployee = userEmpData?.data;
+
   const [searchText, setSearchText] = useState('');
   const [employee, setEmployee] = useState(null);
   const [startDate, setStartDate] = useState(null);
@@ -39,6 +55,11 @@ const PendingConveyances = () => {
   empQuery['sortBy'] = 'name';
   empQuery['sortOrder'] = 'asc';
   empQuery['isActive'] = true;
+  empQuery['locationId'] = userEmployee?.locationId || '0';
+
+  if (userData?.role === 'super_admin') {
+    delete empQuery.locationId;
+  }
 
   const { data: employeeData, isLoading: employeeLoading } =
     useGetEmployeesQuery({ ...empQuery });
@@ -69,6 +90,11 @@ const PendingConveyances = () => {
   query['sortBy'] = 'date';
   query['sortOrder'] = 'desc';
   query['status'] = 'Pending';
+  query['locationId'] = userEmployee?.locationId || '0';
+
+  if (userData?.role === 'super_admin') {
+    delete query.locationId;
+  }
 
   if (employee) {
     query['officeId'] = employee?.officeId;

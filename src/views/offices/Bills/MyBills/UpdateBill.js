@@ -36,6 +36,7 @@ import { useUpdateBillMutation } from 'store/api/bill/billApi';
 import BillFields from './BillFields';
 import { useGetLocationsQuery } from 'store/api/location/locationApi';
 import { Autocomplete } from '@mui/material';
+import moment from 'moment';
 
 const style = {
   position: 'absolute',
@@ -130,6 +131,8 @@ const UpdateBill = ({ open, handleClose, preData }) => {
     const newData = {
       locationId: location?.id,
       date: date,
+      month: moment(date).format('MMMM'),
+      year: moment(date).format('YYYY'),
       amount: totalAmount,
       remarks: data?.remarks || '',
       billDetails: data?.billDetails?.map((el) => ({

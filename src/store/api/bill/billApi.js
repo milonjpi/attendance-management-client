@@ -44,17 +44,19 @@ export const billApi = api.injectEndpoints({
     }),
 
     approveBill: build.mutation({
-      query: (id) => ({
-        url: `${BILL_URL}/${id}/approve`,
+      query: (data) => ({
+        url: `${BILL_URL}/${data?.id}/approve`,
         method: 'PATCH',
+        data: data?.body,
       }),
       invalidatesTags: ['bill'],
     }),
 
     rejectBill: build.mutation({
-      query: (id) => ({
-        url: `${BILL_URL}/${id}/reject`,
+      query: (data) => ({
+        url: `${BILL_URL}/${data?.id}/reject`,
         method: 'PATCH',
+        data: data?.body,
       }),
       invalidatesTags: ['bill'],
     }),

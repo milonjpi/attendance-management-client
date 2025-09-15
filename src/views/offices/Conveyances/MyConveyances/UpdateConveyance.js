@@ -32,6 +32,7 @@ import {
   useUpdateConveyanceMutation,
 } from 'store/api/conveyance/conveyanceApi';
 import ConveyanceFields from './ConveyanceFields';
+import moment from 'moment';
 
 const style = {
   position: 'absolute',
@@ -106,6 +107,8 @@ const UpdateConveyance = ({ open, handleClose, preData }) => {
   const onSubmit = async (data) => {
     const newData = {
       date: date,
+      month: moment(date).format('MMMM'),
+      year: moment(date).format('YYYY'),
       amount: totalAmount,
       remarks: data?.remarks || '',
       conveyanceDetails: data?.conveyanceDetails?.map((el) => ({

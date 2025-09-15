@@ -56,17 +56,19 @@ export const conveyanceApi = api.injectEndpoints({
     }),
 
     approveConveyance: build.mutation({
-      query: (id) => ({
-        url: `${CONVEYANCE_URL}/${id}/approve`,
+      query: (data) => ({
+        url: `${CONVEYANCE_URL}/${data?.id}/approve`,
         method: 'PATCH',
+        data: data?.body,
       }),
       invalidatesTags: ['conveyance'],
     }),
 
     rejectConveyance: build.mutation({
-      query: (id) => ({
-        url: `${CONVEYANCE_URL}/${id}/reject`,
+      query: (data) => ({
+        url: `${CONVEYANCE_URL}/${data?.id}/reject`,
         method: 'PATCH',
+        data: data?.body,
       }),
       invalidatesTags: ['conveyance'],
     }),

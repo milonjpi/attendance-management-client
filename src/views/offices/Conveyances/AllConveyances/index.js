@@ -26,7 +26,10 @@ import {
   TableRow,
 } from '@mui/material';
 import { useDebounced } from 'hooks';
-import { useGetEmployeesQuery } from 'store/api/employee/employeeApi';
+import {
+  useGetEmployeesQuery,
+  useGetSingleUserEmployeeQuery,
+} from 'store/api/employee/employeeApi';
 import { useGetConveyancesQuery } from 'store/api/conveyance/conveyanceApi';
 import { mainStatus } from 'assets/data';
 import AllConveyanceRow from './AllConveyanceRow';
@@ -34,8 +37,21 @@ import { useRef } from 'react';
 import { useReactToPrint } from 'react-to-print';
 import { IconPrinter } from '@tabler/icons';
 import PrintAllConveyance from './PrintAllConveyance';
+import { useSelector } from 'react-redux';
+import { selectAuth } from 'store/authSlice';
 
 const AllConveyances = () => {
+  const userData = useSelector(selectAuth);
+  // employee data
+  const { data: userEmpData } = useGetSingleUserEmployeeQuery(
+    userData.userName || '123',
+    {
+      refetchOnMountOrArgChange: true,
+      pollingInterval: 10000,
+    }
+  );
+  const userEmployee = userEmpData?.data;
+
   const [searchText, setSearchText] = useState('');
   const [employee, setEmployee] = useState(null);
   const [startDate, setStartDate] = useState(null);
@@ -50,6 +66,11 @@ const AllConveyances = () => {
   empQuery['sortBy'] = 'name';
   empQuery['sortOrder'] = 'asc';
   empQuery['isActive'] = true;
+  empQuery['locationId'] = userEmployee?.locationId || '0';
+
+  if (userData?.role === 'super_admin') {
+    delete empQuery.locationId;
+  }
 
   const { data: employeeData, isLoading: employeeLoading } =
     useGetEmployeesQuery({ ...empQuery });
@@ -79,6 +100,11 @@ const AllConveyances = () => {
   query['page'] = page;
   query['sortBy'] = 'date';
   query['sortOrder'] = 'desc';
+  query['locationId'] = userEmployee?.locationId || '0';
+
+  if (userData?.role === 'super_admin') {
+    delete query.locationId;
+  }
 
   if (employee) {
     query['officeId'] = employee?.officeId;
