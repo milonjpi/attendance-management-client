@@ -26,14 +26,14 @@ const style = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: { xs: 350, sm: 500, md: 650 },
+  width: { xs: 350, sm: 500, md: 600 },
   maxHeight: '100vh',
   overflow: 'auto',
   boxShadow: 24,
   p: 3,
 };
 
-const AddManualAttendance = ({ open, handleClose }) => {
+const AddManualAttendance = ({ open, handleClose, userData, userEmployee }) => {
   const [loading, setLoading] = useState(false);
   const [location, setLocation] = useState(null);
   const [employee, setEmployee] = useState(null);
@@ -54,6 +54,12 @@ const AddManualAttendance = ({ open, handleClose }) => {
   query['limit'] = 100;
   query['page'] = 0;
   query['isActive'] = true;
+  query['isOwn'] = false;
+  query['locationId'] = userEmployee?.locationId;
+
+  if (userData?.role === 'super_admin') {
+    delete query.locationId;
+  }
 
   if (location) {
     query['locationId'] = location?.id;
@@ -127,26 +133,29 @@ const AddManualAttendance = ({ open, handleClose }) => {
         <Divider sx={{ mb: 2, mt: 1 }} />
         <Box component="form" autoComplete="off" onSubmit={onSubmit}>
           <Grid container spacing={2}>
-            <Grid item xs={12} md={6}>
-              <Autocomplete
-                value={location}
-                fullWidth
-                size="small"
-                options={allLocations}
-                getOptionLabel={(option) =>
-                  option.label + ', ' + option.area?.label
-                }
-                isOptionEqualToValue={(item, value) => item.id === value.id}
-                onChange={(e, newValue) => {
-                  setLocation(newValue);
-                  setEmployee(null);
-                }}
-                renderInput={(params) => (
-                  <TextField {...params} label="Select Branch" />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
+            {userData?.role === 'super_admin' ? (
+              <Grid item xs={12} md={6}>
+                <Autocomplete
+                  value={location}
+                  fullWidth
+                  size="small"
+                  options={allLocations}
+                  getOptionLabel={(option) =>
+                    option.label + ', ' + option.area?.label
+                  }
+                  isOptionEqualToValue={(item, value) => item.id === value.id}
+                  onChange={(e, newValue) => {
+                    setLocation(newValue);
+                    setEmployee(null);
+                  }}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Select Branch" />
+                  )}
+                />
+              </Grid>
+            ) : null}
+
+            <Grid item xs={12} md={userData?.role === 'super_admin' ? 6 : 12}>
               <Autocomplete
                 value={employee}
                 fullWidth

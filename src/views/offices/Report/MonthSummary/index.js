@@ -144,6 +144,9 @@ const MonthSummary = () => {
               <StyledTableCellWithBorder align="right">
                 Total Expenses
               </StyledTableCellWithBorder>
+              <StyledTableCellWithBorder align="right">
+                Month Expenses
+              </StyledTableCellWithBorder>
             </TableRow>
           </TableHead>
           <TableBody>

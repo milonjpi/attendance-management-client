@@ -27,7 +27,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-const PendingLeavesRow = ({ sn, data }) => {
+const PendingLeavesRow = ({ sn, data, userEmployee }) => {
   const employee = data?.employee || null;
 
   const [approve, setApprove] = useState(false);
@@ -42,7 +42,11 @@ const PendingLeavesRow = ({ sn, data }) => {
     try {
       const res = await updateLeave({
         id: data?.id,
-        body: { status: 'Approved' },
+        body: {
+          status: 'Approved',
+          approverId: userEmployee?.id,
+          approvedTime: moment(),
+        },
       }).unwrap();
       if (res.success) {
         dispatch(
@@ -70,7 +74,11 @@ const PendingLeavesRow = ({ sn, data }) => {
     try {
       const res = await updateLeave({
         id: data?.id,
-        body: { status: 'Rejected' },
+        body: {
+          status: 'Rejected',
+          approverId: userEmployee?.id,
+          approvedTime: moment(),
+        },
       }).unwrap();
       if (res.success) {
         dispatch(

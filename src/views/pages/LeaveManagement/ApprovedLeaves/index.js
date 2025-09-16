@@ -19,11 +19,16 @@ import { getDaysInMonth } from 'views/utilities/NeedyFunction';
 import moment from 'moment';
 import CardAction from 'ui-component/cards/CardAction';
 import AddIcon from '@mui/icons-material/Add';
-import { useGetEmployeesQuery } from 'store/api/employee/employeeApi';
+import {
+  useGetEmployeesQuery,
+  useGetSingleUserEmployeeQuery,
+} from 'store/api/employee/employeeApi';
 import LeaveManagementRow from './LeaveManagementRow';
 import AddLeave from './AddLeave';
 import { useGetLeavesQuery } from 'store/api/leave/leaveApi';
 import { useGetLocationsQuery } from 'store/api/location/locationApi';
+import { useSelector } from 'react-redux';
+import { selectAuth } from 'store/authSlice';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -49,6 +54,17 @@ const currentMonth = new Date().getMonth();
 const currentYear = new Date().getFullYear();
 
 const ApprovedLeaves = () => {
+  const userData = useSelector(selectAuth);
+  // employee data
+  const { data: userEmpData } = useGetSingleUserEmployeeQuery(
+    userData.userName || '123',
+    {
+      refetchOnMountOrArgChange: true,
+      pollingInterval: 10000,
+    }
+  );
+  const userEmployee = userEmpData?.data;
+
   const [location, setLocation] = useState(null);
   const [employee, setEmployee] = useState(null);
 
@@ -80,6 +96,15 @@ const ApprovedLeaves = () => {
   empQuery['page'] = 0;
   empQuery['isActive'] = true;
   empQuery['isOwn'] = false;
+  empQuery['locationId'] = userEmployee?.locationId;
+
+  if (userData?.role === 'super_admin') {
+    delete empQuery.locationId;
+  }
+
+  if (location) {
+    empQuery['locationId'] = location?.id;
+  }
 
   if (location) {
     empQuery['locationId'] = location?.id;
@@ -107,6 +132,12 @@ const ApprovedLeaves = () => {
 
   query['limit'] = rowsPerPage;
   query['page'] = page;
+  query['status'] = 'Approved';
+  query['locationId'] = userEmployee?.locationId;
+
+  if (userData?.role === 'super_admin') {
+    delete query.locationId;
+  }
 
   if (fromDate) {
     query['startDate'] = moment(fromDate).format('YYYY-MM-DD');
@@ -146,7 +177,12 @@ const ApprovedLeaves = () => {
       }
     >
       {/* popup items */}
-      <AddLeave open={open} handleClose={() => setOpen(false)} />
+      <AddLeave
+        open={open}
+        handleClose={() => setOpen(false)}
+        userData={userData}
+        userEmployee={userEmployee}
+      />
       {/* end popup items */}
       <Box sx={{ mb: 2 }}>
         <Grid
@@ -186,22 +222,25 @@ const ApprovedLeaves = () => {
               />
             </LocalizationProvider>
           </Grid>
-          <Grid item xs={12} md={3.5}>
-            <Autocomplete
-              value={location}
-              fullWidth
-              size="small"
-              options={allLocations}
-              getOptionLabel={(option) =>
-                option.label + ', ' + option.area?.label
-              }
-              isOptionEqualToValue={(item, value) => item.id === value.id}
-              onChange={(e, newValue) => setLocation(newValue)}
-              renderInput={(params) => (
-                <TextField {...params} label="Select Branch" />
-              )}
-            />
-          </Grid>
+          {userData?.role === 'super_admin' ? (
+            <Grid item xs={12} md={3.5}>
+              <Autocomplete
+                value={location}
+                fullWidth
+                size="small"
+                options={allLocations}
+                getOptionLabel={(option) =>
+                  option.label + ', ' + option.area?.label
+                }
+                isOptionEqualToValue={(item, value) => item.id === value.id}
+                onChange={(e, newValue) => setLocation(newValue)}
+                renderInput={(params) => (
+                  <TextField {...params} label="Select Branch" />
+                )}
+              />
+            </Grid>
+          ) : null}
+
           <Grid item xs={12} md={3.5}>
             <Autocomplete
               value={employee}
@@ -230,13 +269,19 @@ const ApprovedLeaves = () => {
               <StyledTableCell align="center">Days</StyledTableCell>
               <StyledTableCell>Remarks</StyledTableCell>
               <StyledTableCell align="center">Status</StyledTableCell>
-              <StyledTableCell align="center">Action</StyledTableCell>
+              {/* <StyledTableCell align="center">Action</StyledTableCell> */}
             </StyledTableRow>
           </TableHead>
           <TableBody>
             {allLeaves?.length ? (
               allLeaves.map((item) => (
-                <LeaveManagementRow key={item.id} sn={sn++} data={item} />
+                <LeaveManagementRow
+                  key={item.id}
+                  sn={sn++}
+                  data={item}
+                  userData={userData}
+                  userEmployee={userEmployee}
+                />
               ))
             ) : (
               <StyledTableRow>

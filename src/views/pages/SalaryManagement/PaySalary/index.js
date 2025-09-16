@@ -23,6 +23,9 @@ import CardAction from 'ui-component/cards/CardAction';
 import CreatePaySlip from './CreatePaySlip';
 import { useGetMonthSalariesQuery } from 'store/api/monthSalary/monthSalaryApi';
 import PaySalaryRow from './PaySalaryRow';
+import { useSelector } from 'react-redux';
+import { selectAuth } from 'store/authSlice';
+import { useGetSingleUserEmployeeQuery } from 'store/api/employee/employeeApi';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -47,6 +50,17 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 const PaySalary = () => {
+  const userData = useSelector(selectAuth);
+  // employee data
+  const { data: userEmpData } = useGetSingleUserEmployeeQuery(
+    userData.userName || '123',
+    {
+      refetchOnMountOrArgChange: true,
+      pollingInterval: 10000,
+    }
+  );
+  const userEmployee = userEmpData?.data;
+
   const [year, setYear] = useState('');
   const [month, setMonth] = useState('');
   const [location, setLocation] = useState(null);
@@ -80,6 +94,11 @@ const PaySalary = () => {
   };
   // end pagination
   const query = {};
+  query['locationId'] = userEmployee?.locationId;
+
+  if (userData?.role === 'super_admin') {
+    delete query.locationId;
+  }
 
   if (year) {
     query['year'] = year;
@@ -159,27 +178,34 @@ const PaySalary = () => {
             </FormControl>
           </Grid>
 
-          <Grid item xs={12} md={4}>
-            <Autocomplete
-              loading={locationLoading}
-              value={location}
-              fullWidth
-              size="small"
-              options={allLocations}
-              getOptionLabel={(option) =>
-                option.label + ', ' + option.area?.label
-              }
-              isOptionEqualToValue={(item, value) => item.id === value.id}
-              onChange={(e, newValue) => setLocation(newValue)}
-              renderInput={(params) => (
-                <TextField {...params} label="Select Branch" />
-              )}
-            />
-          </Grid>
+          {userData?.role === 'super_admin' ? (
+            <Grid item xs={12} md={4}>
+              <Autocomplete
+                loading={locationLoading}
+                value={location}
+                fullWidth
+                size="small"
+                options={allLocations}
+                getOptionLabel={(option) =>
+                  option.label + ', ' + option.area?.label
+                }
+                isOptionEqualToValue={(item, value) => item.id === value.id}
+                onChange={(e, newValue) => setLocation(newValue)}
+                renderInput={(params) => (
+                  <TextField {...params} label="Select Branch" />
+                )}
+              />
+            </Grid>
+          ) : null}
         </Grid>
       </Box>
       {/* popup item */}
-      <CreatePaySlip open={open} handleClose={() => setOpen(false)} />
+      <CreatePaySlip
+        open={open}
+        handleClose={() => setOpen(false)}
+        userData={userData}
+        userEmployee={userEmployee}
+      />
       {/* end popup item */}
       <Box sx={{ overflow: 'auto' }}>
         <Table sx={{ minWidth: 700 }}>
@@ -199,7 +225,13 @@ const PaySalary = () => {
           <TableBody>
             {allSalaries?.length ? (
               allSalaries?.map((el, index) => (
-                <PaySalaryRow key={index} sn={index + 1} data={el} />
+                <PaySalaryRow
+                  key={index}
+                  sn={index + 1}
+                  data={el}
+                  userData={userData}
+                  userEmployee={userEmployee}
+                />
               ))
             ) : (
               <StyledTableRow>

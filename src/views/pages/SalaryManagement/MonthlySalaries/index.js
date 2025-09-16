@@ -25,8 +25,13 @@ import { IconPrinter } from '@tabler/icons-react';
 import { monthList, salaryYear } from 'assets/data';
 import MonthlySalaryRow from './MonthlySalaryRow';
 import PrintMonthlySalaries from './PrintMonthlySalaries';
-import { useGetEmployeesQuery } from 'store/api/employee/employeeApi';
+import {
+  useGetEmployeesQuery,
+  useGetSingleUserEmployeeQuery,
+} from 'store/api/employee/employeeApi';
 import ViewPaySlip from './ViewPaySlip';
+import { useSelector } from 'react-redux';
+import { selectAuth } from 'store/authSlice';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -51,6 +56,17 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 const MonthlySalaries = () => {
+  const userData = useSelector(selectAuth);
+  // employee data
+  const { data: userEmpData } = useGetSingleUserEmployeeQuery(
+    userData.userName || '123',
+    {
+      refetchOnMountOrArgChange: true,
+      pollingInterval: 10000,
+    }
+  );
+  const userEmployee = userEmpData?.data;
+
   const [year, setYear] = useState(moment().format('YYYY'));
   const [month, setMonth] = useState(moment().format('MMMM'));
   const [location, setLocation] = useState(null);
@@ -73,6 +89,12 @@ const MonthlySalaries = () => {
   empQuery['page'] = 0;
   empQuery['isActive'] = true;
   empQuery['isOwn'] = false;
+  empQuery['locationId'] = userEmployee?.locationId;
+
+  if (userData?.role === 'super_admin') {
+    delete empQuery.locationId;
+  }
+
   if (location) {
     empQuery['locationId'] = location?.id;
   }
@@ -85,6 +107,12 @@ const MonthlySalaries = () => {
 
   query['isActive'] = true;
   query['isOwn'] = false;
+  query['locationId'] = userEmployee?.locationId;
+
+  if (userData?.role === 'super_admin') {
+    delete query.locationId;
+  }
+
   query['startDate'] = moment(`${year}-${month}`, 'YYYY-MMMM')
     .startOf('month')
     .format('YYYY-MM-DD');
@@ -203,27 +231,28 @@ const MonthlySalaries = () => {
               </Select>
             </FormControl>
           </Grid>
-
-          <Grid item xs={12} md={3.5}>
-            <Autocomplete
-              loading={locationLoading}
-              value={location}
-              fullWidth
-              size="small"
-              options={allLocations}
-              getOptionLabel={(option) =>
-                option.label + ', ' + option.area?.label
-              }
-              isOptionEqualToValue={(item, value) => item.id === value.id}
-              onChange={(e, newValue) => {
-                setLocation(newValue);
-                setEmployee(null);
-              }}
-              renderInput={(params) => (
-                <TextField {...params} label="Select Branch" />
-              )}
-            />
-          </Grid>
+          {userData?.role === 'super_admin' ? (
+            <Grid item xs={12} md={3.5}>
+              <Autocomplete
+                loading={locationLoading}
+                value={location}
+                fullWidth
+                size="small"
+                options={allLocations}
+                getOptionLabel={(option) =>
+                  option.label + ', ' + option.area?.label
+                }
+                isOptionEqualToValue={(item, value) => item.id === value.id}
+                onChange={(e, newValue) => {
+                  setLocation(newValue);
+                  setEmployee(null);
+                }}
+                renderInput={(params) => (
+                  <TextField {...params} label="Select Branch" />
+                )}
+              />
+            </Grid>
+          ) : null}
 
           <Grid item xs={12} md={4}>
             <Autocomplete

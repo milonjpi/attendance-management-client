@@ -1,17 +1,17 @@
 import { styled } from '@mui/material/styles';
-import Button from '@mui/material/Button';
+// import Button from '@mui/material/Button';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
-import { IconTrashXFilled } from '@tabler/icons-react';
+// import { IconTrashXFilled } from '@tabler/icons-react';
 import moment from 'moment';
-import { useState } from 'react';
-import ConfirmDialog from 'ui-component/ConfirmDialog';
-import { useDispatch } from 'react-redux';
-import { setToast } from 'store/toastSlice';
+// import { useState } from 'react';
+// import ConfirmDialog from 'ui-component/ConfirmDialog';
+// import { useDispatch } from 'react-redux';
+// import { setToast } from 'store/toastSlice';
 import { Link } from 'react-router-dom';
-import { IconEdit } from '@tabler/icons-react';
-import UpdateLeave from './UpdateLeave';
-import { useDeleteLeaveMutation } from 'store/api/leave/leaveApi';
+// import { IconEdit } from '@tabler/icons-react';
+// import UpdateLeave from './UpdateLeave';
+// import { useDeleteLeaveMutation } from 'store/api/leave/leaveApi';
 import ShowStatus from 'ui-component/ShowStatus';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -28,39 +28,39 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-const LeaveManagementRow = ({ sn, data }) => {
+const LeaveManagementRow = ({ sn, data, userData, userEmployee }) => {
   const employee = data?.employee || null;
 
-  const [open, setOpen] = useState(false);
-  const [dialog, setDialog] = useState(false);
+  // const [open, setOpen] = useState(false);
+  // const [dialog, setDialog] = useState(false);
 
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
-  const [deleteLeave] = useDeleteLeaveMutation();
-  const handleDelete = async () => {
-    setDialog(false);
-    try {
-      const res = await deleteLeave(data?.id).unwrap();
-      if (res.success) {
-        dispatch(
-          setToast({
-            open: true,
-            variant: 'success',
-            message: res?.message,
-          })
-        );
-      }
-    } catch (err) {
-      dispatch(
-        setToast({
-          open: true,
-          variant: 'error',
-          message: err?.data?.message || 'Something Went Wrong',
-          errorMessages: err?.data?.errorMessages,
-        })
-      );
-    }
-  };
+  // const [deleteLeave] = useDeleteLeaveMutation();
+  // const handleDelete = async () => {
+  //   setDialog(false);
+  //   try {
+  //     const res = await deleteLeave(data?.id).unwrap();
+  //     if (res.success) {
+  //       dispatch(
+  //         setToast({
+  //           open: true,
+  //           variant: 'success',
+  //           message: res?.message,
+  //         })
+  //       );
+  //     }
+  //   } catch (err) {
+  //     dispatch(
+  //       setToast({
+  //         open: true,
+  //         variant: 'error',
+  //         message: err?.data?.message || 'Something Went Wrong',
+  //         errorMessages: err?.data?.errorMessages,
+  //       })
+  //     );
+  //   }
+  // };
 
   return (
     <StyledTableRow>
@@ -92,8 +92,9 @@ const LeaveManagementRow = ({ sn, data }) => {
       <StyledTableCell align="center">
         <ShowStatus status={data?.status} />
       </StyledTableCell>
-      <StyledTableCell align="center" sx={{ minWidth: 85 }}>
-        <Button
+
+      {/* <StyledTableCell align="center" sx={{ minWidth: 85 }}> */}
+      {/* <Button
           color="primary"
           variant="contained"
           size="small"
@@ -110,21 +111,23 @@ const LeaveManagementRow = ({ sn, data }) => {
           onClick={() => setDialog(true)}
         >
           <IconTrashXFilled size={14} />
-        </Button>
-        {/* popup items */}
-        <UpdateLeave
+        </Button> */}
+      {/* popup items */}
+      {/* <UpdateLeave
           open={open}
           handleClose={() => setOpen(false)}
           preData={data}
+          userData={userData}
+          userEmployee={userEmployee}
         />
         <ConfirmDialog
           open={dialog}
           setOpen={setDialog}
           content="Delete Leave"
           handleDelete={handleDelete}
-        />
-        {/* end popup items */}
-      </StyledTableCell>
+        /> */}
+      {/* end popup items */}
+      {/* </StyledTableCell> */}
     </StyledTableRow>
   );
 };

@@ -23,14 +23,14 @@ const style = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: { xs: 400, sm: 500, md: 550 },
+  width: { xs: 350, sm: 450, md: 500 },
   maxHeight: '100vh',
   overflow: 'auto',
   boxShadow: 24,
   p: 2,
 };
 
-const CreatePaySlip = ({ open, handleClose }) => {
+const CreatePaySlip = ({ open, handleClose, userData, userEmployee }) => {
   const [loading, setLoading] = useState(false);
   const [year, setYear] = useState(null);
   const [month, setMonth] = useState(null);
@@ -59,7 +59,10 @@ const CreatePaySlip = ({ open, handleClose }) => {
     const newData = {
       year: year,
       month: month,
-      locationId: location?.id,
+      locationId:
+        userData?.role === 'super_admin'
+          ? location?.id
+          : userEmployee?.locationId,
     };
 
     try {
@@ -117,7 +120,7 @@ const CreatePaySlip = ({ open, handleClose }) => {
         {/* end popup items */}
         <Box component="form" autoComplete="off" onSubmit={onSubmit}>
           <Grid container spacing={2}>
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={userData?.role === 'super_admin' ? 6 : 12}>
               <Autocomplete
                 value={year}
                 fullWidth
@@ -132,7 +135,7 @@ const CreatePaySlip = ({ open, handleClose }) => {
                 )}
               />
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={userData?.role === 'super_admin' ? 6 : 12}>
               <Autocomplete
                 value={month}
                 fullWidth
@@ -151,23 +154,26 @@ const CreatePaySlip = ({ open, handleClose }) => {
                 )}
               />
             </Grid>
-            <Grid item xs={12}>
-              <Autocomplete
-                loading={locationLoading}
-                value={location}
-                fullWidth
-                size="small"
-                options={allLocations}
-                getOptionLabel={(option) =>
-                  option.label + ', ' + option.area?.label
-                }
-                isOptionEqualToValue={(item, value) => item.id === value.id}
-                onChange={(e, newValue) => setLocation(newValue)}
-                renderInput={(params) => (
-                  <TextField {...params} label="Select Branch" required />
-                )}
-              />
-            </Grid>
+            {userData?.role === 'super_admin' ? (
+              <Grid item xs={12}>
+                <Autocomplete
+                  loading={locationLoading}
+                  value={location}
+                  fullWidth
+                  size="small"
+                  options={allLocations}
+                  getOptionLabel={(option) =>
+                    option.label + ', ' + option.area?.label
+                  }
+                  isOptionEqualToValue={(item, value) => item.id === value.id}
+                  onChange={(e, newValue) => setLocation(newValue)}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Select Branch" required />
+                  )}
+                />
+              </Grid>
+            ) : null}
+
             <Grid item xs={12}>
               <LoadingButton
                 fullWidth

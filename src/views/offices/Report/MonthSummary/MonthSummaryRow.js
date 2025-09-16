@@ -1,10 +1,11 @@
 import { StyledTableCellWithBorder } from 'ui-component/table-component';
 import { TableRow } from '@mui/material';
+import { totalSum } from 'views/utilities/NeedyFunction';
 
 const MonthSummaryRow = ({ sn, data }) => {
   const locations = data?.locations || [];
   const rowSpan = locations.length || 1;
-
+  const totalMonthExpense = totalSum(locations, 'totalExpenses');
   return (
     <>
       {/* Main Row */}
@@ -35,6 +36,9 @@ const MonthSummaryRow = ({ sn, data }) => {
             </StyledTableCellWithBorder>
           </>
         )}
+        <StyledTableCellWithBorder align="right" rowSpan={rowSpan}>
+          {totalMonthExpense}
+        </StyledTableCellWithBorder>
       </TableRow>
 
       {/* Remaining Income Details Rows */}
