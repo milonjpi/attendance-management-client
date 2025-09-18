@@ -93,6 +93,8 @@ const AddLeave = ({ open, handleClose, userData, userEmployee }) => {
       toDate: toDate,
       days: daysDifference,
       remarks: data?.remarks || '',
+      approverId: userEmployee?.id,
+      approvedTime: moment(),
       status: 'Approved',
     };
 
