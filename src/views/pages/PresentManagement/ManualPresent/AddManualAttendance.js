@@ -38,6 +38,7 @@ const AddManualAttendance = ({ open, handleClose, userData, userEmployee }) => {
   const [location, setLocation] = useState(null);
   const [employee, setEmployee] = useState(null);
   const [date, setDate] = useState(moment());
+  const [remarks, setRemarks] = useState('');
 
   // library
   const { data: locationData } = useGetLocationsQuery(
@@ -79,6 +80,7 @@ const AddManualAttendance = ({ open, handleClose, userData, userEmployee }) => {
       officeId: employee?.officeId,
       date: moment(date).add(6, 'hours'),
       inTime: moment(date).add(6, 'hours'),
+      remarks: remarks || '',
     };
     try {
       const res = await createAttendance({ ...newData }).unwrap();
@@ -186,6 +188,15 @@ const AddManualAttendance = ({ open, handleClose, userData, userEmployee }) => {
                   )}
                 />
               </LocalizationProvider>
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Early Note/Additional Note"
+                size="small"
+                value={remarks}
+                onChange={(e) => setRemarks(e.target.value)}
+              />
             </Grid>
             <Grid item xs={12}>
               <LoadingButton

@@ -90,6 +90,7 @@ const PrintEmployeeAttendance = forwardRef(
                 SN
               </StyledTableCell>
               <StyledTableCell>Date</StyledTableCell>
+              <StyledTableCell>Additional Notes</StyledTableCell>
               <StyledTableCell align="center">In Time</StyledTableCell>
               <StyledTableCell align="center">Out Time</StyledTableCell>
             </StyledTableRow>

@@ -188,13 +188,14 @@ const MyAttendances = () => {
       </Box>
       {/* end popup item */}
       <Box sx={{ overflow: 'auto' }}>
-        <Table sx={{ minWidth: 950 }}>
+        <Table sx={{ minWidth: 550 }}>
           <TableHead>
             <StyledTableRow>
               <StyledTableCell align="center" sx={{ width: 50 }}>
                 SN
               </StyledTableCell>
               <StyledTableCell>Date</StyledTableCell>
+              <StyledTableCell>Additional Notes</StyledTableCell>
               <StyledTableCell align="center">In Time</StyledTableCell>
               <StyledTableCell align="center">Out Time</StyledTableCell>
             </StyledTableRow>

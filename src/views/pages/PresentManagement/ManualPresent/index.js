@@ -256,6 +256,7 @@ const ManualPresent = () => {
               <StyledTableCell>Designation</StyledTableCell>
               <StyledTableCell>Department</StyledTableCell>
               <StyledTableCell>Branch</StyledTableCell>
+              <StyledTableCell>Additional Notes</StyledTableCell>
               <StyledTableCell>In Time</StyledTableCell>
               <StyledTableCell align="center">Action</StyledTableCell>
             </StyledTableRow>

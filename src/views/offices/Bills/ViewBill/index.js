@@ -280,6 +280,19 @@ const ViewBill = ({ open, handleClose, data }) => {
                     fontSize: 10,
                     textTransform: 'uppercase',
                     textAlign: 'center',
+                    px: 1,
+                    pt: 0.2,
+                    borderTop: '1px solid #676767',
+                  }}
+                >
+                  Checked By
+                </Typography>
+                <Typography
+                  sx={{
+                    width: 100,
+                    fontSize: 10,
+                    textTransform: 'uppercase',
+                    textAlign: 'center',
                     mr: 7,
                     px: 1,
                     pt: 0.2,

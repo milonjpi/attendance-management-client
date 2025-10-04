@@ -9,23 +9,16 @@ import moment from 'moment';
 import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  useCreateGeoAttendanceMutation,
-  useCreateGeoLeaveMutation,
-  useGetSingleAttendanceQuery,
-} from 'store/api/attendance/attendanceApi';
+import { useSelector } from 'react-redux';
+import { useGetSingleAttendanceQuery } from 'store/api/attendance/attendanceApi';
 import { useGetSingleUserEmployeeQuery } from 'store/api/employee/employeeApi';
 import { selectAuth } from 'store/authSlice';
-import { setToast } from 'store/toastSlice';
 import MainCard from 'ui-component/cards/MainCard';
-import ConfirmDialog from 'ui-component/ConfirmDialog';
 import LoadingPage from 'ui-component/LoadingPage';
 import NotFoundEmployee from 'views/pages/Employees/NotFoundEmployee';
-import {
-  getDeviceId,
-  getMinDistanceFromLocations,
-} from 'views/utilities/NeedyFunction';
+import { getMinDistanceFromLocations } from 'views/utilities/NeedyFunction';
+import MarkAttendance from './MarkAttendance';
+import LeaveNow from './LeaveNow';
 
 const PresentNow = () => {
   const userData = useSelector(selectAuth);
@@ -112,77 +105,6 @@ const PresentNow = () => {
   const [att, setAtt] = useState(false);
   const [leave, setLeave] = useState(false);
 
-  const dispatch = useDispatch();
-  const [createGeoAttendance] = useCreateGeoAttendanceMutation();
-  const [createGeoLeave] = useCreateGeoLeaveMutation();
-
-  const handleAttendance = async () => {
-    setAtt(false);
-    const deviceId = getDeviceId();
-    const newData = {
-      officeId: employeeData?.officeId,
-      date: moment().add(6, 'hours'),
-      inTime: moment().add(6, 'hours'),
-      deviceId: deviceId,
-      location: location?.lat + ', ' + location?.lon + ', ' + location?.branch,
-      realPunch: true,
-    };
-    try {
-      const res = await createGeoAttendance({ ...newData }).unwrap();
-      if (res.success) {
-        dispatch(
-          setToast({
-            open: true,
-            variant: 'success',
-            message: 'Attendance Successfully',
-          })
-        );
-      }
-    } catch (err) {
-      dispatch(
-        setToast({
-          open: true,
-          variant: 'error',
-          message: err?.data?.message || 'Something Went Wrong',
-          errorMessages: err?.data?.errorMessages,
-        })
-      );
-    }
-  };
-  const handleLeave = async () => {
-    setLeave(false);
-    const deviceId = getDeviceId();
-    const newData = {
-      officeId: employeeData?.officeId,
-      date: moment().add(6, 'hours'),
-      outTime: moment().add(6, 'hours'),
-      deviceId: deviceId,
-      location: location?.lat + ', ' + location?.lon + ', ' + location?.branch,
-      realPunch: true,
-    };
-    try {
-      const res = await createGeoLeave({ ...newData }).unwrap();
-      if (res.success) {
-        dispatch(
-          setToast({
-            open: true,
-            variant: 'success',
-            message: 'Leave Successfully',
-          })
-        );
-      }
-    } catch (err) {
-      dispatch(
-        setToast({
-          open: true,
-          variant: 'error',
-          message: err?.data?.message || 'Something Went Wrong',
-          errorMessages: err?.data?.errorMessages,
-        })
-      );
-    }
-  };
-
   if (isLoading && !employeeData) {
     return <LoadingPage />;
   }
@@ -253,7 +175,7 @@ const PresentNow = () => {
                 <Button
                   variant="contained"
                   color="primary"
-                  onClick={handleAttendance}
+                  onClick={() => setAtt(true)}
                 >
                   Mark Attendance
                 </Button>
@@ -262,7 +184,11 @@ const PresentNow = () => {
               {Number(distance) &&
               Number(distance) < 50 &&
               moment().hour() >= 12 ? (
-                <Button variant="contained" color="error" onClick={handleLeave}>
+                <Button
+                  variant="contained"
+                  color="error"
+                  onClick={() => setLeave(true)}
+                >
                   Leave Now
                 </Button>
               ) : null}
@@ -270,17 +196,18 @@ const PresentNow = () => {
           )}
 
           {/* pop up items */}
-          <ConfirmDialog
+          <MarkAttendance
             open={att}
-            setOpen={setAtt}
-            content="Confirm Attendance"
-            handleDelete={handleAttendance}
+            handleClose={() => setAtt(false)}
+            employeeData={employeeData}
+            location={location}
           />
-          <ConfirmDialog
+          <LeaveNow
             open={leave}
-            setOpen={setLeave}
-            content="Confirm Leave"
-            handleDelete={handleLeave}
+            handleClose={() => setLeave(false)}
+            employeeData={employeeData}
+            location={location}
+            preData={todayAttendance}
           />
           {/* pop up items */}
         </Grid>

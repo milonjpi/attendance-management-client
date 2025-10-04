@@ -25,6 +25,7 @@ const EmployeeAttendanceRow = ({ sn, data }) => {
       <StyledTableCell>
         {moment(data?.date).utc(0).format('DD/MM/YYYY')}
       </StyledTableCell>
+      <StyledTableCell>{data?.remarks || 'n/a'}</StyledTableCell>
       <StyledTableCell align="center">
         {data?.inTime ? (
           moment(data?.inTime).utc(0).format('hh:mm a')

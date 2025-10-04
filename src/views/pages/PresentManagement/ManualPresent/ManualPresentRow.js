@@ -68,6 +68,7 @@ const ManualPresentRow = ({ sn, data }) => {
       <StyledTableCell>
         {employee?.location?.label + ', ' + employee?.location?.area?.label}
       </StyledTableCell>
+      <StyledTableCell>{data?.remarks || 'n/a'}</StyledTableCell>
       <StyledTableCell>
         {moment(data?.inTime).utc().format('hh:mm A')}
       </StyledTableCell>
