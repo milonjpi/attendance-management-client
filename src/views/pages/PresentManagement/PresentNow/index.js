@@ -220,13 +220,13 @@ const PresentNow = () => {
           <Typography sx={{ fontWeight: 500, fontSize: 11, mb: 0.5 }}>
             IN:{' '}
             {todayAttendance?.inTime
-              ? moment(todayAttendance?.inTime).utc(0).format('hh:mm A')
+              ? moment(todayAttendance?.inTime).format('hh:mm A')
               : 'n/a'}
           </Typography>
           <Typography sx={{ fontWeight: 500, fontSize: 11 }}>
             OUT:{' '}
             {todayAttendance?.outTime
-              ? moment(todayAttendance?.outTime).utc(0).format('hh:mm A')
+              ? moment(todayAttendance?.outTime).format('hh:mm A')
               : 'n/a'}
           </Typography>
         </Grid>

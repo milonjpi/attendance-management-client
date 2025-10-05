@@ -42,8 +42,8 @@ const MarkAttendance = ({ open, handleClose, employeeData, location }) => {
     const deviceId = getDeviceId();
     const newData = {
       officeId: employeeData?.officeId,
-      date: moment().add(6, 'hours'),
-      inTime: moment().add(6, 'hours'),
+      date: moment(),
+      inTime: moment(),
       deviceId: deviceId,
       location: location?.lat + ', ' + location?.lon + ', ' + location?.branch,
       realPunch: true,

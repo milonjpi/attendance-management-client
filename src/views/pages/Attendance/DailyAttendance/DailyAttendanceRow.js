@@ -48,12 +48,12 @@ const DailyAttendanceRow = ({ sn, data, date }) => {
           <>
             <StyledTableCell>
               {attendances.inTime
-                ? moment(attendances.inTime).utc().format('hh:mm A')
+                ? moment(attendances.inTime).format('hh:mm A')
                 : 'Missing'}
             </StyledTableCell>
             <StyledTableCell>
               {attendances.outTime
-                ? moment(attendances.outTime).utc().format('hh:mm A')
+                ? moment(attendances.outTime).format('hh:mm A')
                 : parseInt(moment(date).format('YYYYMMDD')) >=
                   parseInt(moment().format('YYYYMMDD'))
                 ? 'Pending'
@@ -62,7 +62,7 @@ const DailyAttendanceRow = ({ sn, data, date }) => {
           </>
         ) : (
           <StyledTableCell colSpan={2}>
-            {moment(attendances.inTime).utc().format('hh:mm A') + ' (Manual)'}
+            {moment(attendances.inTime).format('hh:mm A') + ' (Manual)'}
           </StyledTableCell>
         )
       ) : parseInt(moment(date).format('YYYYMMDD')) >=

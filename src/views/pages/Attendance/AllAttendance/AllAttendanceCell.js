@@ -27,14 +27,12 @@ const AllAttendanceCell = ({ sn, data, startDate }) => {
           <>
             <Typography sx={{ fontSize: 9 }}>
               In:{' '}
-              {data?.inTime
-                ? moment(data?.inTime).utc().format('hh:mma')
-                : 'Missing'}
+              {data?.inTime ? moment(data?.inTime).format('hh:mma') : 'Missing'}
             </Typography>
             <Typography sx={{ fontSize: 9 }}>
               out:{' '}
               {data?.outTime
-                ? moment(data?.outTime).utc().format('hh:mma')
+                ? moment(data?.outTime).format('hh:mma')
                 : parseInt(moment(currentDate).format('YYYYMMDD')) >=
                   parseInt(moment().format('YYYYMMDD'))
                 ? 'Pending'
@@ -44,7 +42,7 @@ const AllAttendanceCell = ({ sn, data, startDate }) => {
         ) : (
           <>
             <Typography sx={{ fontSize: 9 }}>
-              In: {moment(data?.inTime).utc().format('hh:mma')}
+              In: {moment(data?.inTime).format('hh:mma')}
             </Typography>
             <Typography sx={{ fontSize: 9 }}>&#40;Manual&#41;</Typography>
           </>

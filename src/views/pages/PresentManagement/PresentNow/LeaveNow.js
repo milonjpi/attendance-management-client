@@ -45,8 +45,8 @@ const LeaveNow = ({ open, handleClose, preData, employeeData, location }) => {
     const deviceId = getDeviceId();
     const newData = {
       officeId: employeeData?.officeId,
-      date: moment().add(6, 'hours'),
-      outTime: moment().add(6, 'hours'),
+      date: moment(),
+      outTime: moment(),
       deviceId: deviceId,
       location: location?.lat + ', ' + location?.lon + ', ' + location?.branch,
       realPunch: true,

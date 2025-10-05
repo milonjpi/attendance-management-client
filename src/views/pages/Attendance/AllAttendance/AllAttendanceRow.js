@@ -45,7 +45,7 @@ const AllAttendanceRow = ({ sn, data, firstSlot, secondSlot }) => {
         {firstSlot.length > 0 &&
           firstSlot?.map((el) => {
             const findAttn = attendanceDetails?.find(
-              (bl) => el === moment(bl.date).utc(0).format('DD/MM/YYYY')
+              (bl) => el === moment(bl.date).format('DD/MM/YYYY')
             );
 
             const splitDate = el.split('/');
@@ -80,7 +80,7 @@ const AllAttendanceRow = ({ sn, data, firstSlot, secondSlot }) => {
                       }}
                     >{`IN: ${
                       findAttn?.inTime
-                        ? moment(findAttn?.inTime).utc(0).format('hh:mm a')
+                        ? moment(findAttn?.inTime).format('hh:mm a')
                         : 'no'
                     }`}</span>
                     <br />
@@ -93,7 +93,7 @@ const AllAttendanceRow = ({ sn, data, firstSlot, secondSlot }) => {
                       }}
                     >{`O: ${
                       findAttn?.outTime
-                        ? moment(findAttn?.outTime).utc(0).format('hh:mm a')
+                        ? moment(findAttn?.outTime).format('hh:mm a')
                         : 'no'
                     }`}</span>
                   </>
@@ -114,11 +114,12 @@ const AllAttendanceRow = ({ sn, data, firstSlot, secondSlot }) => {
             );
           })}
       </StyledTableRow>
+      ;
       {secondSlot?.length ? (
         <StyledTableRow className="row">
           {secondSlot?.map((el) => {
             const findAttn = attendanceDetails?.find(
-              (bl) => el === `${moment(bl.date).utc(0).format('DD/MM/YYYY')}`
+              (bl) => el === `${moment(bl.date).format('DD/MM/YYYY')}`
             );
             const splitDate = el.split('/');
             const mainDate = new Date(
@@ -153,7 +154,7 @@ const AllAttendanceRow = ({ sn, data, firstSlot, secondSlot }) => {
                       }}
                     >{`IN: ${
                       findAttn?.inTime
-                        ? moment(findAttn?.inTime).utc(0).format('hh:mm a')
+                        ? moment(findAttn?.inTime).format('hh:mm a')
                         : 'no'
                     }`}</span>
                     <br />
@@ -166,7 +167,7 @@ const AllAttendanceRow = ({ sn, data, firstSlot, secondSlot }) => {
                       }}
                     >{`O: ${
                       findAttn?.outTime
-                        ? moment(findAttn?.outTime).utc(0).format('hh:mm a')
+                        ? moment(findAttn?.outTime).format('hh:mm a')
                         : mainDate?.getDate() < new Date().getDate()
                         ? 'Missing'
                         : 'Pending'

@@ -7,20 +7,14 @@ import TableBody from '@mui/material/TableBody';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import Autocomplete from '@mui/material/Autocomplete';
-import TextField from '@mui/material/TextField';
 import LinearProgress from '@mui/material/LinearProgress';
 import MainCard from 'ui-component/cards/MainCard';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-import { useGetLocationsQuery } from 'store/api/location/locationApi';
 import { TablePagination } from '@mui/material';
-import { IconPlus } from '@tabler/icons-react';
-import { monthList, salaryYear } from 'assets/data';
-import CardAction from 'ui-component/cards/CardAction';
-import { useGetMonthSalariesQuery } from 'store/api/monthSalary/monthSalaryApi';
+import { salaryYear } from 'assets/data';
 import { useGetMonthSalaryDetailsQuery } from 'store/api/monthSalaryDetail/monthSalaryDetailApi';
 import LoadingPage from 'ui-component/LoadingPage';
 import NotFoundEmployee from 'views/pages/Employees/NotFoundEmployee';
@@ -53,7 +47,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 const MySalaries = () => {
   const userData = useSelector(selectAuth);
-  const [open, setOpen] = useState(false);
 
   const { data: userEmpData, isLoading } = useGetSingleUserEmployeeQuery(
     userData.userName || '123',
@@ -91,11 +84,10 @@ const MySalaries = () => {
     query['isAccepted'] = status === 'Received' ? true : false;
   }
 
-  const { data: salaryData, isLoading: salaryLoading } =
-    useGetMonthSalaryDetailsQuery(
-      { ...query },
-      { refetchOnMountOrArgChange: true }
-    );
+  const { data: salaryData } = useGetMonthSalaryDetailsQuery(
+    { ...query },
+    { refetchOnMountOrArgChange: true }
+  );
 
   const allSalaries = salaryData?.monthSalaryDetails || [];
   const meta = salaryData?.meta;

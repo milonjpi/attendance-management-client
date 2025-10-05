@@ -60,7 +60,9 @@ const DataTable = ({
                   {loading ? (
                     <LinearProgress sx={{ opacity: 0.5, py: 0.5 }} />
                   ) : (
-                    <Empty />
+                    <Box sx={{ textAlign: 'center' }}>
+                      <Empty />
+                    </Box>
                   )}
                 </StyledTableCell>
               </StyledTableRow>

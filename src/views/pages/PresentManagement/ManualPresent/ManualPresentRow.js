@@ -70,7 +70,7 @@ const ManualPresentRow = ({ sn, data }) => {
       </StyledTableCell>
       <StyledTableCell>{data?.remarks || 'n/a'}</StyledTableCell>
       <StyledTableCell>
-        {moment(data?.inTime).utc().format('hh:mm A')}
+        {moment(data?.inTime).format('hh:mm A')}
       </StyledTableCell>
       <StyledTableCell align="center">
         <Button

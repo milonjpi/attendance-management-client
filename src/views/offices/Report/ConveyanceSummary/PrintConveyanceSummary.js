@@ -75,7 +75,9 @@ const PrintConveyanceSummary = forwardRef(
                   {isLoading ? (
                     <LinearProgress sx={{ opacity: 0.5, py: 0.5 }} />
                   ) : (
-                    <Empty />
+                    <Box sx={{ textAlign: 'center' }}>
+                      <Empty />
+                    </Box>
                   )}
                 </StyledTableCellWithBorder>
               </TableRow>

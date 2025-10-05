@@ -78,8 +78,8 @@ const AddManualAttendance = ({ open, handleClose, userData, userEmployee }) => {
     setLoading(true);
     const newData = {
       officeId: employee?.officeId,
-      date: moment(date).add(6, 'hours'),
-      inTime: moment(date).add(6, 'hours'),
+      date: date,
+      inTime: date,
       remarks: remarks || '',
     };
     try {
