@@ -5,9 +5,9 @@ import TableRow from '@mui/material/TableRow';
 import printLogo from 'assets/images/print_logo.png';
 import { Empty, StyledTableCellWithBorder } from 'ui-component/table-component';
 import { LinearProgress, Table, TableBody, TableHead } from '@mui/material';
-import ConveyanceSummaryRow from './ConveyanceSummaryRow';
+import BranchWiseSummaryRow from './BranchWiseSummaryRow';
 
-const PrintConveyanceSummary = forwardRef(
+const PrintBranchWiseSummary = forwardRef(
   ({ allExpenses, year, month, totalConveyances, isLoading }, ref) => {
     return (
       <Box component="div" ref={ref}>
@@ -43,7 +43,7 @@ const PrintConveyanceSummary = forwardRef(
             component="h6"
             sx={{ fontSize: 15, textAlign: 'center', fontWeight: 500 }}
           >
-            CONVEYANCE SUMMARY{' '}
+            BRANCH CONVEYANCE SUMMARY{' '}
             {year && month
               ? `of ${month}, ${year}`
               : year
@@ -67,7 +67,7 @@ const PrintConveyanceSummary = forwardRef(
           <TableBody>
             {allExpenses?.length ? (
               allExpenses?.map((el, index) => (
-                <ConveyanceSummaryRow key={index} sn={index + 1} data={el} />
+                <BranchWiseSummaryRow key={index} sn={index + 1} data={el} />
               ))
             ) : (
               <TableRow className="row">
@@ -102,4 +102,4 @@ const PrintConveyanceSummary = forwardRef(
   }
 );
 
-export default PrintConveyanceSummary;
+export default PrintBranchWiseSummary;

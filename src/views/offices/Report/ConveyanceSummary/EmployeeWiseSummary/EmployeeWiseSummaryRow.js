@@ -1,17 +1,18 @@
 import { TableRow } from '@mui/material';
 import { StyledTableCellWithBorder } from 'ui-component/table-component';
 
-const ConveyanceSummaryRow = ({ sn, data }) => {
+const EmployeeWiseSummaryRow = ({ sn, data }) => {
   return (
     <TableRow>
       <StyledTableCellWithBorder align="center">{sn}</StyledTableCellWithBorder>
       <StyledTableCellWithBorder>
-        {data?.location?.label + ', ' + data?.location?.area?.label}
+        {data?.employee?.name}
       </StyledTableCellWithBorder>
       <StyledTableCellWithBorder align="right">
-        {data?.conveyances}
+        {data?.amount}
       </StyledTableCellWithBorder>
     </TableRow>
   );
 };
-export default ConveyanceSummaryRow;
+
+export default EmployeeWiseSummaryRow;

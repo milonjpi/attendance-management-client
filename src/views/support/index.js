@@ -1,8 +1,5 @@
 // material-ui
-import { Button, Typography } from '@mui/material';
-import { useDispatch } from 'react-redux';
-import { useCreateBulkMutation } from 'store/api/bulk/bulkApi';
-import { setToast } from 'store/toastSlice';
+import { Typography } from '@mui/material';
 
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
@@ -10,34 +7,6 @@ import MainCard from 'ui-component/cards/MainCard';
 // ==============================|| SAMPLE PAGE ||============================== //
 
 const Support = () => {
-  const dispatch = useDispatch();
-
-  const [createBulk] = useCreateBulkMutation();
-
-  const onSubmit = async (data) => {
-    try {
-      const res = await createBulk().unwrap();
-      if (res.success) {
-        dispatch(
-          setToast({
-            open: true,
-            variant: 'success',
-            message: res?.message,
-          })
-        );
-      }
-    } catch (err) {
-      dispatch(
-        setToast({
-          open: true,
-          variant: 'error',
-          message: err?.data?.message || 'Something Went Wrong',
-          errorMessages: err?.data?.errorMessages,
-        })
-      );
-    }
-  };
-
   return (
     <MainCard title="Support">
       <Typography variant="body2">
@@ -49,9 +18,6 @@ const Support = () => {
         non president, sunk in culpa qui officiate descent molls anim id est
         labours.
       </Typography>
-      <Button variant="contained" onClick={onSubmit}>
-        Submit
-      </Button>
     </MainCard>
   );
 };

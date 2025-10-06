@@ -173,6 +173,14 @@ const MonthSummary = Loadable(
 const ConveyanceSummary = Loadable(
   lazy(() => import('views/offices/Report/ConveyanceSummary'))
 );
+const BranchWiseSummary = Loadable(
+  lazy(() => import('views/offices/Report/ConveyanceSummary/BranchWiseSummary'))
+);
+const EmployeeWiseSummary = Loadable(
+  lazy(() =>
+    import('views/offices/Report/ConveyanceSummary/EmployeeWiseSummary')
+  )
+);
 const BillSummary = Loadable(
   lazy(() => import('views/offices/Report/BillSummary'))
 );
@@ -651,6 +659,16 @@ const MainRoutes = {
                       <ConveyanceSummary />
                     </AuthenticationRoutes>
                   ),
+                  children: [
+                    {
+                      path: '',
+                      element: <BranchWiseSummary />,
+                    },
+                    {
+                      path: 'employee-summary',
+                      element: <EmployeeWiseSummary />,
+                    },
+                  ],
                 },
                 {
                   path: 'bill-summary',

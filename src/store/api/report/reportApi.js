@@ -35,6 +35,15 @@ export const reportApi = api.injectEndpoints({
       }),
       providesTags: ['bill', 'conveyance', 'salary', 'employee'],
     }),
+    // expense summary
+    getEmployeeConveyanceSummary: build.query({
+      query: (arg) => ({
+        url: `${REPORT_URL}/employee-conveyance`,
+        method: 'GET',
+        params: arg,
+      }),
+      providesTags: ['bill', 'conveyance', 'salary', 'employee'],
+    }),
     // expense summary year
     getExpenseSummaryYear: build.query({
       query: (arg) => ({
@@ -60,6 +69,7 @@ export const {
   useGetAllReportQuery,
   useGetSalaryReportQuery,
   useGetExpenseSummaryQuery,
+  useGetEmployeeConveyanceSummaryQuery,
   useGetExpenseSummaryYearQuery,
   useGetExpenseSummaryMonthQuery,
 } = reportApi;
